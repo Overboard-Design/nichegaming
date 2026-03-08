@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>NicheGaming</title>
+<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
+<meta name="description" content="Discover playtests, demos, gaming communities and deals at NicheGaming.">
+<meta name="keywords" content="gaming, clan, guild, community, pvp, pve, pc, gamer, demo, xbox, playstation, playtests, sales, steam">
+<meta name="author" content="Overboard Design">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/325908507e.js" crossorigin="anonymous"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap">
+
+<!-- Styles -->
+<link rel="stylesheet" href="styles.css">
+<script src="color-theme.js"></script>
+</head>
+
+<body>
+
+<!-- Google Translate -->
+<div id="google_translate_element" style="margin:10px auto;"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage:'en',
+    includedLanguages:'es,fr,de,it,ja,zh-CN,ru,pt',
+    layout:google.translate.TranslateElement.InlineLayout.SIMPLE
+  },'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<!-- Navigation -->
+<header class="menu-container">
+  <nav class="menu">
+    <a href="playtests.html" class="menu-item">Playtests</a>
+    <a href="demos.html" class="menu-item" target="_blank">Demos</a>
+    <a href="steam sales.html" class="menu-item">Steam Sales</a>
+    <a href="keys.html" class="menu-item">Keys</a>
+    <a href="gaming communitys.html" class="menu-item">Gaming Communities</a>
+    <a href="spotlight.html" class="menu-item">Spotlights</a>
+    <a href="retro gaming.html" class="menu-item">Retro Gaming</a>
+    <a href="tools.html" class="menu-item">Tools</a>
+  </nav>
+</header>
+
+<!-- Title -->
+<section class="title">
+  <h1 style="font-family:'Orbitron',sans-serif;">NicheGaming</h1>
+</section>
+
+<!-- Color Picker -->
+<div style="text-align:left;margin:10px auto;max-width:1200px;">
+  <label for="color-picker" style="font-family:'Orbitron',monospace;color:#39ff14;">Font Color:</label>
+  <input type="color" id="color-picker" value="#39ff14">
+</div>
+
+<!-- Typewriter Box -->
+<section class="typewriter-box" id="typewriter-box">
+  <div class="typewriter-line">
+    Discover a one-stop destination built by gamers, for gamers. At NicheGaming, you’ll find everything you need to fuel your passion.
+  </div>
+  <div class="typewriter-line">
+    Playtests & Demos – Be the first to try upcoming titles and explore new worlds before anyone else.
+  </div>
+  <div class="typewriter-line">
+    Thriving Gaming Communities – Connect with like-minded players and squad up for your next adventure.
+  </div>
+  <div class="typewriter-line">
+    Best Game Deals – Stay ahead with real-time discounts on Steam, key marketplaces and more.
+  </div>
+  <div class="typewriter-line">
+    Handpicked Games & Tools – Discover standout titles and helpful resources tailored to your playstyle.
+  </div>
+  <div class="typewriter-line">
+    Whether you're casual or hardcore, NicheGaming is your launchpad to a richer gaming experience.
+  </div>
+  <div class="typewriter-line" id="loading-line">Loading...</div>
+</section>
+
+<footer>By Overboard Design.</footer>
+
+<script>
+// Elements
+const box = document.getElementById("typewriter-box");
+const colorPicker = document.getElementById("color-picker");
+const originalLines = Array.from(box.querySelectorAll(".typewriter-line"));
+const typingSpeed = 30;
+const linePause = 800;
+const cursorChar = "|";
+const storedLines = originalLines.map(line => line.textContent);
+
+// Hide all lines initially
+originalLines.forEach(line => line.style.visibility = "hidden");
+
+// Typewriter effect
+async function typeLine(line, isLast = false){
+  const fullText = line.textContent;
+  line.textContent = "";
+  line.style.visibility = "visible";
+  line.style.color = colorPicker.value;
+  line.style.textShadow = `0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value},0 0 20px ${colorPicker.value}`;
+  
+  for(let i = 0; i <= fullText.length; i++){
+    const visibleText = fullText.substring(0, i);
+    line.innerHTML = visibleText + (isLast ? `<span class="cursor">${cursorChar}</span>` : '');
+    await new Promise(r => setTimeout(r, typingSpeed));
+  }
+  
+  if(!isLast) line.textContent = fullText;
+}
+
+async function typeAllLines(lines){
+  for(let i = 0; i < lines.length; i++){
+    const isLast = i === lines.length - 1;
+    await typeLine(lines[i], isLast);
+    await new Promise(r => setTimeout(r, linePause));
+  }
+}
+
+// Video intro then restore typewriter
+async function showVideoThenRestoreText(){
+  box.innerHTML = `
+    <div style="position:relative;">
+      <video id="intro-video" autoplay muted playsinline style="width:100%;border-radius:4px;">
+        <source src="Welcome to niche gaming (1).mp4" type="video/mp4">
+      </video>
+      <button id="unmute-btn" style="
+        position:absolute;
+        bottom:20px;
+        right:20px;
+        padding:10px 14px;
+        font-family:'Orbitron',monospace;
+        font-size:0.7rem;
+        background-color:rgba(0,0,0,0.8);
+        color:${colorPicker.value};
+        border:2px solid ${colorPicker.value};
+        border-radius:4px;
+        cursor:pointer;
+        z-index:2;
+        text-shadow:0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value};
+      ">Unmute</button>
+    </div>
+  `;
+  
+  const video = document.getElementById("intro-video");
+  const btn = document.getElementById("unmute-btn");
+  
+  btn.addEventListener("click", ()=>{
+    video.muted = false;
+    video.volume = 1;
+    btn.style.display = "none";
+  });
+  
+  video.addEventListener("ended", ()=>{
+    box.innerHTML = "";
+    storedLines.forEach(text => {
+      const newLine = document.createElement("div");
+      newLine.className = "typewriter-line";
+      newLine.textContent = text;
+      newLine.style.visibility = "hidden";
+      box.appendChild(newLine);
+    });
+    const newLines = Array.from(box.querySelectorAll(".typewriter-line"));
+    typeAllLines(newLines);
+  });
+}
+
+// Initialize typewriter
+typeAllLines(originalLines).then(()=> setTimeout(showVideoThenRestoreText, 1000));
+
+// Font color picker logic
+colorPicker.addEventListener("input", ()=>{
+  const lines = document.querySelectorAll(".typewriter-line");
+  lines.forEach(line => {
+    line.style.color = colorPicker.value;
+    line.style.textShadow = `0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value},0 0 20px ${colorPicker.value}`;
+  });
+  const links = document.querySelectorAll("a, .menu-item");
+  links.forEach(link => link.style.color = colorPicker.value);
+  const btn = document.getElementById("unmute-btn");
+  if(btn) btn.style.color = colorPicker.value;
+  if(btn) btn.style.borderColor = colorPicker.value;
+});
+
+</script>
+
+</body>
+</html>

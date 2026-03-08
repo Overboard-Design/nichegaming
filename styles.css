@@ -1,0 +1,297 @@
+.press-start-2p-regular {
+  font-family: "Orbitron", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Reset some defaults */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --main-color: #39ff14; /* Default neon green */
+}
+
+/* Body style */
+body {
+  font-family: "Orbitron", system-ui;
+  background-color: #030303;
+  color:var(--main-color);
+  line-height: 1.6;
+  padding-top: 100px; /* Adjust based on nav bar height */
+  text-align: center; /* Center overall page text */
+  text-shadow: none;
+}
+
+/* Top navigation bar */
+.menu-container {
+  background-color: #000000;
+  padding: 15px 30px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  text-shadow: none;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.menu-item {
+  color: var(--main-color);
+  text-decoration: none;
+  padding: 10px 15px;
+  background-color: #000000;
+  border-radius: 5px;
+  transition: background 0.3s;
+ text-shadow: none;
+}
+
+.menu-item:hover {
+  background-color: #555;
+}
+
+/* Title style */
+.title h1 {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color);
+}
+
+.title, .title h1 {
+  color: var(--main-color);
+  
+}
+
+.typewriter-box {
+  display: inline-block;
+  padding: 12px 18px;
+  font-family: "Orbitron", monospace, system-ui;
+  font-size: 1rem;
+  color: var(--main-color);
+  background-color: #000000;
+  border: 2px solid var(--main-color);
+  border-radius: 4px;
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 30px var(--main-color);
+  box-sizing: border-box;
+  text-align: left;
+  white-space: normal;
+  max-width: 700px;
+  width: 90%;
+  margin: 40px auto;
+}
+
+.typewriter-line {
+  color: transparent;          /* hide only lines */
+  text-shadow: none !important;
+  user-select: none;
+  margin-bottom: 10px;
+  min-height: 1.5em;
+  overflow-wrap: break-word;
+  white-space: normal;
+  border-right: none;
+}
+
+/* blinking cursor only on last line */
+.blinking-cursor {
+  border-right: 2px solid var(--main-color);
+  animation: blink-caret 0.75s step-end infinite;
+  color: var(--main-color);
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
+}
+
+.cursor {
+  animation: blink 1s step-start infinite;
+  color: var(--main-color);
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
+}
+
+@keyframes blink-caret {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: var(--main-color); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+    /* Grid container */
+    #game-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      padding: 0 10px;
+    }
+
+    /* Images */
+    .typewriter-box img {
+      width: 100%;
+      max-height: 160px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      border: 8px solid #333;
+      border-top: 8px solid var(--main-color);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 50px auto;
+    }
+    
+    /* Error box */
+    .error-box {
+      color: var(--main-color);
+      background: #111;
+      border: 2px var(--main-color);
+      padding: 20px;
+      width: 80%;
+      margin: 20px auto;
+      border-radius: 8px;
+      font-family: "Orbitron", monospace;
+    }
+#filter-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap; /* prevent wrapping */
+  gap: 40px;          /* space between filter groups */
+  margin-bottom: 40px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center; /* vertically center filters */
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: row; /* horizontally align filter buttons */
+  align-items: center;
+  gap: 15px;
+}
+
+.filter-group p {
+  margin: 0 15px 0 0;
+  font-size: 1rem;
+  color: var(--main-color);
+  white-space: nowrap; /* prevent filter label from wrapping */
+}
+  .filter-group button {
+  opacity: 1; /* fully opaque by default */
+  cursor: pointer;
+  user-select: none;
+  color: var(--main-color);
+  background-color: #000;
+  border: 2px solid var(--main-color);
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background 0.3s, opacity 0.3s;
+  min-width: 100px;
+}
+
+/* Hover effect: color + background but keep opacity 1 */
+.filter-group button:hover {
+  background-color: var(--main-color);
+  color: #000;
+  opacity: 1;
+}
+
+/* Selected (active) state: transparent */
+.filter-group button.active {
+  opacity: 0.5; /* transparent */
+  /* You can keep background and text color or adjust as you want */
+}
+
+/* ========================= */
+/* CRT CYBERPUNK SCREEN */
+/* ========================= */
+
+.crt-screen{
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Scanlines */
+.crt-screen::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.03) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+
+  pointer-events:none;
+  z-index:999;
+}
+
+/* Screen glow */
+.crt-screen::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background:radial-gradient(
+    ellipse at center,
+    rgba(0,0,0,0) 60%,
+    rgba(0,0,0,0.6) 100%
+  );
+
+  pointer-events:none;
+}
+
+/* Subtle flicker */
+@keyframes crtFlicker{
+  0%{opacity:0.98}
+  5%{opacity:0.95}
+  10%{opacity:0.98}
+  15%{opacity:0.94}
+  20%{opacity:0.98}
+  100%{opacity:1}
+}
+
+body{
+  animation: crtFlicker 6s infinite;
+}
+    

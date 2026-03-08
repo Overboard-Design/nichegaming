@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Steam Deals - NicheGaming</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --main-color: #39ff14;
+}
+
+body {
+  background: #030303;
+  color: var(--main-color);
+  font-family: "Orbitron", sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.main-container {
+  max-width: 1300px;
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
+
+.ad-space {
+  width: 80px;
+}
+
+.content {
+  flex: 1;
+  position: relative;
+}
+
+#color-picker-container {
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+#google_translate_element {
+  margin: 20px 0;
+}
+
+/* Title */
+h1 {
+  margin-top: 40px;
+  text-shadow: 0 0 5px var(--main-color),
+               0 0 10px var(--main-color),
+               0 0 20px var(--main-color);
+  text-align: center;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.tab {
+  padding: 8px 12px;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--main-color);
+  background: #000;
+  transition: 0.3s;
+  font-family: Orbitron;
+}
+
+.tab:hover,
+.tab.active {
+  background: var(--main-color);
+  color: #000;
+}
+
+/* Return tab */
+#return-tab {
+  display: block;
+  margin: 10px auto 20px auto;
+  padding: 10px 15px;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  text-decoration: none;
+  color: var(--main-color);
+  background: #000;
+  font-family: Orbitron;
+  transition: 0.3s;
+  text-align: center;
+}
+
+#return-tab:hover {
+  background: var(--main-color);
+  color: #000;
+}
+
+/* Grid */
+#steam-deals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+/* Cards */
+.game-card {
+  background: #000;
+  border: 2px solid var(--main-color);
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+  transition: 0.3s;
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--main-color), 0 0 40px var(--main-color);
+}
+
+.game-card img {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+  loading: lazy;
+}
+
+/* Price */
+.price-old {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.discount {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 8px solid #333;
+  border-top: 8px solid var(--main-color);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: 80px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+
+<body>
+<div class="main-container">
+  <div class="ad-space"></div>
+
+  <div class="content">
+
+    <!-- Color Picker top-left -->
+    <div id="color-picker-container">
+      <label for="color-picker" style="font-family:'Orbitron',monospace;color:#39ff14;">Font Color:</label>
+      <input type="color" id="color-picker" value="#39ff14">
+    </div>
+
+    <!-- Google Translate -->
+    <div id="google_translate_element"></div>
+
+    <!-- Title -->
+    <h1>Steam Deals</h1>
+
+    <a href="index.html" id="return-tab">Return to Home</a>
+
+    <!-- Genre tabs -->
+    <div id="genre-tabs" class="tabs">
+      <div class="tab active" data-genre="All">All</div>
+      <div class="tab" data-genre="Action">Action</div>
+      <div class="tab" data-genre="RPG">RPG</div>
+      <div class="tab" data-genre="Adventure">Adventure</div>
+      <div class="tab" data-genre="Strategy">Strategy</div>
+      <div class="tab" data-genre="Simulation">Simulation</div>
+    </div>
+
+    <!-- Discount tabs -->
+    <div id="discount-tabs" class="tabs">
+      <div class="tab active" data-discount="0">All</div>
+      <div class="tab" data-discount="50">50%+</div>
+      <div class="tab" data-discount="60">60%+</div>
+      <div class="tab" data-discount="70">70%+</div>
+      <div class="tab" data-discount="80">80%+</div>
+      <div class="tab" data-discount="90">90%+</div>
+    </div>
+
+    <div id="loading" class="spinner"></div>
+    <div id="steam-deals"></div>
+  </div>
+
+  <div class="ad-space"></div>
+</div>
+
+<script>
+// Google Translate
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage:'en',
+    includedLanguages:'es,fr,de,it,ja,zh-CN,ru,pt',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
+const gtScript = document.createElement('script');
+gtScript.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+document.body.appendChild(gtScript);
+
+// Elements
+const container = document.getElementById("steam-deals");
+const loading = document.getElementById("loading");
+const genreTabs = document.querySelectorAll("#genre-tabs .tab");
+const discountTabs = document.querySelectorAll("#discount-tabs .tab");
+const colorPicker = document.getElementById("color-picker");
+
+let deals = [];
+let filteredDeals = [];
+let selectedGenre = "All";
+let selectedDiscount = 0;
+
+// Load deals (1000)
+async function loadDeals() {
+  try {
+    const res = await fetch("https://www.cheapshark.com/api/1.0/deals?storeID=1&pageSize=1000");
+    const data = await res.json();
+    deals = data.sort((a,b)=>b.savings-a.savings);
+    filteredDeals = deals;
+    applyFilters();
+    loading.style.display = "none";
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Display deals
+function displayDeals(list) {
+  container.innerHTML = "";
+  list.forEach(game => {
+    container.innerHTML += `
+      <div class="game-card">
+        <img src="${game.thumb}" loading="lazy" alt="${game.title}">
+        <h3>${game.title}</h3>
+        <p class="discount">${Math.round(game.savings)}% OFF</p>
+        <p><span class="price-old">$${game.normalPrice}</span> <strong>$${game.salePrice}</strong></p>
+        <a href="https://store.steampowered.com/app/${game.steamAppID}" target="_blank">View on Steam</a>
+      </div>
+    `;
+  });
+  updateColors();
+}
+
+// Apply genre + discount filters
+function applyFilters() {
+  filteredDeals = deals.filter(game => {
+    let genreMatch = selectedGenre === "All" || (game.external && game.external.toLowerCase().includes(selectedGenre.toLowerCase()));
+    let discountMatch = Math.round(game.savings) >= selectedDiscount;
+    return genreMatch && discountMatch;
+  });
+  displayDeals(filteredDeals);
+}
+
+// Genre tabs
+genreTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    genreTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedGenre = tab.dataset.genre;
+    applyFilters();
+  });
+});
+
+// Discount tabs
+discountTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    discountTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedDiscount = parseInt(tab.dataset.discount);
+    applyFilters();
+  });
+});
+
+// Color picker
+colorPicker.addEventListener("input", () => {
+  document.body.style.color = colorPicker.value;
+  document.querySelectorAll(".game-card, a, .tab, #return-tab").forEach(el => {
+    el.style.color = colorPicker.value;
+  });
+});
+
+// Auto refresh
+setInterval(loadDeals, 600000);
+
+// Initial load
+loadDeals();
+</script>
+</body>
+</html>
