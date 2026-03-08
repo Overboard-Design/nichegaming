@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <title>NicheGaming</title>
@@ -10,20 +9,16 @@
 <meta name="author" content="Overboard Design">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Icons -->
-<script src="https://kit.fontawesome.com/325908507e.js" crossorigin="anonymous"></script>
-
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap">
 
-<!-- Styles -->
+<!-- Unified CSS -->
 <link rel="stylesheet" href="styles.css">
-<script src="color-theme.js"></script>
 </head>
 
-<body>
+<body class="crt-screen">
 
 <!-- Google Translate -->
 <div id="google_translate_element" style="margin:10px auto;"></div>
@@ -59,14 +54,13 @@ function googleTranslateElementInit() {
 
 <!-- Color Picker -->
 <div style="text-align:left;margin:10px auto;max-width:1200px;">
-  <label for="color-picker" style="font-family:'Orbitron',monospace;color:#39ff14;">Font Color:</label>
-  <input type="color" id="color-picker" value="#39ff14">
+  <input type="color" id="color-picker" value="#39ff14" style="cursor:pointer;">
 </div>
 
 <!-- Typewriter Box -->
 <section class="typewriter-box" id="typewriter-box">
   <div class="typewriter-line">
-    Discover a one-stop destination built by gamers, for gamers. At NicheGaming, you’ll find everything you need to fuel your passion.
+    Discover a one-stop destination built by a gamer, for gamers. At NicheGaming, you’ll find everything you need to fuel your passion.
   </div>
   <div class="typewriter-line">
     Playtests & Demos – Be the first to try upcoming titles and explore new worlds before anyone else.
@@ -78,7 +72,7 @@ function googleTranslateElementInit() {
     Best Game Deals – Stay ahead with real-time discounts on Steam, key marketplaces and more.
   </div>
   <div class="typewriter-line">
-    Handpicked Games & Tools – Discover standout titles and helpful resources tailored to your playstyle.
+    Handpicked Tools – Discover helpful resources tailored to Content Creators and Gaming Communitys.
   </div>
   <div class="typewriter-line">
     Whether you're casual or hardcore, NicheGaming is your launchpad to a richer gaming experience.
@@ -177,21 +171,49 @@ async function showVideoThenRestoreText(){
 // Initialize typewriter
 typeAllLines(originalLines).then(()=> setTimeout(showVideoThenRestoreText, 1000));
 
-// Font color picker logic
-colorPicker.addEventListener("input", ()=>{
-  const lines = document.querySelectorAll(".typewriter-line");
-  lines.forEach(line => {
-    line.style.color = colorPicker.value;
-    line.style.textShadow = `0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value},0 0 20px ${colorPicker.value}`;
+// Unified color update function
+function updateColors(color) {
+  document.body.style.color = color;
+
+  document.querySelectorAll("h1").forEach(h => {
+    h.style.color = color;
+    h.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color},0 0 40px ${color}`;
   });
-  const links = document.querySelectorAll("a, .menu-item");
-  links.forEach(link => link.style.color = colorPicker.value);
-  const btn = document.getElementById("unmute-btn");
-  if(btn) btn.style.color = colorPicker.value;
-  if(btn) btn.style.borderColor = colorPicker.value;
-});
+
+  document.querySelectorAll(".typewriter-box").forEach(box => {
+    box.style.borderColor = color;
+    box.style.boxShadow = `0 0 10px ${color},0 0 20px ${color},0 0 30px ${color}`;
+    box.style.color = color;
+    box.querySelectorAll(".typewriter-line").forEach(line => {
+      line.style.color = color;
+      line.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+    });
+  });
+
+  document.querySelectorAll(".menu-item").forEach(link => {
+    link.style.color = color;
+    link.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+    link.style.borderColor = color;
+  });
+  
+  const returnBtn = document.getElementById("return-home");
+  if(returnBtn){
+    returnBtn.style.color = color;
+    returnBtn.style.borderColor = color;
+    returnBtn.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+  }
+
+  document.querySelectorAll(".cursor").forEach(cursor => {
+    cursor.style.color = color;
+    cursor.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+  });
+  document.querySelectorAll("footer").forEach(f => f.style.color = color);
+}
+
+colorPicker.addEventListener("input", e => updateColors(e.target.value));
+
+
 
 </script>
-
 </body>
 </html>
