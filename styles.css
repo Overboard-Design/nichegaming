@@ -60,6 +60,95 @@ body {
 }
 
 /* ========================= */
+/* SPOTLIGHT HERO BANNER     */
+/* ========================= */
+
+.spotlight{
+  position: relative;
+  height: 70vh;
+  min-height: 420px;
+  overflow: hidden;
+  border-bottom: 2px solid var(--main-color);
+  box-shadow: 0 0 20px var(--main-color);
+  margin-top: 70px; /* prevents overlap with fixed nav */
+}
+
+.video-wrapper{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  z-index:1;
+}
+
+.video-wrapper iframe{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:177.78vh;
+  height:100vh;
+  min-width:100%;
+  min-height:100%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  filter:brightness(40%);
+}
+
+.spotlight-overlay{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+}
+
+.spotlight-overlay h2{
+  font-size:2.2rem;
+  text-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color);
+}
+
+.spotlight-btn{
+  margin-top:20px;
+  padding:14px 28px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  text-decoration:none;
+  border-radius:6px;
+  transition:0.3s;
+}
+
+.spotlight-btn:hover{
+  background:var(--main-color);
+  color:#000;
+}
+
+/* cinematic fade into page */
+.spotlight::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:150px;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0%,
+    #030303 100%
+  );
+  z-index:2;
+}
+
+/* ========================= */
 /* TITLE                     */
 /* ========================= */
 .title h1 {
