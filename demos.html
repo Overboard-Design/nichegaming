@@ -147,78 +147,75 @@ a:hover{
 <input type="color" id="color-picker" value="#39ff14" style="position:fixed;top:10px;left:10px;z-index:1000;">
 
 <script>
+// === STATIC DEMO LIST (MAX 200) ===
+// You can update this manually anytime
+const demos = [
+  {name:"Demo Game 1", appid:123456},
+  {name:"Demo Game 2", appid:234567},
+  {name:"Demo Game 3", appid:345678},
+  // ...add up to 200 items
+];
+
+// Pagination
+const itemsPerPage = 20;
+let currentPage = 1;
+
 const container = document.getElementById("demo-list");
+const pagination = document.getElementById("pagination");
 const loading = document.getElementById("loading");
 const colorPicker = document.getElementById("color-picker");
-const pagination = document.getElementById("pagination");
 
-let demos = [];
-let currentPage = 1;
-const perPage = 60; // same as Steam Deals page
-
-async function loadDemos(){
-  try{
-    const res = await fetch("https://store.steampowered.com/search/results/?query&category1=998&format=json&count=1000");
-    const data = await res.json();
-    
-    // Steam returns a JSON object with results
-    demos = data.results || [];
-    displayPage(currentPage);
-    loading.style.display="none";
-  }catch(err){
-    loading.style.display="none";
-    container.innerHTML="<p>Failed to load demos.</p>";
-    console.error(err);
-  }
-}
+loading.style.display = "none";
 
 function displayPage(page){
-  container.innerHTML="";
-  const start = (page-1)*perPage;
-  const end = page*perPage;
-  const pageDemos = demos.slice(start,end);
-  
-  pageDemos.forEach(game=>{
+  container.innerHTML = "";
+  const start = (page-1)*itemsPerPage;
+  const end = start + itemsPerPage;
+  const pageItems = demos.slice(start,end);
+
+  pageItems.forEach(game=>{
     const card = document.createElement("div");
-    card.className="game-card";
-    card.innerHTML=`
+    card.className = "game-card";
+    card.innerHTML = `
       <h3>${game.name}</h3>
-      <a href="https://store.steampowered.com/app/${game.id}">View Demo</a>
-      <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.id}/header.jpg">
+      <a href="https://store.steampowered.com/app/${game.appid}">
+      View Demo
+      </a>
+      <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg">
     `;
     container.appendChild(card);
   });
-  
-  setupPagination();
+
+  renderPagination();
 }
 
-function setupPagination(){
-  pagination.innerHTML="";
-  const totalPages = Math.ceil(demos.length/perPage);
+function renderPagination(){
+  pagination.innerHTML = "";
+  const totalPages = Math.ceil(demos.length / itemsPerPage);
 
   const prevBtn = document.createElement("button");
   prevBtn.className="page-btn";
-  prevBtn.textContent="Previous";
-  prevBtn.disabled = currentPage===1;
+  prevBtn.textContent="Prev";
   if(currentPage===1) prevBtn.classList.add("disabled");
-  prevBtn.onclick = ()=>{currentPage--; displayPage(currentPage);};
-  pagination.appendChild(prevBtn);
+  prevBtn.onclick = ()=>{if(currentPage>1){currentPage--; displayPage(currentPage);}};
 
   const nextBtn = document.createElement("button");
   nextBtn.className="page-btn";
   nextBtn.textContent="Next";
-  nextBtn.disabled = currentPage===totalPages;
   if(currentPage===totalPages) nextBtn.classList.add("disabled");
-  nextBtn.onclick = ()=>{currentPage++; displayPage(currentPage);};
+  nextBtn.onclick = ()=>{if(currentPage<totalPages){currentPage++; displayPage(currentPage);}};
+
+  pagination.appendChild(prevBtn);
   pagination.appendChild(nextBtn);
 }
 
-// color picker
+// Color picker
 colorPicker.addEventListener("input",e=>{
   document.documentElement.style.setProperty("--main-color",e.target.value);
 });
 
-loadDemos();
+// Initial display
+displayPage(currentPage);
 </script>
 </body>
 </html>
