@@ -268,6 +268,22 @@ function displayDemos(list){
 
 displayDemos(demos);
 
+const lazyObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const iframe = entry.target;
+      iframe.src = iframe.dataset.src;
+      lazyObserver.unobserve(iframe);
+    }
+  });
+},{
+  rootMargin:"200px"
+});
+
+document.querySelectorAll("iframe[data-src]").forEach(iframe=>{
+  lazyObserver.observe(iframe);
+});
+
 // Color picker
 const colorPicker = document.getElementById("color-picker");
 colorPicker.addEventListener("input", e=>{
