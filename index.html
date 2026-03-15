@@ -27,7 +27,7 @@
 <header class="menu-container">
   <nav class="menu">
     <a href="playtests.html" class="menu-item">Playtests</a>
-    <a href="demos.html" class="menu-item" target="_blank">Demos</a>
+    <a href="demos.html" class="menu-item" >Demos</a>
     <a href="steam sales.html" class="menu-item">Steam Sales</a>
     <a href="keys.html" class="menu-item">Keys</a>
     <a href="gaming communitys.html" class="menu-item">Gaming Communities</a>
@@ -73,7 +73,9 @@
 <footer>By Overboard Design.</footer>
 
 <script>
-// Elements
+// ======================
+// GLOBAL ELEMENTS
+// ======================
 const box = document.getElementById("typewriter-box");
 const colorPicker = document.getElementById("color-picker");
 const originalLines = Array.from(box.querySelectorAll(".typewriter-line"));
@@ -82,10 +84,25 @@ const linePause = 800;
 const cursorChar = "|";
 const storedLines = originalLines.map(line => line.textContent);
 
-// Hide all lines initially
+// ======================
+// LOAD SAVED COLOR
+// ======================
+const savedColor = localStorage.getItem("nicheColor");
+if(savedColor){
+  colorPicker.value = savedColor;
+  updateColors(savedColor); // apply saved color immediately
+} else {
+  updateColors(colorPicker.value); // fallback to default
+}
+
+// ======================
+// HIDE ALL LINES INITIALLY
+// ======================
 originalLines.forEach(line => line.style.visibility = "hidden");
 
-// Typewriter effect
+// ======================
+// TYPEWRITER EFFECT
+// ======================
 async function typeLine(line, isLast = false){
   const fullText = line.textContent;
   line.textContent = "";
@@ -110,7 +127,9 @@ async function typeAllLines(lines){
   }
 }
 
-// Video intro then restore typewriter
+// ======================
+// VIDEO INTRO THEN RESTORE TEXT
+// ======================
 async function showVideoThenRestoreText(){
   box.innerHTML = `
     <div style="position:relative;">
@@ -138,13 +157,13 @@ async function showVideoThenRestoreText(){
   const video = document.getElementById("intro-video");
   const btn = document.getElementById("unmute-btn");
   
-  btn.addEventListener("click", ()=>{
+  btn.addEventListener("click", ()=> {
     video.muted = false;
     video.volume = 1;
     btn.style.display = "none";
   });
   
-  video.addEventListener("ended", ()=>{
+  video.addEventListener("ended", ()=> {
     box.innerHTML = "";
     storedLines.forEach(text => {
       const newLine = document.createElement("div");
@@ -158,12 +177,22 @@ async function showVideoThenRestoreText(){
   });
 }
 
-// Initialize typewriter
+// ======================
+// INITIALIZE TYPEWRITER
+// ======================
 typeAllLines(originalLines).then(()=> setTimeout(showVideoThenRestoreText, 1000));
 
-// Unified color update function
-function updateColors(color) {
+// ======================
+// UPDATE COLORS FUNCTION
+// ======================
+function updateColors(color){
+  // Save to localStorage for cross-page persistence
+  localStorage.setItem("nicheColor", color);
+
   document.body.style.color = color;
+
+  // Update color picker border
+colorPicker.style.border = `2px solid ${color}`;
 
   document.querySelectorAll("h1").forEach(h => {
     h.style.color = color;
@@ -185,7 +214,7 @@ function updateColors(color) {
     link.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
     link.style.borderColor = color;
   });
-  
+
   const returnBtn = document.getElementById("return-home");
   if(returnBtn){
     returnBtn.style.color = color;
@@ -197,12 +226,15 @@ function updateColors(color) {
     cursor.style.color = color;
     cursor.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
   });
+
   document.querySelectorAll("footer").forEach(f => f.style.color = color);
 }
 
+
+// ======================
+// COLOR PICKER EVENT
+// ======================
 colorPicker.addEventListener("input", e => updateColors(e.target.value));
-
-
 
 </script>
 </body>

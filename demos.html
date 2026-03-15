@@ -72,10 +72,7 @@ a:hover{
   background:var(--main-color);
   color:#000;
 }
-/* Color picker */
-#color-picker{
-  position:fixed;top:10px;left:10px;z-index:1000;
-}
+
 .spotlight{
   position: relative;
   height: 70vh;
@@ -175,6 +172,19 @@ Play Demo on Steam
 <input type="color" id="color-picker" value="#39ff14">
 
 <script>
+    // Apply stored color from index
+const storedColor = localStorage.getItem("nicheColor");
+if(storedColor){
+  document.documentElement.style.setProperty("--main-color", storedColor);
+
+  // Update elements that use --main-color dynamically
+  document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
+    el.style.color = storedColor;
+    el.style.borderColor = storedColor;
+    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+  });
+}
+
 // Manual list of demos: fill in name, appid, youtubeId
 const demos = [
   { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
@@ -285,11 +295,7 @@ document.querySelectorAll("iframe[data-src]").forEach(iframe=>{
   lazyObserver.observe(iframe);
 });
 
-// Color picker
-const colorPicker = document.getElementById("color-picker");
-colorPicker.addEventListener("input", e=>{
-  document.documentElement.style.setProperty("--main-color", e.target.value);
-});
+
 </script>
 </body>
 </html>

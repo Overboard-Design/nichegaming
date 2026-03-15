@@ -17,7 +17,7 @@ body {
   color: var(--main-color);
   line-height: 1.6;
   text-align: center;
-  padding-top: 80px; /* <-- add enough space for fixed menu */
+  padding-top: 70px; /* <-- add enough space for fixed menu */
   animation: crtFlicker 6s infinite;
 }
 
@@ -289,9 +289,19 @@ body {
 /* ========================= */
 /* COLOR PICKER              */
 /* ========================= */
-#color-picker{
-  display:block;
-  margin:20px auto;
+
+  #color-picker {
+  position: fixed;       
+  top: 10px;             
+  left: 10px;            
+  z-index: 1000;         
+  cursor: pointer;
+  width: 40px;           
+  height: 40px;
+  padding: 0;
+  border: 2px solid var(--main-color);
+  border-radius: 4px;
+  background-color: #000; 
 }
 
 /* ========================= */

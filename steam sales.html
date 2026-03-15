@@ -161,8 +161,6 @@ a:hover { color:#000; background-color:var(--main-color);
 <div id="filter-bar">
   <select id="discount-filter">
     <option value="all">All Discounts</option>
-    <option value="10">10%+</option>
-    <option value="20">20%+</option>
     <option value="30">30%+</option>
     <option value="40">40%+</option>
     <option value="50">50%+</option>
@@ -185,9 +183,21 @@ a:hover { color:#000; background-color:var(--main-color);
   <button id="next-btn">Next</button>
 </div>
 
-<input type="color" id="color-picker" value="#39ff14" style="position:fixed;top:10px;left:10px; z-index:1000;">
-
 <script>
+
+// Apply stored color from index
+const storedColor = localStorage.getItem("nicheColor");
+if(storedColor){
+  document.documentElement.style.setProperty("--main-color", storedColor);
+
+  // Update elements that use --main-color dynamically
+  document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
+    el.style.color = storedColor;
+    el.style.borderColor = storedColor;
+    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+  });
+}
+
 const container = document.getElementById("steam-deals");
 const loading = document.getElementById("loading");
 const discountFilter = document.getElementById("discount-filter");
