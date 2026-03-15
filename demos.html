@@ -8,199 +8,217 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-
 :root { --main-color:#39ff14; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
 
 body{
-font-family:"Orbitron",system-ui,sans-serif;
-background:#030303;
-color:var(--main-color);
-text-align:center;
-padding-top:100px;
-animation:crtFlicker 6s infinite;
+  font-family:"Orbitron",system-ui,sans-serif;
+  background:#030303;
+  color:var(--main-color);
+  text-align:center;
+  padding-top:100px;
+  animation:crtFlicker 6s infinite;
 }
 
-@keyframes crtFlicker{
-0%{opacity:.98}5%{opacity:.95}10%{opacity:.98}15%{opacity:.94}20%{opacity:.98}100%{opacity:1}
+/* Cyberpunk scanlines */
+body::before{
+  content:"";
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,0.03) 0px,rgba(255,255,255,0.03) 1px,transparent 2px,transparent 4px);
+  pointer-events:none; z-index:999;
 }
+body::after{
+  content:"";
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,0.6) 100%);
+  pointer-events:none;
+}
+
+@keyframes crtFlicker{0%{opacity:.98}5%{opacity:.95}10%{opacity:.98}15%{opacity:.94}20%{opacity:.98}100%{opacity:1}}
 
 h1{
-margin:40px 0 20px 0;
-text-shadow:
-0 0 5px var(--main-color),
-0 0 10px var(--main-color),
-0 0 20px var(--main-color),
-0 0 40px var(--main-color);
+  margin:40px 0 20px 0;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
 
-/* grid */
-
+/* Grid */
 #demo-list{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:20px;
-max-width:1200px;
-margin:0 auto 40px auto;
-padding:0 10px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  max-width:1200px;
+  margin:0 auto 20px auto;
+  padding:0 10px;
 }
 
 .game-card{
-background:#000;
-border:2px solid var(--main-color);
-padding:15px;
-border-radius:6px;
-box-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color);
-transition:.3s;
+  background:#000;
+  border:2px solid var(--main-color);
+  padding:15px;
+  border-radius:6px;
+  box-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color);
+  transition:.3s;
 }
-
 .game-card:hover{
-transform:scale(1.05);
-box-shadow:0 0 20px var(--main-color),0 0 40px var(--main-color);
+  transform:scale(1.05);
+  box-shadow:0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
 
 .game-card img{
-width:100%;
-border-radius:4px;
-margin-top:10px;
+  width:100%;
+  border-radius:4px;
+  margin-top:10px;
 }
 
 a{
-color:var(--main-color);
-text-decoration:none;
-text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
+  color:var(--main-color);
+  text-decoration:none;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
+  transition:.3s;
 }
-
 a:hover{
-background:var(--main-color);
-color:#000;
+  background:var(--main-color);
+  color:#000;
 }
 
-/* spinner */
-
+/* Spinner */
 .spinner{
-border:8px solid #333;
-border-top:8px solid var(--main-color);
-border-radius:50%;
-width:60px;
-height:60px;
-animation:spin 1s linear infinite;
-margin:50px auto;
+  border:8px solid #333;
+  border-top:8px solid var(--main-color);
+  border-radius:50%;
+  width:60px;
+  height:60px;
+  animation:spin 1s linear infinite;
+  margin:50px auto;
 }
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
-
+/* Return Home */
 #return-home{
-margin:20px 0;
-padding:10px 20px;
-border:2px solid var(--main-color);
-background:#000;
-color:var(--main-color);
-display:inline-block;
-border-radius:6px;
+  margin:20px 0;
+  padding:10px 20px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  display:inline-block;
+  border-radius:6px;
 }
-
 #return-home:hover{
-background:var(--main-color);
-color:#000;
+  background:var(--main-color);
+  color:#000;
 }
 
+/* Pagination */
+#pagination{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:40px;
+}
+.page-btn{
+  padding:8px 14px;
+  border:2px solid var(--main-color);
+  border-radius:5px;
+  background:#000;
+  color:var(--main-color);
+  cursor:pointer;
+  transition:.3s;
+}
+.page-btn:hover{
+  background:var(--main-color);
+  color:#000;
+}
+.page-btn.disabled{
+  opacity:0.4;
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body>
-
 <h1>Steam Demos</h1>
-
 <a id="return-home" href="index.html">Return Home</a>
 
 <div id="loading" class="spinner"></div>
-
 <div id="demo-list"></div>
+<div id="pagination"></div>
 
-<input type="color" id="color-picker" value="#39ff14"
-style="position:fixed;top:10px;left:10px;z-index:1000;">
+<input type="color" id="color-picker" value="#39ff14" style="position:fixed;top:10px;left:10px;z-index:1000;">
 
 <script>
+const container = document.getElementById("demo-list");
+const loading = document.getElementById("loading");
+const colorPicker = document.getElementById("color-picker");
+const pagination = document.getElementById("pagination");
 
-const container = document.getElementById("demo-list")
-const loading = document.getElementById("loading")
-const colorPicker = document.getElementById("color-picker")
+let demos = [];
+let currentPage = 1;
+const perPage = 60; // same as Steam Deals page
 
 async function loadDemos(){
-
-try{
-
-const res = await fetch("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
-const data = await res.json()
-
-let apps = data.applist.apps
-
-/* find demos */
-
-let demos = apps.filter(app =>
-app.name.toLowerCase().includes("demo")
-)
-
-/* take latest 1000 */
-
-demos = demos.slice(-1000).reverse()
-
-displayDemos(demos)
-
-loading.style.display="none"
-
-}catch(err){
-
-loading.style.display="none"
-
-container.innerHTML = "<p>Failed to load demos.</p>"
-
-console.error(err)
-
+  try{
+    const res = await fetch("https://store.steampowered.com/search/results/?query&category1=998&format=json&count=1000");
+    const data = await res.json();
+    
+    // Steam returns a JSON object with results
+    demos = data.results || [];
+    displayPage(currentPage);
+    loading.style.display="none";
+  }catch(err){
+    loading.style.display="none";
+    container.innerHTML="<p>Failed to load demos.</p>";
+    console.error(err);
+  }
 }
 
+function displayPage(page){
+  container.innerHTML="";
+  const start = (page-1)*perPage;
+  const end = page*perPage;
+  const pageDemos = demos.slice(start,end);
+  
+  pageDemos.forEach(game=>{
+    const card = document.createElement("div");
+    card.className="game-card";
+    card.innerHTML=`
+      <h3>${game.name}</h3>
+      <a href="https://store.steampowered.com/app/${game.id}">View Demo</a>
+      <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.id}/header.jpg">
+    `;
+    container.appendChild(card);
+  });
+  
+  setupPagination();
 }
 
-function displayDemos(list){
+function setupPagination(){
+  pagination.innerHTML="";
+  const totalPages = Math.ceil(demos.length/perPage);
 
-container.innerHTML=""
+  const prevBtn = document.createElement("button");
+  prevBtn.className="page-btn";
+  prevBtn.textContent="Previous";
+  prevBtn.disabled = currentPage===1;
+  if(currentPage===1) prevBtn.classList.add("disabled");
+  prevBtn.onclick = ()=>{currentPage--; displayPage(currentPage);};
+  pagination.appendChild(prevBtn);
 
-list.forEach(game=>{
-
-const card = document.createElement("div")
-
-card.className="game-card"
-
-card.innerHTML = `
-<h3>${game.name}</h3>
-<a href="https://store.steampowered.com/app/${game.appid}">
-View Demo
-</a>
-<img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg">
-`
-
-container.appendChild(card)
-
-})
-
+  const nextBtn = document.createElement("button");
+  nextBtn.className="page-btn";
+  nextBtn.textContent="Next";
+  nextBtn.disabled = currentPage===totalPages;
+  if(currentPage===totalPages) nextBtn.classList.add("disabled");
+  nextBtn.onclick = ()=>{currentPage++; displayPage(currentPage);};
+  pagination.appendChild(nextBtn);
 }
 
-/* color picker */
-
+// color picker
 colorPicker.addEventListener("input",e=>{
+  document.documentElement.style.setProperty("--main-color",e.target.value);
+});
 
-document.documentElement.style.setProperty("--main-color",e.target.value)
-
-})
-
-loadDemos()
-
+loadDemos();
 </script>
-
 </body>
 </html>
