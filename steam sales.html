@@ -207,8 +207,9 @@ const nextBtn = document.getElementById("next-btn");
 let deals = [];
 let filteredDeals = [];
 let currentPage = 1;
-const dealsPerPage = 20; // change to show more/less per page
+const dealsPerPage = 20;
 
+// Lazy loading images
 const lazyObserver = new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){
@@ -219,11 +220,11 @@ const lazyObserver = new IntersectionObserver(entries=>{
   });
 },{rootMargin:"200px 0px", threshold:0.01});
 
-// Load multiple pages from CheapShark API
+// Load deals
 async function loadDeals(){
   try{
     deals = [];
-    for(let page=0; page<10; page++){ // fetch up to 1000 deals
+    for(let page=0; page<10; page++){
       const res = await fetch(`https://www.cheapshark.com/api/1.0/deals?storeID=1&pageNumber=${page}&pageSize=100`);
       const data = await res.json();
       if(data.length===0) break;
@@ -267,7 +268,7 @@ function displayDeals(list){
   updateColors(colorPicker.value);
 }
 
-// Pagination functions
+// Pagination
 function showPage(page){
   currentPage = page;
   const start = (page-1)*dealsPerPage;
@@ -281,7 +282,7 @@ nextBtn.addEventListener("click", ()=>{ if(currentPage*dealsPerPage<filteredDeal
 discountFilter.addEventListener("change", applyFilters);
 sortFilter.addEventListener("change", applyFilters);
 
-// Color picker
+// Update colors dynamically
 function updateColors(color){
   document.body.style.color=color;
   document.querySelector("h1").style.textShadow=`0 0 5px ${color},0 0 10px ${color},0 0 20px ${color},0 0 40px ${color}`;
@@ -310,6 +311,14 @@ function updateColors(color){
   returnBtn.style.color=color;
   returnBtn.style.borderColor=color;
   returnBtn.style.textShadow=`0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+
+  // ✅ Update pagination buttons dynamically
+  const paginationBtns = document.querySelectorAll("#pagination button");
+  paginationBtns.forEach(btn => {
+    btn.style.color = color;
+    btn.style.borderColor = color;
+    btn.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+  });
 }
 
 colorPicker.addEventListener("input", e=>updateColors(e.target.value));
