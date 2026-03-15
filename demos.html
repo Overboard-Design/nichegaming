@@ -77,12 +77,13 @@ a:hover{
   position:fixed;top:10px;left:10px;z-index:1000;
 }
 .spotlight{
-position:relative;
-height:420px;
-overflow:hidden;
-margin-bottom:40px;
-border-bottom:2px solid var(--main-color);
-box-shadow:0 0 20px var(--main-color);
+  position: relative;
+  height: 70vh;
+  min-height: 420px;
+  overflow: hidden;
+  border-bottom: 2px solid var(--main-color);
+  box-shadow: 0 0 20px var(--main-color);
+  margin-top: 70px; /* prevents overlap with fixed nav */
 }
 
 .video-wrapper{
