@@ -128,14 +128,6 @@ a:hover { color:#000; background-color:var(--main-color);
 .spinner { border:8px solid #333; border-top:8px solid var(--main-color); border-radius:50%; width:60px; height:60px; animation:spin 1s linear infinite; margin:50px auto; }
 @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 
-/* Description tooltip */
-.description-tooltip {
-  position:absolute; bottom:0; left:0; width:100%; max-height:60%; overflow:auto; background:rgba(0,0,0,0.9);
-  color:var(--main-color); font-size:0.75rem; padding:10px; border-top:1px solid var(--main-color);
-  box-sizing:border-box; display:none; text-align:left; z-index:5; transition:color 0.3s, border-color 0.3s;
-}
-.game-card:hover .description-tooltip { display:block; }
-
 /* Pagination buttons */
 #pagination {
   display:flex;
@@ -259,7 +251,6 @@ function displayDeals(list){
       <a href="https://store.steampowered.com/app/${game.steamAppID}">View on Steam</a>
       <p class="discount">${Math.round(game.savings)}% OFF</p>
       <p><span style="text-decoration:line-through;opacity:0.6;">$${game.normalPrice}</span> <strong>$${game.salePrice}</strong></p>
-      <div class="description-tooltip">${game.info || "No description available"}</div>
       <img data-src="${game.thumb}" alt="${game.title}">
     `;
     container.appendChild(card);
@@ -291,10 +282,6 @@ function updateColors(color){
     card.style.borderColor=color;
     card.style.boxShadow=`0 0 10px ${color},0 0 20px ${color}`;
     card.querySelectorAll("h3,p").forEach(el=>el.style.color=color);
-    card.querySelectorAll(".description-tooltip").forEach(desc=>{
-      desc.style.color=color;
-      desc.style.borderTop=`1px solid ${color}`;
-    });
   });
 
   document.querySelectorAll("a").forEach(link=>{
@@ -312,7 +299,6 @@ function updateColors(color){
   returnBtn.style.borderColor=color;
   returnBtn.style.textShadow=`0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
 
-  // ✅ Update pagination buttons dynamically
   const paginationBtns = document.querySelectorAll("#pagination button");
   paginationBtns.forEach(btn => {
     btn.style.color = color;
