@@ -324,6 +324,9 @@ function applyFilters(){
   });
   if(sortFilter.value==="asc") filteredDeals.sort((a,b)=>a.savings-b.savings);
   else filteredDeals.sort((a,b)=>b.savings-a.savings);
+
+  loadSpotlight();
+  
   showPage(1);
 }
 
