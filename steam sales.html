@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Steam Deals - NicheGaming</title>
+<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Fonts -->
@@ -202,7 +203,6 @@ const container = document.getElementById("steam-deals");
 const loading = document.getElementById("loading");
 const discountFilter = document.getElementById("discount-filter");
 const sortFilter = document.getElementById("sort-filter");
-const colorPicker = document.getElementById("color-picker");
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 
@@ -236,7 +236,7 @@ async function loadDeals(){
     loading.style.display="none";
   }catch(err){
     console.error(err);
-    container.innerHTML = `<div style="color:${colorPicker.value};">Failed to load deals.</div>`;
+    container.innerHTML = `<div style="color:${storedColor || "#39ff14"};">Failed to load deals.</div>`;
   }
 }
 
@@ -266,7 +266,7 @@ function displayDeals(list){
     container.appendChild(card);
     lazyObserver.observe(card.querySelector("img"));
   });
-  updateColors(colorPicker.value);
+  updateColors(storedColor || "#39ff14");
 }
 
 // Pagination
@@ -317,7 +317,7 @@ function updateColors(color){
   });
 }
 
-colorPicker.addEventListener("input", e=>updateColors(e.target.value));
+
 
 loadDeals();
 </script>
