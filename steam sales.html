@@ -151,10 +151,86 @@ a:hover { color:#000; background-color:var(--main-color);
   color: #000;
   text-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color), 0 0 30px var(--main-color);
 }
+.spotlight{
+  position:relative;
+  height:60vh;
+  min-height:420px;
+  overflow:hidden;
+  border-bottom:2px solid var(--main-color);
+  box-shadow:0 0 20px var(--main-color);
+}
+
+#spotlight-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(35%);
+}
+
+.spotlight-overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.spotlight-overlay h2{
+  font-size:2rem;
+  margin-bottom:10px;
+  text-shadow:
+  0 0 10px var(--main-color),
+  0 0 20px var(--main-color),
+  0 0 40px var(--main-color);
+}
+
+#spotlight-discount{
+  font-size:1.5rem;
+  margin-bottom:20px;
+}
+
+.spotlight-btn{
+  padding:14px 28px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  border-radius:6px;
+  text-decoration:none;
+  transition:.3s;
+}
+
+.spotlight-btn:hover{
+  background:var(--main-color);
+  color:#000;
+}
 </style>
 </head>
 
 <body>
+ <section class="spotlight">
+
+<img id="spotlight-image">
+
+<div class="spotlight-overlay">
+
+<h2 id="spotlight-title">Featured Deal</h2>
+
+<p id="spotlight-discount"></p>
+
+<a id="spotlight-link" class="spotlight-btn">
+View Deal on Steam
+</a>
+
+</div>
+
+</section>
+
+</section>
 
 <h1>Steam Deals</h1>
 <a id="return-home" href="index.html">Return Home</a>
@@ -320,6 +396,25 @@ function updateColors(color){
 
 
 loadDeals();
+
+function loadSpotlight(){
+
+const randomDeal = filteredDeals[Math.floor(Math.random()*filteredDeals.length)];
+
+if(!randomDeal) return;
+
+document.getElementById("spotlight-title").textContent = randomDeal.title;
+
+document.getElementById("spotlight-discount").textContent =
+Math.round(randomDeal.savings) + "% OFF";
+
+document.getElementById("spotlight-link").href =
+`https://store.steampowered.com/app/${randomDeal.steamAppID}`;
+
+document.getElementById("spotlight-image").src =
+`https://cdn.cloudflare.steamstatic.com/steam/apps/${randomDeal.steamAppID}/header.jpg`;
+
+}
 </script>
 </body>
 </html>
