@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title> Playtests - NicheGaming</title>
+<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root { --main-color:#39ff14; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:"Orbitron",system-ui,sans-serif;
+  background:#030303;
+  color:var(--main-color);
+  text-align:center;
+  animation:crtFlicker 6s infinite;
+}
+
+@keyframes crtFlicker{0%{opacity:.98}5%{opacity:.95}10%{opacity:.98}15%{opacity:.94}20%{opacity:.98}100%{opacity:1}}
+h1{
+  margin:40px 0 20px 0;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
+}
+/* grid */
+#demo-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+  max-width:1200px;
+  margin:0 auto 40px auto;
+  padding:0 10px;
+}
+.game-card{
+  background:#000;
+  border:2px solid var(--main-color);
+  padding:15px;
+  border-radius:6px;
+  box-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color);
+  transition:.3s;
+}
+.game-card:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px var(--main-color),0 0 40px var(--main-color);
+}
+.game-card iframe{
+  width:100%;
+  height:200px;
+  border-radius:4px;
+  margin-top:10px;
+}
+/* Links */
+a{
+  color:var(--main-color);
+  text-decoration:none;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
+}
+a:hover{
+  background:var(--main-color);
+  color:#000;
+}
+.spotlight{
+  position: relative;
+  height: 70vh;
+  min-height: 420px;
+  overflow: hidden;
+  border-bottom: 2px solid var(--main-color);
+  box-shadow: 0 0 20px var(--main-color);
+}
+/* Return Home */
+#return-home{
+  margin:20px 0;
+  padding:10px 20px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  display:inline-block;
+  border-radius:6px;
+}
+#return-home:hover{
+  background:var(--main-color);
+  color:#000;
+}
+
+
+.video-wrapper{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:1;
+}
+
+.video-wrapper iframe{
+position:absolute;
+top:50%;
+left:50%;
+width:177.78vh;
+height:100vh;
+min-width:100%;
+min-height:100%;
+transform:translate(-50%,-50%);
+pointer-events:none;
+filter:brightness(40%);
+}
+
+.spotlight-overlay{
+position:relative;
+z-index:2;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+.spotlight-overlay h2{
+font-size:2rem;
+text-shadow:
+0 0 10px var(--main-color),
+0 0 20px var(--main-color),
+0 0 40px var(--main-color);
+}
+
+.spotlight-btn{
+margin-top:20px;
+padding:14px 28px;
+border:2px solid var(--main-color);
+background:#000;
+color:var(--main-color);
+text-decoration:none;
+border-radius:6px;
+transition:0.3s;
+}
+
+.spotlight-btn:hover{
+background:var(--main-color);
+color:#000;
+}
+
+</style>
+</head>
+<body>
+<section class="spotlight">
+
+<div class="video-wrapper">
+<iframe id="spotlight-video"
+frameborder="0"
+allow="autoplay; encrypted-media"
+allowfullscreen>
+</iframe>
+</div>
+
+<div class="spotlight-overlay">
+
+<h2 id="spotlight-title">Featured Playtest</h2>
+
+<a id="spotlight-link" class="spotlight-btn">
+Play Demo on Steam
+</a>
+
+</div>
+
+</section>
+
+<h1>Playtests</h1>
+<a id="return-home" href="index.html">Return Home</a>
+<div id="demo-list"></div>
+<input type="color" id="color-picker" value="#39ff14">
+
+<script>
+    // Apply stored color from index
+const storedColor = localStorage.getItem("nicheColor");
+if(storedColor){
+  document.documentElement.style.setProperty("--main-color", storedColor);
+
+  // Update elements that use --main-color dynamically
+  document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
+    el.style.color = storedColor;
+    el.style.borderColor = storedColor;
+    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+  });
+}
+
+// Manual list of demos: fill in name, appid, youtubeId
+const demos = [
+  { name:"ORMOD: Directive", appid:"3424730", youtubeId:"RxqX6yzkkGE" },
+  { name:"ENTRY_13", appid:"3930910", youtubeId:"wfjvI8Lm80g" },
+  { name:"Cleaner Company", appid:"3644020", youtubeId:"iONvT6V-JCM" },
+  { name:"Cyber Rail", appid:"2468230", youtubeId:"yMu6myReNNA" },
+  { name:"Static Dread: The Submarine", appid:"4042160", youtubeId:"6UnDeL9UrHA" },
+  { name:"Nomad: Steppeborn Saga", appid:"2564480", youtubeId:"hQk0BCq71tI" },
+  { name:"Rescue Ops: Wildfire", appid:"2915770", youtubeId:"8E4LHkHcjgs" },
+  { name:"CactusBandido", appid:"3330290", youtubeId:"BHJEMZdDJDo" },
+  { name:"Rockhounds", appid:"3563060", youtubeId:"LTZPm-2ceNE" },
+  { name:"Evade The Light", appid:"1601870", youtubeId:"hBh_zaGMM2Y" },
+  { name:"Venison County", appid:"3868900", youtubeId:"mbhnXCKGuBg" },
+  { name:"Gang of Frogs", appid:"3081510", youtubeId:"ve9qzH7jn_A" },
+  { name:"Triarchy", appid:"2708040", youtubeId:"jktHoTDguW8" },
+  { name:"Outward 2", appid:"2849490", youtubeId:"PKSH4d-iN-k" },
+  { name:"Blackroot: Medieval Survival", appid:"2241550", youtubeId:"wmDChiLjqYs" },
+  { name:"Shadow Of The Union", appid:"3574810", youtubeId:"8bVs_L6FPBM" },
+  { name:"Myth of Valderit", appid:"3976610", youtubeId:"hQdp7DHbe4I" },
+  { name:"Cranked", appid:"3989790", youtubeId:"2LsZoRIHYXY" },
+  { name:"Ardem", appid:"2179480", youtubeId:"cDzAqcROkpI" },
+  { name:"Enfant", appid:"4025390", youtubeId:"vN7bpdIHl6s" },
+  { name:"WILDERLOCKE", appid:"3512280", youtubeId:"1mCLdXWlK2g" },
+  { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k" },
+  
+
+
+  // ... add up to 200
+];
+function loadSpotlight(){
+
+const randomDemo = demos[Math.floor(Math.random()*demos.length)];
+
+const video = document.getElementById("spotlight-video");
+const title = document.getElementById("spotlight-title");
+const link = document.getElementById("spotlight-link");
+
+video.src =
+`https://www.youtube.com/embed/${randomDemo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${randomDemo.youtubeId}`;
+
+title.textContent = randomDemo.name;
+
+link.href = `https://store.steampowered.com/app/${randomDemo.appid}`;
+
+}
+
+loadSpotlight();
+
+const container = document.getElementById("demo-list");
+
+function displayDemos(list){
+  container.innerHTML="";
+  list.forEach(game=>{
+    const card = document.createElement("div");
+    card.className="game-card";
+    const videoEmbed = `<iframe src="https://www.youtube.com/embed/${game.youtubeId}" title="${game.name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    card.innerHTML = `
+      <h3>${game.name}</h3>
+      <a href="https://store.steampowered.com/app/${game.appid}">View Playtest on Steam</a>
+      ${videoEmbed}
+    `;
+    container.appendChild(card);
+  });
+}
+
+displayDemos(demos);
+
+const lazyObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const iframe = entry.target;
+      iframe.src = iframe.dataset.src;
+      lazyObserver.unobserve(iframe);
+    }
+  });
+},{
+  rootMargin:"200px"
+});
+
+document.querySelectorAll("iframe[data-src]").forEach(iframe=>{
+  lazyObserver.observe(iframe);
+});
+
+
+</script>
+</body>
+</html>
