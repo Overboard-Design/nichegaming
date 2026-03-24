@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title> Steam Demos - NicheGaming</title>
+<title>Steam Demos - NicheGaming</title>
 <link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root { --main-color:#39ff14; }
+:root { --main-color:#39ff14; --card-glow:0 0 10px #39ff14; }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:"Orbitron",system-ui,sans-serif;
@@ -15,20 +15,21 @@ body{
   color:var(--main-color);
   text-align:center;
   animation:crtFlicker 6s infinite;
+  scroll-behavior:smooth;
 }
-
-@keyframes crtFlicker{0%{opacity:.98}5%{opacity:.95}10%{opacity:.98}15%{opacity:.94}20%{opacity:.98}100%{opacity:1}}
+@keyframes crtFlicker{
+0%{opacity:.98}5%{opacity:.95}10%{opacity:.98}15%{opacity:.94}20%{opacity:.98}100%{opacity:1}
+}
 h1{
   margin:40px 0 20px 0;
   text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
-/* grid */
 #demo-list{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
   gap:20px;
   max-width:1200px;
-  margin:0 auto 40px auto;
+  margin:20px auto 40px auto;
   padding:0 10px;
 }
 .game-card{
@@ -37,19 +38,18 @@ h1{
   padding:15px;
   border-radius:6px;
   box-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color);
-  transition:.3s;
+  transition:.3s, box-shadow 0.5s;
+  cursor:pointer;
+  position: relative;
 }
 .game-card:hover{
   transform:scale(1.05);
-  box-shadow:0 0 20px var(--main-color),0 0 40px var(--main-color);
+  box-shadow:0 0 20px var(--main-color),0 0 40px var(--main-color), 0 0 60px var(--main-color);
 }
-.game-card iframe{
-  width:100%;
-  height:200px;
-  border-radius:4px;
-  margin-top:10px;
+.game-card h3{
+  margin-bottom:10px;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
 }
-/* Links */
 a{
   color:var(--main-color);
   text-decoration:none;
@@ -59,6 +59,39 @@ a:hover{
   background:var(--main-color);
   color:#000;
 }
+.video-container{
+  position:relative;
+}
+.play-button{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:60px; height:60px;
+  background:rgba(0,0,0,0.7);
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  transition:0.3s;
+}
+.play-button::after{
+  content:"";
+  border-style:solid;
+  border-width:15px 0 15px 25px;
+  border-color:transparent transparent transparent var(--main-color);
+  display:block;
+  margin-left:5px;
+}
+.video-container img{
+  width:100%;
+  border-radius:4px;
+  display:block;
+}
+.play-button:hover{
+  background:rgba(0,0,0,0.9);
+}
 .spotlight{
   position: relative;
   height: 70vh;
@@ -67,64 +100,29 @@ a:hover{
   border-bottom: 2px solid var(--main-color);
   box-shadow: 0 0 20px var(--main-color);
 }
-/* Return Home */
-#return-home{
-  margin:20px 0;
-  padding:10px 20px;
-  border:2px solid var(--main-color);
-  background:#000;
-  color:var(--main-color);
-  display:inline-block;
-  border-radius:6px;
-}
-#return-home:hover{
-  background:var(--main-color);
-  color:#000;
-}
-
-
 .video-wrapper{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-overflow:hidden;
-z-index:1;
+top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:1;
 }
-
 .video-wrapper iframe{
 position:absolute;
-top:50%;
-left:50%;
-width:177.78vh;
-height:100vh;
-min-width:100%;
-min-height:100%;
+top:50%; left:50%;
+width:177.78vh; height:100vh;
+min-width:100%; min-height:100%;
 transform:translate(-50%,-50%);
 pointer-events:none;
 filter:brightness(40%);
+transition:opacity 1s;
 }
-
 .spotlight-overlay{
-position:relative;
-z-index:2;
-height:100%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
+position:relative; z-index:2; height:100%;
+display:flex; flex-direction:column;
+justify-content:center; align-items:center; text-align:center;
 }
-
 .spotlight-overlay h2{
 font-size:2rem;
-text-shadow:
-0 0 10px var(--main-color),
-0 0 20px var(--main-color),
-0 0 40px var(--main-color);
+text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
-
 .spotlight-btn{
 margin-top:20px;
 padding:14px 28px;
@@ -135,59 +133,87 @@ text-decoration:none;
 border-radius:6px;
 transition:0.3s;
 }
-
 .spotlight-btn:hover{
 background:var(--main-color);
 color:#000;
 }
-
+#return-home{
+margin:20px 0;
+padding:10px 20px;
+border:2px solid var(--main-color);
+background:#000;
+color:var(--main-color);
+display:inline-block;
+border-radius:6px;
+}
+#return-home:hover{
+background:var(--main-color);
+color:#000;
+}
+#search-bar{
+margin:20px 0;
+padding:10px;
+width:90%;
+max-width:400px;
+border:2px solid var(--main-color);
+border-radius:6px;
+background:#000;
+color:var(--main-color);
+text-align:center;
+}
+#back-to-top{
+position:fixed;
+bottom:20px; right:20px;
+padding:10px 15px;
+background:#000;
+border:2px solid var(--main-color);
+color:var(--main-color);
+border-radius:6px;
+cursor:pointer;
+display:none;
+z-index:10;
+transition:0.3s;
+}
+#back-to-top:hover{
+background:var(--main-color);
+color:#000;
+}
 </style>
 </head>
 <body>
+
 <section class="spotlight">
-
 <div class="video-wrapper">
-<iframe id="spotlight-video"
-frameborder="0"
-allow="autoplay; encrypted-media"
-allowfullscreen>
-</iframe>
+<iframe id="spotlight-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
-
 <div class="spotlight-overlay">
-
 <h2 id="spotlight-title">Featured Demo</h2>
-
-<a id="spotlight-link" class="spotlight-btn">
-Play Demo on Steam
-</a>
-
+<a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
 </div>
-
 </section>
 
 <h1>Steam Demos</h1>
+<input type="text" id="search-bar" placeholder="Search demos...">
 <a id="return-home" href="index.html">Return Home</a>
+
 <div id="demo-list"></div>
-<input type="color" id="color-picker" value="#39ff14">
+<button id="back-to-top">↑ Top</button>
 
 <script>
-    // Apply stored color from index
+// Persisted color from index
 const storedColor = localStorage.getItem("nicheColor");
 if(storedColor){
   document.documentElement.style.setProperty("--main-color", storedColor);
-
-  // Update elements that use --main-color dynamically
-  document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
+  document.querySelectorAll("h1, .game-card, a, #return-home, #search-bar, #back-to-top").forEach(el=>{
     el.style.color = storedColor;
     el.style.borderColor = storedColor;
-    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+    el.style.textShadow = `0 0 5px ${storedColor},0 0 10px ${storedColor},0 0 20px ${storedColor}`;
   });
 }
 
-// Manual list of demos: fill in name, appid, youtubeId
+// Demo data
 const demos = [
-  { name:"Wanderburg", appid:"3624140", youtubeId:"TfuzE4GPzUQ" },
+   { name:"Wanderburg", appid:"3624140", youtubeId:"TfuzE4GPzUQ" },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM" },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs" },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU" },
@@ -238,63 +264,75 @@ const demos = [
   { name:"In The Black", appid:"380110", youtubeId:"53WTdvr-lOc" },
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
 
-  // ... add up to 200
 ];
+
+// Spotlight rotation
+let currentSpotlight=0;
+const spotlightVideo=document.getElementById("spotlight-video");
+const spotlightTitle=document.getElementById("spotlight-title");
+const spotlightLink=document.getElementById("spotlight-link");
 function loadSpotlight(){
-
-const randomDemo = demos[Math.floor(Math.random()*demos.length)];
-
-const video = document.getElementById("spotlight-video");
-const title = document.getElementById("spotlight-title");
-const link = document.getElementById("spotlight-link");
-
-video.src =
-`https://www.youtube.com/embed/${randomDemo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${randomDemo.youtubeId}`;
-
-title.textContent = randomDemo.name;
-
-link.href = `https://store.steampowered.com/app/${randomDemo.appid}`;
-
+  const demo=demos[currentSpotlight];
+  spotlightVideo.src=`https://www.youtube.com/embed/${demo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${demo.youtubeId}`;
+  spotlightTitle.textContent=demo.name;
+  spotlightLink.href=`https://store.steampowered.com/app/${demo.appid}`;
+  currentSpotlight=(currentSpotlight+1)%demos.length;
 }
-
 loadSpotlight();
+setInterval(loadSpotlight,15000);
 
-const container = document.getElementById("demo-list");
-
+// Demo list with play button overlay
+const container=document.getElementById("demo-list");
 function displayDemos(list){
   container.innerHTML="";
   list.forEach(game=>{
-    const card = document.createElement("div");
+    const card=document.createElement("div");
     card.className="game-card";
-    const videoEmbed = `<iframe src="https://www.youtube.com/embed/${game.youtubeId}" title="${game.name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-    card.innerHTML = `
+    const thumb=`https://img.youtube.com/vi/${game.youtubeId}/hqdefault.jpg`;
+    card.innerHTML=`
       <h3>${game.name}</h3>
-      <a href="https://store.steampowered.com/app/${game.appid}">View Demo on Steam</a>
-      ${videoEmbed}
+      <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">View Demo on Steam</a>
+      <div class="video-container">
+        <img src="${thumb}" alt="${game.name} Thumbnail" data-video="${game.youtubeId}">
+        <div class="play-button"></div>
+      </div>
     `;
     container.appendChild(card);
   });
-}
 
+  // Click to embed YouTube
+  document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
+    el.addEventListener("click", e=>{
+      const containerDiv=el.closest(".video-container");
+      const vidId=containerDiv.querySelector("img").dataset.video;
+      const iframe=document.createElement("iframe");
+      iframe.src=`https://www.youtube.com/embed/${vidId}?autoplay=1`;
+      iframe.frameBorder="0";
+      iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen=true;
+      iframe.style.width="100%";
+      iframe.style.height="200px";
+      containerDiv.innerHTML="";
+      containerDiv.appendChild(iframe);
+    });
+  });
+}
 displayDemos(demos);
 
-const lazyObserver = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      const iframe = entry.target;
-      iframe.src = iframe.dataset.src;
-      lazyObserver.unobserve(iframe);
-    }
-  });
-},{
-  rootMargin:"200px"
+// Search filter
+const searchBar=document.getElementById("search-bar");
+searchBar.addEventListener("input", e=>{
+  const term=e.target.value.toLowerCase();
+  const filtered=demos.filter(d=>d.name.toLowerCase().includes(term));
+  displayDemos(filtered);
 });
 
-document.querySelectorAll("iframe[data-src]").forEach(iframe=>{
-  lazyObserver.observe(iframe);
+// Back to top
+const backTop=document.getElementById("back-to-top");
+window.addEventListener("scroll", ()=>{
+  backTop.style.display=(window.scrollY>400)?"block":"none";
 });
-
-
+backTop.addEventListener("click", ()=>window.scrollTo({top:0,behavior:"smooth"}));
 </script>
 </body>
 </html>
