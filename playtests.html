@@ -127,7 +127,7 @@ a:hover{
   font-size:2rem;
   text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
-/* Buttons bottom-right matching demo page */
+/* Buttons bottom-right in correct order */
 .spotlight-overlay div {
   position: absolute;
   bottom:10px;
@@ -201,10 +201,11 @@ a:hover{
     <div id="spotlight-video"></div>
   </div>
   <div class="spotlight-overlay">
+    <h2 id="spotlight-title">Featured Playtest</h2> 
     <div>
-      <a id="spotlight-unmute" class="spotlight-btn">Unmute</a>
-      <a id="spotlight-skip" class="spotlight-btn">Skip</a>
       <a id="spotlight-link" class="spotlight-btn">Request Access</a>
+      <a id="spotlight-skip" class="spotlight-btn">Skip</a>
+      <a id="spotlight-unmute" class="spotlight-btn">Unmute</a>
     </div>
   </div>
 </section>
@@ -254,28 +255,77 @@ const demos = [
   { name:"Enfant", appid:"4025390", youtubeId:"vN7bpdIHl6s" },
   { name:"WILDERLOCKE", appid:"3512280", youtubeId:"1mCLdXWlK2g" },
   { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k" },
-
 ];
 
 // Spotlight - YouTube API
 let spotlightPlayer;
-function getRandomDemo(){return demos[Math.floor(Math.random()*demos.length)];}
-function loadSpotlight(demo){
-  spotlightLink.href=`https://store.steampowered.com/app/${demo.appid}`;
-  if(spotlightPlayer){spotlightPlayer.loadVideoById(demo.youtubeId);}
-  else{spotlightPlayer=new YT.Player('spotlight-video',{videoId:demo.youtubeId,playerVars:{autoplay:1,controls:0,mute:1},events:{'onStateChange':onSpotlightStateChange}});}
-}
-function onSpotlightStateChange(event){
-  if(event.data===YT.PlayerState.ENDED){loadSpotlight(getRandomDemo());}
-}
-function onYouTubeIframeAPIReady(){loadSpotlight(getRandomDemo());}
 
-// Skip & Unmute buttons
-const spotlightSkip=document.getElementById("spotlight-skip");
-const spotlightUnmute=document.getElementById("spotlight-unmute");
-const spotlightLink=document.getElementById("spotlight-link");
-spotlightSkip.addEventListener("click",()=>{loadSpotlight(getRandomDemo());});
-spotlightUnmute.addEventListener("click",()=>{if(spotlightPlayer)spotlightPlayer.unMute();});
+// Get DOM references
+const spotlightTitle = document.getElementById("spotlight-title");
+const spotlightLink = document.getElementById("spotlight-link");
+const spotlightSkip = document.getElementById("spotlight-skip");
+const spotlightUnmute = document.getElementById("spotlight-unmute");
+
+// Pick a random demo
+function getRandomDemo() {
+  return demos[Math.floor(Math.random() * demos.length)];
+}
+
+// Load a demo into the spotlight
+function loadSpotlight(demo) {
+  // Update title and link
+  spotlightTitle.textContent = demo.name;
+  spotlightLink.href = `https://store.steampowered.com/app/${demo.appid}`;
+
+  // Load video
+  if (spotlightPlayer) {
+    spotlightPlayer.loadVideoById(demo.youtubeId);
+  } else {
+    spotlightPlayer = new YT.Player('spotlight-video', {
+      videoId: demo.youtubeId,
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        mute: 1,
+        loop: 1,
+        playlist: demo.youtubeId
+      },
+      events: { 'onStateChange': onSpotlightStateChange }
+    });
+  }
+
+  // Reset unmute button text
+  spotlightUnmute.textContent = "Unmute";
+}
+
+// Auto-play next demo when current ends
+function onSpotlightStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    loadSpotlight(getRandomDemo());
+  }
+}
+
+// Called by YouTube API once ready
+function onYouTubeIframeAPIReady() {
+  loadSpotlight(getRandomDemo());
+}
+
+// Skip button
+spotlightSkip.addEventListener("click", () => {
+  loadSpotlight(getRandomDemo());
+});
+
+// Toggle mute/unmute
+spotlightUnmute.addEventListener("click", () => {
+  if (!spotlightPlayer) return;
+  if (spotlightPlayer.isMuted()) {
+    spotlightPlayer.unMute();
+    spotlightUnmute.textContent = "Mute";
+  } else {
+    spotlightPlayer.mute();
+    spotlightUnmute.textContent = "Unmute";
+  }
+});
 
 // Demo list
 const container=document.getElementById("demo-list");
@@ -296,7 +346,7 @@ function displayDemos(list){
     container.appendChild(card);
   });
   document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
-    el.addEventListener("click",e=>{
+    el.addEventListener("click",()=>{
       const containerDiv=el.closest(".video-container");
       const vidId=containerDiv.querySelector("img").dataset.video;
       const iframe=document.createElement("iframe");
