@@ -138,6 +138,21 @@ a:hover{background:var(--main-color);color:#000;}
 </div>
 
 <script>
+  const storedColor = localStorage.getItem("nicheColor");
+if(storedColor){
+  document.documentElement.style.setProperty("--main-color", storedColor);
+
+  // Update elements using inline styles
+  document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
+    el.style.color = storedColor;
+    el.style.borderColor = storedColor;
+    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+  });
+
+  document.getElementById("spotlight-title").style.color = storedColor;
+  document.getElementById("spotlight-discount").style.color = storedColor;
+}
+
 let deals=[],filtered=[];
 let visible=0,chunk=20;
 
