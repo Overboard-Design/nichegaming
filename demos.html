@@ -95,7 +95,7 @@ a:hover{
 
 .spotlight{
   position: relative;
-  height:55vh;
+  height:50vh;
   min-height:300px;
   overflow: hidden;
   border-bottom: 2px solid var(--main-color);
@@ -113,8 +113,7 @@ a:hover{
   transform:translate(-50%,-50%);
   pointer-events:none;
   filter:brightness(70%) contrast(120%);
-  transition:filter 1s, opacity 1s;
-  animation:spotlightPulse 6s infinite;
+  transition:filter 0.5s, opacity 0.5s;
 }
 .spotlight-overlay{
   position:relative; z-index:2; height:100%;
@@ -309,12 +308,12 @@ function onSpotlightStateChange(event){
 function onYouTubeIframeAPIReady(){ loadSpotlight(getRandomDemo()); }
 
 // Skip & mute
-const spotlightSkip=document.getElementById("spotlight-skip");
-const spotlightUnmute=document.getElementById("spotlight-unmute");
-const spotlightLink=document.getElementById("spotlight-link");
-spotlightSkip.addEventListener("click",()=>{loadSpotlight(getRandomDemo());});
-spotlightUnmute.addEventListener("click",()=>{if(spotlightPlayer)spotlightPlayer.unMute();});
-
+document.getElementById("skip-btn").addEventListener("click",()=>{ loadSpotlight(getRandomDemo()); });
+document.getElementById("mute-btn").addEventListener("click",()=>{
+  if(!spotlightPlayer) return;
+  if(isMuted){ spotlightPlayer.unMute(); isMuted=false; document.getElementById("mute-btn").textContent="Mute"; }
+  else{ spotlightPlayer.mute(); isMuted=true; document.getElementById("mute-btn").textContent="Unmute"; }
+});
 
 // Demo list
 const container=document.getElementById("demo-list");
