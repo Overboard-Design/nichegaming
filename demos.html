@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root { --main-color:#39ff14; --card-glow:0 0 10px #39ff14; }
+:root { --main-color:#39ff14; }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:"Orbitron",system-ui,sans-serif;
@@ -62,6 +62,11 @@ a:hover{
 .video-container{
   position:relative;
 }
+.video-container img{
+  width:100%;
+  border-radius:4px;
+  display:block;
+}
 .play-button{
   position:absolute;
   top:50%;
@@ -84,14 +89,10 @@ a:hover{
   display:block;
   margin-left:5px;
 }
-.video-container img{
-  width:100%;
-  border-radius:4px;
-  display:block;
-}
 .play-button:hover{
   background:rgba(0,0,0,0.9);
 }
+
 .spotlight{
   position: relative;
   height: 70vh;
@@ -101,95 +102,100 @@ a:hover{
   box-shadow: 0 0 20px var(--main-color);
 }
 .video-wrapper{
-position:absolute;
-top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:1;
+  position:absolute;
+  top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:1;
 }
 .video-wrapper iframe{
-position:absolute;
-top:50%; left:50%;
-width:177.78vh; height:100vh;
-min-width:100%; min-height:100%;
-transform:translate(-50%,-50%);
-pointer-events:none;
-filter:brightness(40%);
-transition:opacity 1s;
+  position:absolute;
+  top:50%; left:50%;
+  width:177.78vh; height:100vh;
+  min-width:100%; min-height:100%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  filter:brightness(70%) contrast(120%);
+  transition:filter 1s, opacity 1s;
+  animation:spotlightPulse 6s infinite;
+}
+@keyframes spotlightPulse {
+  0%,100%{ filter: brightness(70%) contrast(120%); }
+  50%{ filter: brightness(85%) contrast(130%); }
 }
 .spotlight-overlay{
-position:relative; z-index:2; height:100%;
-display:flex; flex-direction:column;
-justify-content:center; align-items:center; text-align:center;
+  position:relative; z-index:2; height:100%;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
 }
 .spotlight-overlay h2{
-font-size:2rem;
-text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
+  font-size:2rem;
+  text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
 .spotlight-btn{
-margin-top:20px;
-padding:14px 28px;
-border:2px solid var(--main-color);
-background:#000;
-color:var(--main-color);
-text-decoration:none;
-border-radius:6px;
-transition:0.3s;
+  margin-top:20px;
+  padding:14px 28px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  text-decoration:none;
+  border-radius:6px;
+  transition:0.3s;
 }
 .spotlight-btn:hover{
-background:var(--main-color);
-color:#000;
+  background:var(--main-color);
+  color:#000;
 }
 #return-home{
-margin:20px 0;
-padding:10px 20px;
-border:2px solid var(--main-color);
-background:#000;
-color:var(--main-color);
-display:inline-block;
-border-radius:6px;
+  margin:20px 0;
+  padding:10px 20px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  display:inline-block;
+  border-radius:6px;
 }
 #return-home:hover{
-background:var(--main-color);
-color:#000;
+  background:var(--main-color);
+  color:#000;
 }
 #search-bar{
-margin:20px 0;
-padding:10px;
-width:90%;
-max-width:400px;
-border:2px solid var(--main-color);
-border-radius:6px;
-background:#000;
-color:var(--main-color);
-text-align:center;
+  margin:20px 0;
+  padding:10px;
+  width:90%;
+  max-width:400px;
+  border:2px solid var(--main-color);
+  border-radius:6px;
+  background:#000;
+  color:var(--main-color);
+  text-align:center;
 }
 #back-to-top{
-position:fixed;
-bottom:20px; right:20px;
-padding:10px 15px;
-background:#000;
-border:2px solid var(--main-color);
-color:var(--main-color);
-border-radius:6px;
-cursor:pointer;
-display:none;
-z-index:10;
-transition:0.3s;
+  position:fixed;
+  bottom:20px; right:20px;
+  padding:10px 15px;
+  background:#000;
+  border:2px solid var(--main-color);
+  color:var(--main-color);
+  border-radius:6px;
+  cursor:pointer;
+  display:none;
+  z-index:10;
+  transition:0.3s;
 }
 #back-to-top:hover{
-background:var(--main-color);
-color:#000;
+  background:var(--main-color);
+  color:#000;
 }
 </style>
 </head>
 <body>
 
 <section class="spotlight">
-<div class="video-wrapper">
-<iframe id="spotlight-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
-<div class="spotlight-overlay">
-<h2 id="spotlight-title">Featured Demo</h2>
-<a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
-</div>
+  <div class="video-wrapper">
+    <iframe id="spotlight-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+  <div class="spotlight-overlay">
+    <h2 id="spotlight-title">Featured Demo</h2>
+    <a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
+  </div>
 </section>
 
 <h1>Steam Demos</h1>
@@ -213,7 +219,7 @@ if(storedColor){
 
 // Demo data
 const demos = [
-   { name:"Wanderburg", appid:"3624140", youtubeId:"TfuzE4GPzUQ" },
+  { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM" },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs" },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU" },
@@ -263,26 +269,24 @@ const demos = [
   { name:"Dark Light: Survivor", appid:"3088070", youtubeId:"PCVCA9zDgfg" },
   { name:"In The Black", appid:"380110", youtubeId:"53WTdvr-lOc" },
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
-
 ];
 
-// Spotlight rotation
-let currentSpotlight=0;
-const spotlightVideo=document.getElementById("spotlight-video");
-const spotlightTitle=document.getElementById("spotlight-title");
-const spotlightLink=document.getElementById("spotlight-link");
+// Spotlight - fully random each rotation
+const spotlightVideo = document.getElementById("spotlight-video");
+const spotlightTitle = document.getElementById("spotlight-title");
+const spotlightLink = document.getElementById("spotlight-link");
+
 function loadSpotlight(){
-  const demo=demos[currentSpotlight];
-  spotlightVideo.src=`https://www.youtube.com/embed/${demo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${demo.youtubeId}`;
-  spotlightTitle.textContent=demo.name;
-  spotlightLink.href=`https://store.steampowered.com/app/${demo.appid}`;
-  currentSpotlight=(currentSpotlight+1)%demos.length;
+  const demo = demos[Math.floor(Math.random() * demos.length)];
+  spotlightVideo.src = `https://www.youtube.com/embed/${demo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${demo.youtubeId}`;
+  spotlightTitle.textContent = demo.name;
+  spotlightLink.href = `https://store.steampowered.com/app/${demo.appid}`;
 }
 loadSpotlight();
 setInterval(loadSpotlight,15000);
 
 // Demo list with play button overlay
-const container=document.getElementById("demo-list");
+const container = document.getElementById("demo-list");
 function displayDemos(list){
   container.innerHTML="";
   list.forEach(game=>{
@@ -303,9 +307,9 @@ function displayDemos(list){
   // Click to embed YouTube
   document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
     el.addEventListener("click", e=>{
-      const containerDiv=el.closest(".video-container");
-      const vidId=containerDiv.querySelector("img").dataset.video;
-      const iframe=document.createElement("iframe");
+      const containerDiv = el.closest(".video-container");
+      const vidId = containerDiv.querySelector("img").dataset.video;
+      const iframe = document.createElement("iframe");
       iframe.src=`https://www.youtube.com/embed/${vidId}?autoplay=1`;
       iframe.frameBorder="0";
       iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
