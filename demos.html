@@ -95,8 +95,8 @@ a:hover{
 
 .spotlight{
   position: relative;
-  height: 70vh;
-  min-height: 420px;
+  height:50vh;  /* reduced height for sharper look */
+  min-height:300px;
   overflow: hidden;
   border-bottom: 2px solid var(--main-color);
   box-shadow: 0 0 20px var(--main-color);
@@ -113,12 +113,7 @@ a:hover{
   transform:translate(-50%,-50%);
   pointer-events:none;
   filter:brightness(70%) contrast(120%);
-  transition:filter 1s, opacity 1s;
-  animation:spotlightPulse 6s infinite;
-}
-@keyframes spotlightPulse {
-  0%,100%{ filter: brightness(70%) contrast(120%); }
-  50%{ filter: brightness(85%) contrast(130%); }
+  transition:filter 0.5s, opacity 0.5s;
 }
 .spotlight-overlay{
   position:relative; z-index:2; height:100%;
@@ -129,9 +124,19 @@ a:hover{
   font-size:2rem;
   text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
+/* buttons at bottom-right corner and scaled down */
+.spotlight-overlay div {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  flex-direction: row;
+  transform: scale(0.625); 
+  transform-origin: bottom right;
+}
 .spotlight-btn{
-  margin-top:20px;
-  padding:14px 28px;
+  padding:10px 20px;
   border:2px solid var(--main-color);
   background:#000;
   color:var(--main-color);
@@ -194,33 +199,34 @@ a:hover{
   </div>
   <div class="spotlight-overlay">
     <h2 id="spotlight-title">Featured Demo</h2>
-    <a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
+    <div>
+      <a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
+      <button id="skip-btn" class="spotlight-btn">Skip</button>
+      <button id="mute-btn" class="spotlight-btn">Unmute</button>
+    </div>
   </div>
 </section>
 
 <h1>Steam Demos</h1>
 <input type="text" id="search-bar" placeholder="Search demos...">
 <a id="return-home" href="index.html">Return Home</a>
-
 <div id="demo-list"></div>
 <button id="back-to-top">↑ Top</button>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-// Persisted color from index
 const storedColor = localStorage.getItem("nicheColor");
 if(storedColor){
   document.documentElement.style.setProperty("--main-color", storedColor);
-  document.querySelectorAll("h1, .game-card, a, #return-home, #search-bar, #back-to-top").forEach(el=>{
+  document.querySelectorAll("h1, .game-card, a, #return-home, #search-bar, #back-to-top, .spotlight-btn").forEach(el=>{
     el.style.color = storedColor;
     el.style.borderColor = storedColor;
     el.style.textShadow = `0 0 5px ${storedColor},0 0 10px ${storedColor},0 0 20px ${storedColor}`;
   });
 }
 
-// Demo data
 const demos = [
-    { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
+     { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM" },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs" },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU" },
@@ -270,52 +276,48 @@ const demos = [
   { name:"Dark Light: Survivor", appid:"3088070", youtubeId:"PCVCA9zDgfg" },
   { name:"In The Black", appid:"380110", youtubeId:"53WTdvr-lOc" },
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
-
 ];
 
-// Spotlight setup
+// Spotlight
 let spotlightPlayer;
+let isMuted = true;
 
-function getRandomDemo() {
-  return demos[Math.floor(Math.random() * demos.length)];
-}
+function getRandomDemo(){ return demos[Math.floor(Math.random()*demos.length)]; }
 
-function loadSpotlight(demo) {
-  document.getElementById("spotlight-title").textContent = demo.name;
-  document.getElementById("spotlight-link").href = `https://store.steampowered.com/app/${demo.appid}`;
+function loadSpotlight(demo){
+  document.getElementById("spotlight-title").textContent=demo.name;
+  document.getElementById("spotlight-link").href=`https://store.steampowered.com/app/${demo.appid}`;
 
-  if (spotlightPlayer) {
-    spotlightPlayer.loadVideoById(demo.youtubeId);
-  } else {
-    spotlightPlayer = new YT.Player('spotlight-video', {
-      videoId: demo.youtubeId,
-      playerVars: {
-        autoplay: 1,
-        controls: 0,
-        mute: 1,
-        modestbranding: 1,
-        rel: 0,
-        loop: 1,
-        playlist: demo.youtubeId
-      },
-      events: { 'onStateChange': onSpotlightStateChange }
+  if(spotlightPlayer){
+    spotlightPlayer.loadVideoById(demo.youtubeId,0,"hd1080");
+    spotlightPlayer.mute();
+    isMuted=true;
+    document.getElementById("mute-btn").textContent="Unmute";
+  }else{
+    spotlightPlayer=new YT.Player('spotlight-video',{
+      videoId:demo.youtubeId,
+      playerVars:{autoplay:1,controls:0,modestbranding:1,rel:0,showinfo:0,loop:1,playlist:demo.youtubeId,vq:"hd1080"},
+      events:{'onStateChange':onSpotlightStateChange}
     });
   }
 }
 
-function onSpotlightStateChange(event) {
-  if(event.data === YT.PlayerState.ENDED){
-    loadSpotlight(getRandomDemo());
-  }
+function onSpotlightStateChange(event){
+  if(event.data===YT.PlayerState.ENDED) loadSpotlight(getRandomDemo());
 }
 
-// API callback
-function onYouTubeIframeAPIReady() {
-  loadSpotlight(getRandomDemo());
-}
+function onYouTubeIframeAPIReady(){ loadSpotlight(getRandomDemo()); }
 
-// Demo list with play overlay
-const container = document.getElementById("demo-list");
+// Skip and Mute buttons
+document.getElementById("skip-btn").addEventListener("click",()=>{ loadSpotlight(getRandomDemo()); });
+document.getElementById("mute-btn").addEventListener("click",()=>{
+  if(!spotlightPlayer) return;
+  if(isMuted){ spotlightPlayer.unMute(); isMuted=false; document.getElementById("mute-btn").textContent="Mute"; }
+  else{ spotlightPlayer.mute(); isMuted=true; document.getElementById("mute-btn").textContent="Unmute"; }
+});
+
+// Demo list
+const container=document.getElementById("demo-list");
 function displayDemos(list){
   container.innerHTML="";
   list.forEach(game=>{
@@ -334,10 +336,10 @@ function displayDemos(list){
   });
 
   document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
-    el.addEventListener("click", e=>{
-      const containerDiv = el.closest(".video-container");
-      const vidId = containerDiv.querySelector("img").dataset.video;
-      const iframe = document.createElement("iframe");
+    el.addEventListener("click",()=>{
+      const containerDiv=el.closest(".video-container");
+      const vidId=containerDiv.querySelector("img").dataset.video;
+      const iframe=document.createElement("iframe");
       iframe.src=`https://www.youtube.com/embed/${vidId}?autoplay=1&modestbranding=1&rel=0`;
       iframe.frameBorder="0";
       iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -351,20 +353,16 @@ function displayDemos(list){
 }
 displayDemos(demos);
 
-// Search filter
-const searchBar=document.getElementById("search-bar");
-searchBar.addEventListener("input", e=>{
+// Search bar
+document.getElementById("search-bar").addEventListener("input",e=>{
   const term=e.target.value.toLowerCase();
-  const filtered=demos.filter(d=>d.name.toLowerCase().includes(term));
-  displayDemos(filtered);
+  displayDemos(demos.filter(d=>d.name.toLowerCase().includes(term)));
 });
 
 // Back to top
 const backTop=document.getElementById("back-to-top");
-window.addEventListener("scroll", ()=>{
-  backTop.style.display=(window.scrollY>400)?"block":"none";
-});
-backTop.addEventListener("click", ()=>window.scrollTo({top:0,behavior:"smooth"}));
+window.addEventListener("scroll",()=>{ backTop.style.display=(window.scrollY>400)?"block":"none"; });
+backTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 </script>
 </body>
 </html>
