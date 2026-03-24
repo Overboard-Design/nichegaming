@@ -114,16 +114,42 @@ a:hover{
   transition:filter 1s, opacity 1s;
   animation:spotlightPulse 6s infinite;
 }
-@keyframes spotlightPulse {0%,100%{ filter: brightness(70%) contrast(120%);} 50%{ filter: brightness(85%) contrast(130%); }}
-.spotlight-overlay{
-  position:absolute; bottom:15px; right:15px;
-  z-index:2;
-  display:flex;
-  gap:10px;
+@keyframes spotlightPulse {
+  0%,100%{ filter: brightness(70%) contrast(120%); }
+  50%{ filter: brightness(85%) contrast(130%); }
 }
-.spotlight-overlay a{
-  padding:7px 14px;
-  font-size:0.75rem;
+.spotlight-overlay{
+  position:relative; z-index:2; height:100%;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+}
+.spotlight-overlay h2{
+  font-size:2rem;
+  text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
+}
+/* Buttons bottom-right matching demo page */
+.spotlight-overlay div {
+  position: absolute;
+  bottom:10px;
+  right:10px;
+  display:flex;
+  gap:8px;
+  flex-direction:row;
+  transform:scale(0.625);
+  transform-origin:bottom right;
+}
+.spotlight-btn{
+  padding:14px 28px; /* match demo page */
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  text-decoration:none;
+  border-radius:6px;
+  transition:0.3s;
+}
+.spotlight-btn:hover{
+  background:var(--main-color);
+  color:#000;
 }
 #return-home{
   margin:20px 0;
@@ -175,9 +201,11 @@ a:hover{
     <div id="spotlight-video"></div>
   </div>
   <div class="spotlight-overlay">
-    <a id="spotlight-unmute" class="spotlight-btn" target="_blank">Unmute</a>
-    <a id="spotlight-skip" class="spotlight-btn" target="_blank">Skip</a>
-    <a id="spotlight-link" class="spotlight-btn" target="_blank">Request Access</a>
+    <div>
+      <a id="spotlight-unmute" class="spotlight-btn">Unmute</a>
+      <a id="spotlight-skip" class="spotlight-btn">Skip</a>
+      <a id="spotlight-link" class="spotlight-btn">Request Access</a>
+    </div>
   </div>
 </section>
 
@@ -226,7 +254,7 @@ const demos = [
   { name:"Enfant", appid:"4025390", youtubeId:"vN7bpdIHl6s" },
   { name:"WILDERLOCKE", appid:"3512280", youtubeId:"1mCLdXWlK2g" },
   { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k" },
-  
+
 ];
 
 // Spotlight - YouTube API
