@@ -95,7 +95,7 @@ a:hover{
 
 .spotlight{
   position: relative;
-  height:50vh;  /* reduced height for sharper look */
+  height:50vh;
   min-height:300px;
   overflow: hidden;
   border-bottom: 2px solid var(--main-color);
@@ -124,16 +124,16 @@ a:hover{
   font-size:2rem;
   text-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);
 }
-/* buttons at bottom-right corner and scaled down */
+/* Buttons bottom-right and slightly larger */
 .spotlight-overlay div {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 8px;
-  flex-direction: row;
-  transform: scale(0.625); 
-  transform-origin: bottom right;
+  bottom:10px;
+  right:10px;
+  display:flex;
+  gap:8px;
+  flex-direction:row;
+  transform:scale(0.625);
+  transform-origin:bottom right;
 }
 .spotlight-btn{
   padding:10px 20px;
@@ -215,6 +215,7 @@ a:hover{
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+// Persisted color
 const storedColor = localStorage.getItem("nicheColor");
 if(storedColor){
   document.documentElement.style.setProperty("--main-color", storedColor);
@@ -225,8 +226,9 @@ if(storedColor){
   });
 }
 
+// Demo data
 const demos = [
-     { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
+  { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM" },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs" },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU" },
@@ -278,24 +280,21 @@ const demos = [
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
 ];
 
-// Spotlight
-let spotlightPlayer;
-let isMuted = true;
+let spotlightPlayer, isMuted=true;
 
 function getRandomDemo(){ return demos[Math.floor(Math.random()*demos.length)]; }
 
 function loadSpotlight(demo){
-  document.getElementById("spotlight-title").textContent=demo.name;
-  document.getElementById("spotlight-link").href=`https://store.steampowered.com/app/${demo.appid}`;
-
+  document.getElementById("spotlight-title").textContent = demo.name;
+  document.getElementById("spotlight-link").href = `https://store.steampowered.com/app/${demo.appid}`;
+  
   if(spotlightPlayer){
     spotlightPlayer.loadVideoById(demo.youtubeId,0,"hd1080");
-    spotlightPlayer.mute();
-    isMuted=true;
+    spotlightPlayer.mute(); isMuted=true;
     document.getElementById("mute-btn").textContent="Unmute";
-  }else{
-    spotlightPlayer=new YT.Player('spotlight-video',{
-      videoId:demo.youtubeId,
+  } else {
+    spotlightPlayer = new YT.Player('spotlight-video', {
+      videoId: demo.youtubeId,
       playerVars:{autoplay:1,controls:0,modestbranding:1,rel:0,showinfo:0,loop:1,playlist:demo.youtubeId,vq:"hd1080"},
       events:{'onStateChange':onSpotlightStateChange}
     });
@@ -308,7 +307,7 @@ function onSpotlightStateChange(event){
 
 function onYouTubeIframeAPIReady(){ loadSpotlight(getRandomDemo()); }
 
-// Skip and Mute buttons
+// Skip & mute
 document.getElementById("skip-btn").addEventListener("click",()=>{ loadSpotlight(getRandomDemo()); });
 document.getElementById("mute-btn").addEventListener("click",()=>{
   if(!spotlightPlayer) return;
@@ -353,7 +352,7 @@ function displayDemos(list){
 }
 displayDemos(demos);
 
-// Search bar
+// Search
 document.getElementById("search-bar").addEventListener("input",e=>{
   const term=e.target.value.toLowerCase();
   displayDemos(demos.filter(d=>d.name.toLowerCase().includes(term)));
