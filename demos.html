@@ -190,7 +190,7 @@ a:hover{
 
 <section class="spotlight">
   <div class="video-wrapper">
-    <iframe id="spotlight-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div id="spotlight-video"></div>
   </div>
   <div class="spotlight-overlay">
     <h2 id="spotlight-title">Featured Demo</h2>
@@ -205,6 +205,7 @@ a:hover{
 <div id="demo-list"></div>
 <button id="back-to-top">↑ Top</button>
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
 // Persisted color from index
 const storedColor = localStorage.getItem("nicheColor");
@@ -271,19 +272,38 @@ const demos = [
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
 ];
 
-// Spotlight - fully random each rotation
-const spotlightVideo = document.getElementById("spotlight-video");
-const spotlightTitle = document.getElementById("spotlight-title");
-const spotlightLink = document.getElementById("spotlight-link");
+// Spotlight - full video length with YouTube API
+let spotlightPlayer;
 
-function loadSpotlight(){
-  const demo = demos[Math.floor(Math.random() * demos.length)];
-  spotlightVideo.src = `https://www.youtube.com/embed/${demo.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${demo.youtubeId}`;
+function getRandomDemo() {
+  return demos[Math.floor(Math.random() * demos.length)];
+}
+
+function loadSpotlight(demo) {
   spotlightTitle.textContent = demo.name;
   spotlightLink.href = `https://store.steampowered.com/app/${demo.appid}`;
+
+  if (spotlightPlayer) {
+    spotlightPlayer.loadVideoById(demo.youtubeId);
+  } else {
+    spotlightPlayer = new YT.Player('spotlight-video', {
+      videoId: demo.youtubeId,
+      playerVars: { autoplay: 1, controls: 0, mute: 1 },
+      events: { 'onStateChange': onSpotlightStateChange }
+    });
+  }
 }
-loadSpotlight();
-setInterval(loadSpotlight,15000);
+
+function onSpotlightStateChange(event) {
+  if(event.data === YT.PlayerState.ENDED){
+    loadSpotlight(getRandomDemo());
+  }
+}
+
+// Called automatically when API is ready
+function onYouTubeIframeAPIReady() {
+  loadSpotlight(getRandomDemo());
+}
 
 // Demo list with play button overlay
 const container = document.getElementById("demo-list");
@@ -304,7 +324,6 @@ function displayDemos(list){
     container.appendChild(card);
   });
 
-  // Click to embed YouTube
   document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
     el.addEventListener("click", e=>{
       const containerDiv = el.closest(".video-container");
