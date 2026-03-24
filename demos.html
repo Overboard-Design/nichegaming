@@ -220,7 +220,7 @@ if(storedColor){
 
 // Demo data
 const demos = [
-  { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
+    { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0" },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM" },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs" },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU" },
@@ -270,9 +270,10 @@ const demos = [
   { name:"Dark Light: Survivor", appid:"3088070", youtubeId:"PCVCA9zDgfg" },
   { name:"In The Black", appid:"380110", youtubeId:"53WTdvr-lOc" },
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
+
 ];
 
-// Spotlight - full video length with YouTube API
+// Spotlight setup
 let spotlightPlayer;
 
 function getRandomDemo() {
@@ -280,15 +281,23 @@ function getRandomDemo() {
 }
 
 function loadSpotlight(demo) {
-  spotlightTitle.textContent = demo.name;
-  spotlightLink.href = `https://store.steampowered.com/app/${demo.appid}`;
+  document.getElementById("spotlight-title").textContent = demo.name;
+  document.getElementById("spotlight-link").href = `https://store.steampowered.com/app/${demo.appid}`;
 
   if (spotlightPlayer) {
     spotlightPlayer.loadVideoById(demo.youtubeId);
   } else {
     spotlightPlayer = new YT.Player('spotlight-video', {
       videoId: demo.youtubeId,
-      playerVars: { autoplay: 1, controls: 0, mute: 1 },
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        mute: 1,
+        modestbranding: 1,
+        rel: 0,
+        loop: 1,
+        playlist: demo.youtubeId
+      },
       events: { 'onStateChange': onSpotlightStateChange }
     });
   }
@@ -300,12 +309,12 @@ function onSpotlightStateChange(event) {
   }
 }
 
-// Called automatically when API is ready
+// API callback
 function onYouTubeIframeAPIReady() {
   loadSpotlight(getRandomDemo());
 }
 
-// Demo list with play button overlay
+// Demo list with play overlay
 const container = document.getElementById("demo-list");
 function displayDemos(list){
   container.innerHTML="";
@@ -329,7 +338,7 @@ function displayDemos(list){
       const containerDiv = el.closest(".video-container");
       const vidId = containerDiv.querySelector("img").dataset.video;
       const iframe = document.createElement("iframe");
-      iframe.src=`https://www.youtube.com/embed/${vidId}?autoplay=1`;
+      iframe.src=`https://www.youtube.com/embed/${vidId}?autoplay=1&modestbranding=1&rel=0`;
       iframe.frameBorder="0";
       iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       iframe.allowFullscreen=true;
