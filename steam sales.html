@@ -87,6 +87,26 @@ select,input{background:#000;color:var(--main-color);border:2px solid var(--main
 .desc{font-size:0.8rem;opacity:0.8;margin-top:5px;display:none;}
 a{color:var(--main-color);text-decoration:none;}
 a:hover{background:var(--main-color);color:#000;}
+
+/* BACK TO TOP */
+#back-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background:#000;
+  color:var(--main-color);
+  border:2px solid var(--main-color);
+  border-radius:5px;
+  text-decoration:none;
+  font-weight:600;
+  z-index:1000;
+  transition:0.3s;
+}
+#back-top:hover {
+  background:var(--main-color);
+  color:#000;
+}
 </style>
 </head>
 <body>
@@ -132,6 +152,9 @@ a:hover{background:var(--main-color);color:#000;}
 
 <!-- GAME LIST -->
 <div id="steam-deals"></div>
+
+<!-- Back to Top Button -->
+<a href="#" id="back-top">Back to Top</a>
 
 </div>
 <aside></aside>
@@ -255,6 +278,17 @@ document.getElementById("sort-filter").onchange=applyFilters;
 document.getElementById("search").oninput=applyFilters;
 
 init();
+
+// Back to top
+document.getElementById("back-top").onclick = (e)=>{
+  e.preventDefault(); // prevent jump
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+document.getElementById("back-top").style.borderColor = savedColor;
+document.getElementById("back-top").style.color = savedColor;
+document.getElementById("back-top").onmouseover = ()=>{document.getElementById("back-top").style.background=savedColor; document.getElementById("back-top").style.color="#000";};
+document.getElementById("back-top").onmouseout = ()=>{document.getElementById("back-top").style.background="#000"; document.getElementById("back-top").style.color=savedColor;};
+
 </script>
 </body>
 </html>
