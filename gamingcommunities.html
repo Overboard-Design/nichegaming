@@ -34,16 +34,13 @@ h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-co
   position: fixed;
   bottom: 20px;
   right: 20px;
+  padding: 12px 20px;
   background:#000;
   color:var(--main-color);
   border:2px solid var(--main-color);
-  border-radius:50%;
-  width:50px;
-  height:50px;
-  font-size:1.5rem;
-  line-height:46px;
-  text-align:center;
-  cursor:pointer;
+  border-radius:5px;
+  text-decoration:none;
+  font-weight:600;
   z-index:1000;
   transition:0.3s;
 }
@@ -77,7 +74,7 @@ h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-co
 .link-pic img{width:100px;height:100px;border-radius:10px;object-fit:cover;margin-right:20px;}
 .link-content{flex:1;text-align:left;}
 .link-title{font-size:1.6rem;font-weight:800;margin-bottom:10px;}
-.link-desc{font-size:1rem;line-height:1.4;color:#9cff8f;}
+.link-desc{font-size:1rem;line-height:1.4; color:var(--main-color);}
 .link-actions{display:flex;flex-direction:column;gap:10px;margin-left:20px;}
 .link-actions a{color:#000;background:var(--main-color);padding:10px 15px;border-radius:4px;text-decoration:none;font-weight:600;transition:background 0.3s,color 0.3s;text-align:center;}
 .link-actions a:hover{background:#000;color:var(--main-color);border:2px solid var(--main-color);}
@@ -124,7 +121,7 @@ h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-co
     <div class="link-content">
       <div class="link-title">Your Community Here</div>
       <div class="link-desc">How to Apply Join Raid Station and Contact Jonah Overboard invite him to your discord, Create a text channel called https://nichegaming.co.uk
-         post a link inside the text channel should be within eye line on opening discord.</div>
+         post a link inside the text channel within eye line on opening discord.</div>
     </div>
     <div class="link-actions">
       <a href="https://discord.gg/progamershub" target="_blank">Discord</a>
@@ -136,7 +133,7 @@ h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-co
 </div>
 
 <!-- Back to Top Arrow -->
-<div id="back-top">&#8679;</div>
+<a href="#" id="back-top">Back to Top</a>
 
 <script>
 // Apply saved color from index.html
@@ -160,7 +157,10 @@ document.getElementById("return-home").onmouseover = ()=>{document.getElementByI
 document.getElementById("return-home").onmouseout = ()=>{document.getElementById("return-home").style.background="#000"; document.getElementById("return-home").style.color=savedColor;};
 
 // Back to top
-document.getElementById("back-top").onclick = ()=>{window.scrollTo({top:0, behavior:"smooth"});}
+document.getElementById("back-top").onclick = (e)=>{
+  e.preventDefault(); // prevent jump
+  window.scrollTo({top:0, behavior:"smooth"});
+};
 document.getElementById("back-top").style.borderColor = savedColor;
 document.getElementById("back-top").style.color = savedColor;
 document.getElementById("back-top").onmouseover = ()=>{document.getElementById("back-top").style.background=savedColor; document.getElementById("back-top").style.color="#000";};
