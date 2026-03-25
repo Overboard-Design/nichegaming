@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NicheGaming - Communities & Links</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--main-color:#39ff14;}
+body{margin:0;background:#030303;color:var(--main-color);font-family:"Orbitron", system-ui, sans-serif;text-align:center;padding:20px;scroll-behavior:smooth;}
+h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color),0 0 20px var(--main-color),0 0 40px var(--main-color);margin-bottom:20px;}
+
+/* RETURN HOME BUTTON */
+#return-home {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background:#000;
+  color:var(--main-color);
+  border:2px solid var(--main-color);
+  border-radius:5px;
+  text-decoration:none;
+  font-weight:600;
+  z-index:1000;
+  transition:0.3s;
+}
+#return-home:hover {
+  background:var(--main-color);
+  color:#000;
+}
+
+/* BACK TO TOP */
+#back-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background:#000;
+  color:var(--main-color);
+  border:2px solid var(--main-color);
+  border-radius:50%;
+  width:50px;
+  height:50px;
+  font-size:1.5rem;
+  line-height:46px;
+  text-align:center;
+  cursor:pointer;
+  z-index:1000;
+  transition:0.3s;
+}
+#back-top:hover {
+  background:var(--main-color);
+  color:#000;
+}
+
+/* SEARCH BAR */
+#search-bar {
+  max-width:600px;
+  margin:0 auto 30px auto;
+  display:flex;
+  justify-content:center;
+}
+#search-input {
+  width:100%;
+  padding:12px 20px;
+  border-radius:5px;
+  border:2px solid var(--main-color);
+  background:#000;
+  color:var(--main-color);
+  font-family:"Orbitron", monospace;
+  font-size:1rem;
+}
+
+/* LIST SECTION */
+#link-list{display:flex;flex-direction:column;gap:30px;max-width:1000px;margin:0 auto;}
+.link-card{display:flex;align-items:center;justify-content:flex-start;background:#000;border:2px solid var(--main-color);padding:20px;border-radius:6px;box-shadow:0 0 15px var(--main-color),0 0 30px var(--main-color);transition:transform 0.3s;}
+.link-card:hover{transform:scale(1.02);}
+.link-pic img{width:100px;height:100px;border-radius:10px;object-fit:cover;margin-right:20px;}
+.link-content{flex:1;text-align:left;}
+.link-title{font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+.link-desc{font-size:1rem;line-height:1.4;color:#9cff8f;}
+.link-actions{display:flex;flex-direction:column;gap:10px;margin-left:20px;}
+.link-actions a{color:#000;background:var(--main-color);padding:10px 15px;border-radius:4px;text-decoration:none;font-weight:600;transition:background 0.3s,color 0.3s;text-align:center;}
+.link-actions a:hover{background:#000;color:var(--main-color);border:2px solid var(--main-color);}
+
+/* CRT EFFECT */
+.crt-screen{position:relative;min-height:100vh;overflow:hidden;}
+.crt-screen::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 2px, transparent 4px);pointer-events:none;z-index:999;}
+.crt-screen::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);pointer-events:none;}
+</style>
+</head>
+<body class="crt-screen">
+
+<h1>Communities & Links</h1>
+<a href="index.html" id="return-home">Return Home</a>
+
+<!-- Search bar -->
+<div id="search-bar">
+  <input type="text" id="search-input" placeholder="Search communities...">
+</div>
+
+<div id="link-list">
+
+  <!-- Raid Station -->
+  <div class="link-card">
+    <div class="link-pic">
+      <img src="raid-station gif2.gif" alt="Discord Logo">
+    </div>
+    <div class="link-content">
+      <div class="link-title">Raid Station</div>
+      <div class="link-desc">Join our Discord to connect with gamers and content creators, participate in playtests, gain access to copyright free music. 
+        What we play: Openworld Survival Craft, MMO's, FPS, Party Games, extraction shooters and Strategy Games.  </div>
+    </div>
+    <div class="link-actions">
+      <a href="https://discord.gg/T7sK3TPcQH" target="_blank">Discord</a>
+      <a href="https://www.raid-station.com/" target="_blank">Website</a>
+    </div>
+  </div>
+
+  <!-- Example Card 2 -->
+  <div class="link-card">
+    <div class="link-pic">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord Logo">
+    </div>
+    <div class="link-content">
+      <div class="link-title">Your Community Here</div>
+      <div class="link-desc">How to Apply Join Raid Station and Contact Jonah Overboard invite him to your discord, Create a text channel called https://nichegaming.co.uk
+         post a link inside the text channel should be within eye line on opening discord.</div>
+    </div>
+    <div class="link-actions">
+      <a href="https://discord.gg/progamershub" target="_blank">Discord</a>
+    </div>
+  </div>
+
+
+
+</div>
+
+<!-- Back to Top Arrow -->
+<div id="back-top">&#8679;</div>
+
+<script>
+// Apply saved color from index.html
+const savedColor = localStorage.getItem("nicheColor") || "#39ff14";
+document.documentElement.style.setProperty("--main-color", savedColor);
+
+// Update dynamic color elements
+document.querySelectorAll(".link-card").forEach(card=>{
+  card.style.borderColor = savedColor;
+  card.style.boxShadow = `0 0 15px ${savedColor},0 0 30px ${savedColor}`;
+});
+document.querySelectorAll(".link-actions a").forEach(a=>{
+  a.style.background = savedColor;
+  a.style.color = "#000";
+  a.onmouseover = ()=>{a.style.background="#000"; a.style.color=savedColor; a.style.border=`2px solid ${savedColor}`};
+  a.onmouseout = ()=>{a.style.background=savedColor; a.style.color="#000"; a.style.border="none";};
+});
+document.getElementById("return-home").style.color = savedColor;
+document.getElementById("return-home").style.borderColor = savedColor;
+document.getElementById("return-home").onmouseover = ()=>{document.getElementById("return-home").style.background=savedColor; document.getElementById("return-home").style.color="#000";};
+document.getElementById("return-home").onmouseout = ()=>{document.getElementById("return-home").style.background="#000"; document.getElementById("return-home").style.color=savedColor;};
+
+// Back to top
+document.getElementById("back-top").onclick = ()=>{window.scrollTo({top:0, behavior:"smooth"});}
+document.getElementById("back-top").style.borderColor = savedColor;
+document.getElementById("back-top").style.color = savedColor;
+document.getElementById("back-top").onmouseover = ()=>{document.getElementById("back-top").style.background=savedColor; document.getElementById("back-top").style.color="#000";};
+document.getElementById("back-top").onmouseout = ()=>{document.getElementById("back-top").style.background="#000"; document.getElementById("back-top").style.color=savedColor;};
+
+// Search filter
+const searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", ()=>{
+  const term = searchInput.value.toLowerCase();
+  document.querySelectorAll(".link-card").forEach(card=>{
+    const title = card.querySelector(".link-title").textContent.toLowerCase();
+    const desc = card.querySelector(".link-desc").textContent.toLowerCase();
+    card.style.display = (title.includes(term) || desc.includes(term)) ? "flex" : "none";
+  });
+});
+</script>
+
+</body>
+</html>
