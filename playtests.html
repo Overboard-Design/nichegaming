@@ -205,6 +205,24 @@ a:hover{
    background:var(--main-color);
   color:#000;
 }
+/* CRT GRID */
+body::before{
+  content:"";
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events:none;
+  z-index:9999;
+}
 </style>
 </head>
 <body>
