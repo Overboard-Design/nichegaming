@@ -71,15 +71,15 @@ h1{
 }
 
 #section-nav button:hover{
-  background:var(--main-color);
-  color:#000;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: var(--main-color) !important;
+  border-color: var(--main-color);
 
-  text-shadow:none; /* cleaner look when filled */
-
-  box-shadow:
-    0 0 10px var(--main-color),
-    0 0 20px var(--main-color),
-    0 0 40px var(--main-color);
+  text-shadow:
+    0 0 3px var(--main-color),
+    0 0 8px var(--main-color),
+    0 0 16px var(--main-color),
+    0 0 32px var(--main-color);
 }
 
 #section-nav a{
@@ -202,17 +202,6 @@ h1{
     0 0 10px var(--main-color);
 }
 
-.store-btn:hover{
-  background:var(--main-color) !important;
-  color:#000 !important;
-
-  text-shadow:none;
-
-  box-shadow:
-    0 0 10px var(--main-color),
-    0 0 20px var(--main-color),
-    0 0 40px var(--main-color);
-}
 
 /* GALLERY */
 .gallery{
@@ -278,9 +267,38 @@ h1{
   font-family:"Orbitron", sans-serif;
 }
 
-#nav-buttons button:hover{
-  background:var(--main-color);
-  color:#000;
+
+/* ========================= */
+/* FINAL UNIVERSAL HOVER FIX */
+/* ========================= */
+
+button:hover,
+a:hover,
+#return-home:hover,
+#back-top:hover,
+.spotlight-btn:hover,
+.menu-item:hover,
+#filter-bar select:hover,
+.filter-group button:hover {
+
+  /* 🔴 kill all green fill everywhere */
+  background: #000 !important;
+
+  /* 🔴 force neon text */
+  color: var(--main-color) !important;
+
+  /* 🔥 strong glow */
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color) !important;
+
+  /* optional but nice */
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
 }
 
 </style>

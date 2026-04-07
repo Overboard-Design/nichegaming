@@ -83,6 +83,38 @@ h1{font-size:2.5rem;text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-co
 .crt-screen{position:relative;min-height:100vh;overflow:hidden;}
 .crt-screen::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 2px, transparent 4px);pointer-events:none;z-index:999;}
 .crt-screen::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);pointer-events:none;}
+/* ========================= */
+/* FINAL UNIVERSAL HOVER FIX */
+/* ========================= */
+
+button:hover,
+a:hover,
+#return-home:hover,
+#back-top:hover,
+.spotlight-btn:hover,
+.menu-item:hover,
+#filter-bar select:hover,
+.filter-group button:hover {
+
+  /* 🔴 kill all green fill everywhere */
+  background: #000 !important;
+
+  /* 🔴 force neon text */
+  color: var(--main-color) !important;
+
+  /* 🔥 strong glow */
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color) !important;
+
+  /* optional but nice */
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
+}
 </style>
 </head>
 <body class="crt-screen">

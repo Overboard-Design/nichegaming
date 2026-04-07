@@ -53,10 +53,7 @@ a{
   text-decoration:none;
   text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
 }
-a:hover{
-  background:var(--main-color);
-  color:#000;
-}
+
 .video-container{
   position:relative;
 }
@@ -148,10 +145,7 @@ a:hover{
   border-radius:6px;
   transition:0.3s;
 }
-.spotlight-btn:hover{
-  background:var(--main-color);
-  color:#000;
-}
+
 #top-bar{
   display:flex;
   justify-content:center;
@@ -184,10 +178,7 @@ a:hover{
   align-items:center;         
 }
 
-#return-home:hover{
-  background:var(--main-color);
-  color:#000;
-}
+
 /* BACK TO TOP */
 #back-top {
    margin: 10px 0;              /* tighter spacing */
@@ -201,10 +192,7 @@ a:hover{
   text-decoration:none;
   transition: all 0.25s ease;
 }
-#back-top:hover {
-   background:var(--main-color);
-  color:#000;
-}
+
 /* CRT GRID */
 body::before{
   content:"";
@@ -222,6 +210,38 @@ body::before{
   );
   pointer-events:none;
   z-index:9999;
+}
+/* ========================= */
+/* FINAL UNIVERSAL HOVER FIX */
+/* ========================= */
+
+button:hover,
+a:hover,
+#return-home:hover,
+#back-top:hover,
+.spotlight-btn:hover,
+.menu-item:hover,
+#filter-bar select:hover,
+.filter-group button:hover {
+
+  /* 🔴 kill all green fill everywhere */
+  background: #000 !important;
+
+  /* 🔴 force neon text */
+  color: var(--main-color) !important;
+
+  /* 🔥 strong glow */
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color) !important;
+
+  /* optional but nice */
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
 }
 </style>
 </head>
