@@ -218,10 +218,17 @@ h1{
 }
 
 /* VIDEO */
+.media{
+  position:relative;
+  padding-top:56.25%;
+}
+
 .media iframe{
+  position:absolute;
+  top:0;
+  left:0;
   width:100%;
-  height:250px;
-  border:none;
+  height:100%;
 }
 
 /* LIGHTBOX */
@@ -793,24 +800,42 @@ go unchallenged. As was the case throughout history, rival civilizations are cer
 </div>
 </div>
 
-<!-- VIDEOS -->
 <div id="videos-section" class="section">
-<div id="spotlight-list">
+  <div id="spotlight-list">
 
-<div class="spotlight-card">
-  <div class="spotlight-header">
-    <img src="retroarch.jpg">
-    <div class="spotlight-title">RetroArch Guide</div>
-  </div>
-  <div class="spotlight-content">
-    <div class="media">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
+    <!-- VIDEO 1 -->
+    <div class="spotlight-card">
+      <div class="spotlight-header">
+        <img src="retroarch.jpg">
+        <div class="spotlight-title">RetroArch Guide</div>
+      </div>
+
+      <div class="spotlight-content">
+        <div class="desc">Credits: Video by Enrique Cal Tech</div>
+        <div class="media">
+          <iframe src="https://www.youtube.com/embed/6isiq11Zm0k"></iframe>
+        </div>
+      </div>
     </div>
+
+    <!-- VIDEO 2 -->
+    <div class="spotlight-card">
+      <div class="spotlight-header">
+        <img src="Abandonware.jpg">
+        <div class="spotlight-title">Games</div>
+      </div>
+
+      <div class="spotlight-content">
+        <div class="desc">Credits: Video by Indie Jim</div>
+        <div class="media">
+          <iframe src="https://www.youtube.com/embed/XlP_ZPc7hkc"></iframe>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-</div>
-</div>
 
 <!-- HARDWARE -->
 <div id="hardware-section" class="section">
