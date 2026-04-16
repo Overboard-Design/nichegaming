@@ -263,7 +263,10 @@ a:hover,
 </footer>
 
 <script>
-
+ // LOAD SAVED COLOR
+  const savedColor = localStorage.getItem("nicheColor") || "#39ff14";
+  document.documentElement.style.setProperty("--main-color", savedColor);
+  
 // SECTION SWITCH
 function showSection(section){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
