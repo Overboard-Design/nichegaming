@@ -356,6 +356,8 @@ function getRandomDemo() {
 /* ✅ NEW: reliable mute handler */
 function onSpotlightReady(event) {
   event.target.mute();
+  event.target.playVideo(); // ensure autoplay is controlled
+
   isMuted = true;
   document.getElementById("mute-btn").textContent = "Unmute";
 }
@@ -368,10 +370,15 @@ function loadSpotlight(demo) {
   if (spotlightPlayer) {
     spotlightPlayer.loadVideoById(demo.youtubeId, 0, "hd1080");
 
-    // still enforce mute after switching videos
-    spotlightPlayer.mute();
-    isMuted = true;
-    document.getElementById("mute-btn").textContent = "Unmute";
+    const enforceMute = () => {
+      if (!spotlightPlayer) return;
+      spotlightPlayer.mute();
+      isMuted = true;
+      document.getElementById("mute-btn").textContent = "Unmute";
+    };
+
+    setTimeout(enforceMute, 0);
+
   } else {
     spotlightPlayer = new YT.Player("spotlight-video", {
       videoId: demo.youtubeId,
@@ -392,6 +399,7 @@ function loadSpotlight(demo) {
     });
   }
 }
+
 
 function onSpotlightStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
