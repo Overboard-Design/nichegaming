@@ -356,7 +356,7 @@ function getRandomDemo() {
 /* ✅ NEW: reliable mute handler */
 function onSpotlightReady(event) {
   event.target.mute();
-  event.target.playVideo(); // ensure autoplay is controlled
+  event.target.playVideo();
 
   isMuted = true;
   document.getElementById("mute-btn").textContent = "Unmute";
@@ -383,7 +383,7 @@ function loadSpotlight(demo) {
     spotlightPlayer = new YT.Player("spotlight-video", {
       videoId: demo.youtubeId,
       playerVars: {
-        autoplay: 1,
+        autoplay: 0,
         controls: 0,
         modestbranding: 1,
         rel: 0,
