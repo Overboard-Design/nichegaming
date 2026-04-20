@@ -376,10 +376,10 @@ function onSpotlightReady(event) {
 
   player.playVideo();
 
-  // START MUTED
+  // START UNMUTED
   player.mute();
   isMuted = true;
-  document.getElementById("mute-btn").textContent = "Unmute";
+  document.getElementById("mute-btn").textContent = "mute";
 
   // Detect autoplay block
   setTimeout(() => {
