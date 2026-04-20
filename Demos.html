@@ -253,6 +253,29 @@ a:hover,
     0 0 10px var(--main-color),
     0 0 20px var(--main-color);
 }
+#sound-overlay {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  padding:12px 20px;
+  border:2px solid var(--main-color);
+  background:rgba(0,0,0,0.8);
+  color:var(--main-color);
+  font-family:"Orbitron", sans-serif;
+  text-shadow:0 0 5px var(--main-color),0 0 10px var(--main-color);
+  border-radius:6px;
+  cursor:pointer;
+  z-index:3;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s;
+}
+
+#sound-overlay.show {
+  opacity:1;
+  pointer-events:auto;
+}
 </style>
 </head>
 <body>
@@ -266,7 +289,8 @@ a:hover,
     <div>
       <a id="spotlight-link" class="spotlight-btn" target="_blank">Play Demo on Steam</a>
       <button id="skip-btn" class="spotlight-btn">Skip</button>
-      <button id="mute-btn" class="spotlight-btn">Unmute</button>
+      <button id="mute-btn" class="spotlight-btn">Mute</button>
+      <div id="sound-overlay">Click to enable sound</div>
     </div>
   </div>
 </section>
@@ -347,19 +371,27 @@ const demos = [
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
 ];
 
-let spotlightPlayer, isMuted = true;
+let spotlightPlayer, isMuted = false;
+const soundOverlay = document.getElementById("sound-overlay");
 
-function getRandomDemo() {
-  return demos[Math.floor(Math.random() * demos.length)];
-}
-
-/* ✅ NEW: reliable mute handler */
 function onSpotlightReady(event) {
-  event.target.mute();
-  event.target.playVideo();
+  const player = event.target;
 
-  isMuted = true;
-  document.getElementById("mute-btn").textContent = "Unmute";
+  player.playVideo();
+
+  isMuted = false;
+  document.getElementById("mute-btn").textContent = "Mute";
+
+  // Detect autoplay block
+  setTimeout(() => {
+    if (!player || typeof player.getPlayerState !== "function") return;
+
+    const state = player.getPlayerState();
+
+    if (state !== YT.PlayerState.PLAYING) {
+      soundOverlay.classList.add("show");
+    }
+  }, 500);
 }
 
 function loadSpotlight(demo) {
@@ -369,25 +401,14 @@ function loadSpotlight(demo) {
 
   if (spotlightPlayer) {
     spotlightPlayer.loadVideoById(demo.youtubeId, 0, "hd1080");
-
-    const enforceMute = () => {
-      if (!spotlightPlayer) return;
-      spotlightPlayer.mute();
-      isMuted = true;
-      document.getElementById("mute-btn").textContent = "Unmute";
-    };
-
-    setTimeout(enforceMute, 0);
-
   } else {
     spotlightPlayer = new YT.Player("spotlight-video", {
       videoId: demo.youtubeId,
       playerVars: {
-        autoplay: 0,
+        autoplay: 1,
         controls: 0,
         modestbranding: 1,
         rel: 0,
-        showinfo: 0,
         loop: 1,
         playlist: demo.youtubeId,
         vq: "hd1080"
@@ -400,7 +421,6 @@ function loadSpotlight(demo) {
   }
 }
 
-
 function onSpotlightStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     loadSpotlight(getRandomDemo());
@@ -411,11 +431,12 @@ function onYouTubeIframeAPIReady() {
   loadSpotlight(getRandomDemo());
 }
 
-/* Skip & mute */
+/* Skip */
 document.getElementById("skip-btn").addEventListener("click", () => {
   loadSpotlight(getRandomDemo());
 });
 
+/* Mute toggle */
 document.getElementById("mute-btn").addEventListener("click", () => {
   if (!spotlightPlayer) return;
 
@@ -429,6 +450,31 @@ document.getElementById("mute-btn").addEventListener("click", () => {
     document.getElementById("mute-btn").textContent = "Unmute";
   }
 });
+
+/* Overlay click */
+soundOverlay.addEventListener("click", () => {
+  if (!spotlightPlayer) return;
+
+  spotlightPlayer.unMute();
+  spotlightPlayer.playVideo();
+
+  isMuted = false;
+  document.getElementById("mute-btn").textContent = "Mute";
+
+  soundOverlay.classList.remove("show");
+});
+
+
+function onSpotlightStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    loadSpotlight(getRandomDemo());
+  }
+}
+
+function onYouTubeIframeAPIReady() {
+  loadSpotlight(getRandomDemo());
+}
+
 
 // Demo list
 const container=document.getElementById("demo-list");
