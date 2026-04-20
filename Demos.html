@@ -371,16 +371,15 @@ const demos = [
   { name:"Dungeons Deep", appid:"2636460", youtubeId:"yClGu4axkt8" },
 ];
 
-let spotlightPlayer, isMuted = false;
-const soundOverlay = document.getElementById("sound-overlay");
-
 function onSpotlightReady(event) {
   const player = event.target;
 
   player.playVideo();
 
-  isMuted = false;
-  document.getElementById("mute-btn").textContent = "Mute";
+  // START MUTED
+  player.mute();
+  isMuted = true;
+  document.getElementById("mute-btn").textContent = "Unmute";
 
   // Detect autoplay block
   setTimeout(() => {
