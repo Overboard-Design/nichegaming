@@ -374,14 +374,12 @@ const demos = [
 function onSpotlightReady(event) {
   const player = event.target;
 
+  player.unMute();
   player.playVideo();
 
-  // START UNMUTED
-  player.mute();
-  isMuted = true;
-  document.getElementById("mute-btn").textContent = "mute";
+  isMuted = false;
+  document.getElementById("mute-btn").textContent = "Mute";
 
-  // Detect autoplay block
   setTimeout(() => {
     if (!player || typeof player.getPlayerState !== "function") return;
 
