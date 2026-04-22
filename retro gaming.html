@@ -113,14 +113,26 @@ h1{
 
 /* CARD */
 .spotlight-card{
-  position:relative; /* 🔴 REQUIRED */
+  position:relative;
   border:2px solid var(--main-color);
   background:#000;
-  box-shadow:0 0 15px var(--main-color);
   border-radius:6px;
-  overflow:visible; /* 🔴 allow floating content */
+  overflow:visible;
   cursor:pointer;
   z-index:1;
+
+  /* base glow */
+  box-shadow:0 0 10px var(--main-color);
+  transition:0.3s;
+}
+
+.spotlight-card:hover,
+.spotlight-card.active{
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color);
 }
 
 /* ACTIVE CARD (brings forward) */
@@ -149,7 +161,7 @@ h1{
 
 /* CONTENT (FLOATING PANEL) */
 .spotlight-content{
-  display:none; /* 🔴 hidden by default */
+  display:none;
 
   position:absolute;
   top:100%;
@@ -157,7 +169,10 @@ h1{
   width:100%;
 
   background:#000;
+
   border:2px solid var(--main-color);
+  border-top:none; /* 🔴 THIS FIXES THE LINE */
+
   box-shadow:0 0 15px var(--main-color);
 
   padding:15px;
