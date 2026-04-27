@@ -333,7 +333,7 @@ body{
 <!-- ========================= -->
 <!-- AFFILIATE SIDE LEFT -->
 <!-- ========================= -->
-<div class="affiliate-sidebar left inactive ">
+<div class="affiliate-sidebar left">
 
   <div class="affiliate-stack">
 
@@ -372,60 +372,45 @@ body{
 </a>
 <script>
 /* =========================
-   CURRENCY SYSTEM
+   CURRENCY (DISPLAY ONLY)
 ========================= */
 let currency = "USD";
-let rates = { USD: 1 };
 
-async function fetchRates(){
-  try{
-    const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
-    const data = await res.json();
-    rates = data.rates;
-  }catch(e){
-    console.log("Currency API failed, using USD");
-  }
-}
-
+/* detect region → set symbol only */
 async function detectCurrency(){
   try{
     const res = await fetch("https://ipapi.co/json/");
     const data = await res.json();
 
-    const country = data.country_code;
-
     const map = {
       GB: "GBP",
       US: "USD",
-
       DE: "EUR",
       FR: "EUR",
       ES: "EUR",
       IT: "EUR",
       NL: "EUR",
-
       JP: "JPY",
       AU: "AUD",
       NZ: "NZD",
-
       CA: "CAD",
       CH: "CHF",
       CN: "CNY",
       IN: "INR"
     };
 
-    currency = map[country] || "USD";
+    currency = map[data.country_code] || "USD";
 
     const selector = document.getElementById("currency");
     if(selector) selector.value = currency;
 
   }catch(e){
-    console.log("Geo detection failed, default USD");
+    console.log("Geo detection failed");
   }
 }
 
 /* =========================
-   FORMATTING
+   FORMAT ONLY (NO CONVERSION)
 ========================= */
 function formatCurrency(value){
   const symbols = {
@@ -443,61 +428,9 @@ function formatCurrency(value){
 
   const symbol = symbols[currency] || "$";
 
-  // JPY & CNY usually don't use decimals in UI styling
   if(currency === "JPY") return "¥" + Math.round(value);
-  if(currency === "CNY") return "¥" + value.toFixed(2);
-  if(currency === "INR") return "₹" + value.toFixed(2);
 
-  return symbol + value.toFixed(2);
-}
-
-/* =========================
-   🔥 ANIMATION + FLASH EFFECT
-========================= */
-function animateValue(el, start, end, duration = 500){
-  let startTime = null;
-
-  function step(timestamp){
-    if(!startTime) startTime = timestamp;
-    const progress = Math.min((timestamp - startTime) / duration, 1);
-
-    const value = start + (end - start) * progress;
-    el.textContent = formatCurrency(value);
-
-    if(progress < 1){
-      requestAnimationFrame(step);
-    }
-  }
-
-  requestAnimationFrame(step);
-}
-
-/* ✨ NEW: glow flash effect */
-function flashGlow(el){
-  el.classList.add("price-flash");
-
-  setTimeout(()=>{
-    el.classList.remove("price-flash");
-  }, 400);
-}
-
-/* =========================
-   LIVE PRICE REFRESH
-========================= */
-function refreshPrices(){
-  document.querySelectorAll(".price-field").forEach(el=>{
-    const raw = parseFloat(el.dataset.price);
-
-    const targetValue = raw * (rates[currency] || 1);
-
-    const currentValue = parseFloat(el.dataset.current || 0);
-
-    animateValue(el, currentValue, targetValue, 450);
-
-    el.dataset.current = targetValue; // store clean value
-
-    flashGlow(el);
-  });
+  return symbol + Number(value).toFixed(2);
 }
 
 /* =========================
@@ -529,7 +462,7 @@ let visible = 0, chunk = 20;
    INIT
 ========================= */
 async function init(){
-  await fetchRates();
+
   await detectCurrency();
 
   for(let i=0;i<5;i++){
@@ -583,11 +516,7 @@ function render(){
         <span>${g.title}</span>
         <a href="https://store.steampowered.com/app/${g.steamAppID}" target="_blank">Steam</a>
         <span>${Math.round(g.savings)}%</span>
-       <span class="price-field"
-      data-price="${g.salePrice}"
-      data-current="${g.salePrice * (rates[currency] || 1)}">
-  ${formatCurrency(g.salePrice * (rates[currency] || 1))}
-      </span>
+        <span>${formatCurrency(g.salePrice)}</span>
       </div>
       <div class="desc">${g.steamRatingText || "No tags available"}</div>
     `;
@@ -619,20 +548,15 @@ function spotlight(){
   const g = filtered[Math.floor(Math.random()*filtered.length)];
   if(!g) return;
 
-  const link = document.getElementById("spotlight-link");
-  const img = document.getElementById("spotlight-media");
-
-  if(img){
-    img.src = `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
-  }
+  document.getElementById("spotlight-media").src =
+    `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
 
   document.getElementById("spotlight-title").textContent = g.title;
   document.getElementById("spotlight-discount").textContent =
     Math.round(g.savings) + "% OFF";
 
-  if(link){
-    link.href = `https://store.steampowered.com/app/${g.steamAppID}`;
-  }
+  document.getElementById("spotlight-link").href =
+    `https://store.steampowered.com/app/${g.steamAppID}`;
 }
 
 /* =========================
@@ -657,11 +581,7 @@ function buildTopDeals(){
       <div class="info">
         ${g.title}<br>
         ${Math.round(g.savings)}% |
-        <span class="price-field"
-      data-price="${g.salePrice}"
-      data-current="${g.salePrice * (rates[currency] || 1)}">
-  ${formatCurrency(g.salePrice * (rates[currency] || 1))}
-        </span>
+        ${formatCurrency(g.salePrice)}
       </div>
     `;
 
@@ -682,7 +602,7 @@ document.getElementById("search").oninput = applyFilters;
 
 document.getElementById("currency").onchange = (e)=>{
   currency = e.target.value;
-  refreshPrices();
+  applyFilters(); // re-render with new symbol only
 };
 
 /* =========================
