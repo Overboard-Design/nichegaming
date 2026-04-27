@@ -275,6 +275,10 @@ a:hover,
   <a href="index.html" id="return-home">Return Home</a>
 </div>
 <div id="demo-list"></div>
+<!-- DISCLAIMER -->
+<div class="affiliate-disclaimer">
+Affiliate Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
+</div>
 <!-- Back to Top Button -->
 <a href="#" id="back-top">Back to Top</a>
 
@@ -378,7 +382,13 @@ function loadSpotlight(demo) {
         loop: 1,
         playlist: demo.youtubeId
       },
-      events: { 'onStateChange': onSpotlightStateChange }
+      events: {
+  'onReady': (event) => {
+    event.target.mute();   // 🔥 force mute
+    event.target.playVideo(); // ensure autoplay works
+  },
+  'onStateChange': onSpotlightStateChange
+}
     });
   }
 
@@ -469,9 +479,6 @@ document.getElementById("back-top").onmouseover = ()=>{document.getElementById("
 document.getElementById("back-top").onmouseout = ()=>{document.getElementById("back-top").style.background="#000"; document.getElementById("back-top").style.color=savedColor;};
 
 </script>
-<!-- DISCLAIMER -->
-<div class="affiliate-disclaimer">
-Affiliate Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
-</div>
+
 </body>
 </html>
