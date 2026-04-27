@@ -186,6 +186,86 @@ a:hover,
     transform: scale(1);
   }
 }
+/* ========================= */
+/* AFFILIATE GLOBAL */
+/* ========================= */
+
+.inactive{
+  display:none; /* 🔴 keeps ads hidden until ready */
+}
+
+/* ========================= */
+/* SIDE BANNERS */
+/* ========================= */
+
+.affiliate-sidebar{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+  width:180px;
+  z-index:999;
+}
+
+.affiliate-sidebar.left{ left:10px; }
+.affiliate-sidebar.right{ right:10px; }
+
+.affiliate-stack{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* each square */
+.affiliate-item{
+  background:#000;
+  border:2px solid var(--main-color);
+  box-shadow:0 0 10px var(--main-color);
+  padding:5px;
+}
+.affiliate-item{
+  transition:0.3s;
+}
+
+.affiliate-item:hover{
+  transform:scale(1.20);
+  z-index:1000;
+
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color);
+}
+/* square images */
+.affiliate-item img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+}
+
+body{
+  padding-bottom:110px; /* adjust if needed */
+}
+
+/* DISCLAIMER */
+.affiliate-disclaimer{
+  max-width:1000px;
+  margin:40px auto 80px;
+  font-size:0.85rem;
+  opacity:0.7;
+  line-height:1.5;
+}
+@media(max-width:1200px){
+  .affiliate-sidebar{
+    display:none;
+  }
+}
+.affiliate-item:hover{
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color);
+}
 </style>
 </head>
 <body>
@@ -243,7 +323,46 @@ a:hover,
 </div>
 <aside></aside>
 </div>
+<!-- ========================= -->
+<!-- AFFILIATE SIDE LEFT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar left ">
 
+  <div class="affiliate-stack">
+
+    <!-- 3 square slots -->
+   <a href="https://www.g2a.com/n/7d2d" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="7d2d AL.png" alt="Affiliate Ad">
+</a>
+
+   <a href="https://www.g2a.com/n/wh40kdark" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="wh40kdark AL.png" alt="Affiliate Ad">
+  </a>
+
+
+   <a href="https://www.g2a.com/n/rockstargta5" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="gta5 AL.png" alt="Affiliate Ad">
+</a>
+
+  </div> 
+</div>
+
+
+<!-- ========================= -->
+<!-- AFFILIATE SIDE RIGHT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar right inactive">
+  <div class="affiliate-stack">
+
+    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="DDR4 AL.png" alt="Affiliate Ad">
+</a>
+    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Turtle Beach Recon 50 AL.png" alt="Affiliate Ad">
+  
+  <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="R36SL AL.png" alt="Affiliate Ad">
+</a>
 <script>
 /* =========================
    CURRENCY SYSTEM
