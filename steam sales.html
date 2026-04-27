@@ -309,6 +309,13 @@ body{
   <option value="USD">USD ($)</option>
   <option value="GBP">GBP (£)</option>
   <option value="EUR">EUR (€)</option>
+  <option value="JPY">JPY (¥)</option>
+  <option value="AUD">AUD (A$)</option>
+  <option value="NZD">NZD (NZ$)</option>
+  <option value="CAD">CAD (C$)</option>
+  <option value="CHF">CHF (CHF)</option>
+  <option value="CNY">CNY (¥)</option>
+  <option value="INR">INR (₹)</option>
 </select>
   </div>
   <a id="return-home" href="index.html">Return Home</a>
@@ -326,22 +333,22 @@ body{
 <!-- ========================= -->
 <!-- AFFILIATE SIDE LEFT -->
 <!-- ========================= -->
-<div class="affiliate-sidebar left ">
+<div class="affiliate-sidebar left inactive ">
 
   <div class="affiliate-stack">
 
     <!-- 3 square slots -->
-   <a href="https://www.g2a.com/n/7d2d" target="_blank" rel="noopener noreferrer" class="affiliate-item">
-  <img src="7d2d AL.png" alt="Affiliate Ad">
+   <a href="https://www.g2a.com/n/nms-key" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="nms AL.png" alt="Affiliate Ad">
 </a>
 
-   <a href="https://www.g2a.com/n/wh40kdark" target="_blank" rel="noopener noreferrer" class="affiliate-item">
-  <img src="wh40kdark AL.png" alt="Affiliate Ad">
+   <a href="https://www.g2a.com/n/conanex" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="conan AL.png" alt="Affiliate Ad">
   </a>
 
 
-   <a href="https://www.g2a.com/n/rockstargta5" target="_blank" rel="noopener noreferrer" class="affiliate-item">
-  <img src="gta5 AL.png" alt="Affiliate Ad">
+   <a href="https://www.g2a.com/n/zonegray" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="grayzone AL.png" alt="Affiliate Ad">
 </a>
 
   </div> 
@@ -387,9 +394,27 @@ async function detectCurrency(){
 
     const country = data.country_code;
 
-    if(country === "GB") currency = "GBP";
-    else if(["DE","FR","ES","IT","NL"].includes(country)) currency = "EUR";
-    else currency = "USD";
+    const map = {
+      GB: "GBP",
+      US: "USD",
+
+      DE: "EUR",
+      FR: "EUR",
+      ES: "EUR",
+      IT: "EUR",
+      NL: "EUR",
+
+      JP: "JPY",
+      AU: "AUD",
+      NZ: "NZD",
+
+      CA: "CAD",
+      CH: "CHF",
+      CN: "CNY",
+      IN: "INR"
+    };
+
+    currency = map[country] || "USD";
 
     const selector = document.getElementById("currency");
     if(selector) selector.value = currency;
@@ -403,9 +428,27 @@ async function detectCurrency(){
    FORMATTING
 ========================= */
 function formatCurrency(value){
-  if(currency === "GBP") return "£" + value.toFixed(2);
-  if(currency === "EUR") return "€" + value.toFixed(2);
-  return "$" + value.toFixed(2);
+  const symbols = {
+    USD: "$",
+    GBP: "£",
+    EUR: "€",
+    JPY: "¥",
+    AUD: "A$",
+    NZD: "NZ$",
+    CAD: "C$",
+    CHF: "CHF ",
+    CNY: "¥",
+    INR: "₹"
+  };
+
+  const symbol = symbols[currency] || "$";
+
+  // JPY & CNY usually don't use decimals in UI styling
+  if(currency === "JPY") return "¥" + Math.round(value);
+  if(currency === "CNY") return "¥" + value.toFixed(2);
+  if(currency === "INR") return "₹" + value.toFixed(2);
+
+  return symbol + value.toFixed(2);
 }
 
 /* =========================
@@ -445,13 +488,15 @@ function refreshPrices(){
   document.querySelectorAll(".price-field").forEach(el=>{
     const raw = parseFloat(el.dataset.price);
 
-    const currentText = el.textContent.replace(/[^0-9.]/g, "");
-    const currentValue = parseFloat(currentText) || 0;
-
     const targetValue = raw * (rates[currency] || 1);
 
+    const currentValue = parseFloat(el.dataset.current || 0);
+
     animateValue(el, currentValue, targetValue, 450);
-    flashGlow(el); // ✨ trigger glow
+
+    el.dataset.current = targetValue; // store clean value
+
+    flashGlow(el);
   });
 }
 
@@ -538,9 +583,11 @@ function render(){
         <span>${g.title}</span>
         <a href="https://store.steampowered.com/app/${g.steamAppID}" target="_blank">Steam</a>
         <span>${Math.round(g.savings)}%</span>
-        <span class="price-field" data-price="${g.salePrice}">
-          ${formatCurrency(g.salePrice * (rates[currency] || 1))}
-        </span>
+       <span class="price-field"
+      data-price="${g.salePrice}"
+      data-current="${g.salePrice * (rates[currency] || 1)}">
+  ${formatCurrency(g.salePrice * (rates[currency] || 1))}
+      </span>
       </div>
       <div class="desc">${g.steamRatingText || "No tags available"}</div>
     `;
@@ -572,15 +619,20 @@ function spotlight(){
   const g = filtered[Math.floor(Math.random()*filtered.length)];
   if(!g) return;
 
-  document.getElementById("spotlight-media").src =
-    `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
+  const link = document.getElementById("spotlight-link");
+  const img = document.getElementById("spotlight-media");
+
+  if(img){
+    img.src = `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
+  }
 
   document.getElementById("spotlight-title").textContent = g.title;
   document.getElementById("spotlight-discount").textContent =
     Math.round(g.savings) + "% OFF";
 
-  document.getElementById("spotlight-link").href =
-    `https://store.steampowered.com/app/${g.steamAppID}`;
+  if(link){
+    link.href = `https://store.steampowered.com/app/${g.steamAppID}`;
+  }
 }
 
 /* =========================
@@ -605,8 +657,10 @@ function buildTopDeals(){
       <div class="info">
         ${g.title}<br>
         ${Math.round(g.savings)}% |
-        <span class="price-field" data-price="${g.salePrice}">
-          ${formatCurrency(g.salePrice * (rates[currency] || 1))}
+        <span class="price-field"
+      data-price="${g.salePrice}"
+      data-current="${g.salePrice * (rates[currency] || 1)}">
+  ${formatCurrency(g.salePrice * (rates[currency] || 1))}
         </span>
       </div>
     `;
