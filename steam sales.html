@@ -165,6 +165,27 @@ a:hover,
   opacity:0.7;
   line-height:1.5;
 }
+.price-flash{
+  animation: glowFlash 0.4s ease;
+}
+
+@keyframes glowFlash{
+  0%{
+    text-shadow: 0 0 0px var(--main-color);
+    transform: scale(1);
+  }
+  50%{
+    text-shadow:
+      0 0 10px var(--main-color),
+      0 0 20px var(--main-color),
+      0 0 40px var(--main-color);
+    transform: scale(1.05);
+  }
+  100%{
+    text-shadow: 0 0 0px var(--main-color);
+    transform: scale(1);
+  }
+}
 </style>
 </head>
 <body>
@@ -204,6 +225,11 @@ a:hover,
       <option value="price-asc">Price Low → High</option>
       <option value="price-desc">Price High → Low</option>
     </select>
+<select id="currency">
+  <option value="USD">USD ($)</option>
+  <option value="GBP">GBP (£)</option>
+  <option value="EUR">EUR (€)</option>
+</select>
   </div>
   <a id="return-home" href="index.html">Return Home</a>
 </div>
@@ -219,134 +245,283 @@ a:hover,
 </div>
 
 <script>
-  const storedColor = localStorage.getItem("nicheColor");
+/* =========================
+   CURRENCY SYSTEM
+========================= */
+let currency = "USD";
+let rates = { USD: 1 };
+
+async function fetchRates(){
+  try{
+    const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+    const data = await res.json();
+    rates = data.rates;
+  }catch(e){
+    console.log("Currency API failed, using USD");
+  }
+}
+
+async function detectCurrency(){
+  try{
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    const country = data.country_code;
+
+    if(country === "GB") currency = "GBP";
+    else if(["DE","FR","ES","IT","NL"].includes(country)) currency = "EUR";
+    else currency = "USD";
+
+    const selector = document.getElementById("currency");
+    if(selector) selector.value = currency;
+
+  }catch(e){
+    console.log("Geo detection failed, default USD");
+  }
+}
+
+/* =========================
+   FORMATTING
+========================= */
+function formatCurrency(value){
+  if(currency === "GBP") return "£" + value.toFixed(2);
+  if(currency === "EUR") return "€" + value.toFixed(2);
+  return "$" + value.toFixed(2);
+}
+
+/* =========================
+   🔥 ANIMATION + FLASH EFFECT
+========================= */
+function animateValue(el, start, end, duration = 500){
+  let startTime = null;
+
+  function step(timestamp){
+    if(!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+
+    const value = start + (end - start) * progress;
+    el.textContent = formatCurrency(value);
+
+    if(progress < 1){
+      requestAnimationFrame(step);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+/* ✨ NEW: glow flash effect */
+function flashGlow(el){
+  el.classList.add("price-flash");
+
+  setTimeout(()=>{
+    el.classList.remove("price-flash");
+  }, 400);
+}
+
+/* =========================
+   LIVE PRICE REFRESH
+========================= */
+function refreshPrices(){
+  document.querySelectorAll(".price-field").forEach(el=>{
+    const raw = parseFloat(el.dataset.price);
+
+    const currentText = el.textContent.replace(/[^0-9.]/g, "");
+    const currentValue = parseFloat(currentText) || 0;
+
+    const targetValue = raw * (rates[currency] || 1);
+
+    animateValue(el, currentValue, targetValue, 450);
+    flashGlow(el); // ✨ trigger glow
+  });
+}
+
+/* =========================
+   THEME COLOR
+========================= */
+const storedColor = localStorage.getItem("nicheColor");
+
 if(storedColor){
   document.documentElement.style.setProperty("--main-color", storedColor);
 
-  // Update elements using inline styles
   document.querySelectorAll("h1, .game-card, a, #return-home, select, button").forEach(el=>{
     el.style.color = storedColor;
     el.style.borderColor = storedColor;
-    el.style.textShadow = `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
+    el.style.textShadow =
+      `0 0 5px ${storedColor}, 0 0 10px ${storedColor}, 0 0 20px ${storedColor}`;
   });
 
   document.getElementById("spotlight-title").style.color = storedColor;
   document.getElementById("spotlight-discount").style.color = storedColor;
 }
 
-let deals=[],filtered=[];
-let visible=0,chunk=20;
+/* =========================
+   DATA
+========================= */
+let deals = [], filtered = [];
+let visible = 0, chunk = 20;
 
+/* =========================
+   INIT
+========================= */
 async function init(){
+  await fetchRates();
+  await detectCurrency();
+
   for(let i=0;i<5;i++){
-    const res=await fetch(`https://www.cheapshark.com/api/1.0/deals?storeID=1&pageNumber=${i}`);
-    deals=deals.concat(await res.json());
+    const res = await fetch(`https://www.cheapshark.com/api/1.0/deals?storeID=1&pageNumber=${i}`);
+    deals = deals.concat(await res.json());
   }
+
   applyFilters();
   buildTopDeals();
 }
 
+/* =========================
+   FILTERS
+========================= */
 function applyFilters(){
-  const dVal=document.getElementById("discount-filter").value;
-  const sort=document.getElementById("sort-filter").value;
-  const search=document.getElementById("search").value.toLowerCase();
+  const dVal = document.getElementById("discount-filter").value;
+  const sort = document.getElementById("sort-filter").value;
+  const search = document.getElementById("search").value.toLowerCase();
 
-  filtered=deals.filter(d=>{
-    const s=parseFloat(d.savings);
-    if(dVal!=="all" && s<parseFloat(dVal)) return false;
+  filtered = deals.filter(d=>{
+    const s = parseFloat(d.savings);
+    if(dVal !== "all" && s < parseFloat(dVal)) return false;
     if(!d.title.toLowerCase().includes(search)) return false;
     return true;
   });
 
-  if(sort==="asc") filtered.sort((a,b)=>a.savings-b.savings);
-  else if(sort==="desc") filtered.sort((a,b)=>b.savings-a.savings);
-  else if(sort==="price-asc") filtered.sort((a,b)=>a.salePrice-b.salePrice);
-  else if(sort==="price-desc") filtered.sort((a,b)=>b.salePrice-a.salePrice);
+  if(sort === "asc") filtered.sort((a,b)=>a.savings-b.savings);
+  else if(sort === "desc") filtered.sort((a,b)=>b.savings-a.savings);
+  else if(sort === "price-asc") filtered.sort((a,b)=>a.salePrice-b.salePrice);
+  else if(sort === "price-desc") filtered.sort((a,b)=>b.salePrice-a.salePrice);
 
-  visible=0;
-  document.getElementById("steam-deals").innerHTML="";
+  visible = 0;
+  document.getElementById("steam-deals").innerHTML = "";
   render();
   spotlight();
 }
 
+/* =========================
+   RENDER
+========================= */
 function render(){
-  const slice=filtered.slice(visible,visible+chunk);
-  slice.forEach(g=>{
-    const div=document.createElement("div");
-    div.className="game-card";
+  const slice = filtered.slice(visible, visible + chunk);
 
-    div.innerHTML=`
+  slice.forEach(g=>{
+    const div = document.createElement("div");
+    div.className = "game-card";
+
+    div.innerHTML = `
       <img src="${g.thumb}">
       <div class="row">
         <span>${g.title}</span>
         <a href="https://store.steampowered.com/app/${g.steamAppID}" target="_blank">Steam</a>
         <span>${Math.round(g.savings)}%</span>
-        <span>$${g.salePrice}</span>
+        <span class="price-field" data-price="${g.salePrice}">
+          ${formatCurrency(g.salePrice * (rates[currency] || 1))}
+        </span>
       </div>
       <div class="desc">${g.steamRatingText || "No tags available"}</div>
     `;
 
-    div.onclick=()=>{ 
-      const desc=div.querySelector(".desc");
-      desc.style.display = desc.style.display==="block" ? "none" : "block";
+    div.onclick = ()=>{
+      const desc = div.querySelector(".desc");
+      desc.style.display = desc.style.display === "block" ? "none" : "block";
     };
 
     document.getElementById("steam-deals").appendChild(div);
   });
-  visible+=chunk;
+
+  visible += chunk;
 }
 
+/* =========================
+   INFINITE SCROLL
+========================= */
 window.addEventListener("scroll",()=>{
-  if(window.innerHeight+window.scrollY>=document.body.offsetHeight-200){
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
     render();
   }
 });
 
+/* =========================
+   SPOTLIGHT
+========================= */
 function spotlight(){
-  const g=filtered[Math.floor(Math.random()*filtered.length)];
+  const g = filtered[Math.floor(Math.random()*filtered.length)];
   if(!g) return;
 
-  const media=document.getElementById("spotlight-media");
-  media.src=`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
+  document.getElementById("spotlight-media").src =
+    `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.steamAppID}/header.jpg`;
 
-  document.getElementById("spotlight-title").textContent=g.title;
-  document.getElementById("spotlight-discount").textContent=Math.round(g.savings)+"% OFF";
-  document.getElementById("spotlight-link").href=`https://store.steampowered.com/app/${g.steamAppID}`;
-  document.getElementById("spotlight-link").target="_blank";
+  document.getElementById("spotlight-title").textContent = g.title;
+  document.getElementById("spotlight-discount").textContent =
+    Math.round(g.savings) + "% OFF";
+
+  document.getElementById("spotlight-link").href =
+    `https://store.steampowered.com/app/${g.steamAppID}`;
 }
 
+/* =========================
+   TOP DEALS
+========================= */
 function buildTopDeals(){
-  const belt=document.getElementById("belt");
-  const top=deals.sort((a,b)=>a.salePrice-b.salePrice).slice(0,20);
-  belt.innerHTML="";
-  const combined=top.concat(top); // duplicate for smooth loop
+  const belt = document.getElementById("belt");
+
+  const top = [...deals]
+    .sort((a,b)=>a.salePrice-b.salePrice)
+    .slice(0,20);
+
+  belt.innerHTML = "";
+  const combined = top.concat(top);
 
   combined.forEach(g=>{
-    const item=document.createElement("div");
-    item.className="belt-item";
-    item.innerHTML=`<img src="${g.thumb}">
-      <div class="info">${g.title}<br>${Math.round(g.savings)}% | $${g.salePrice}</div>`;
-    item.onclick=()=>window.open(`https://store.steampowered.com/app/${g.steamAppID}`,"_blank");
+    const item = document.createElement("div");
+    item.className = "belt-item";
+
+    item.innerHTML = `
+      <img src="${g.thumb}">
+      <div class="info">
+        ${g.title}<br>
+        ${Math.round(g.savings)}% |
+        <span class="price-field" data-price="${g.salePrice}">
+          ${formatCurrency(g.salePrice * (rates[currency] || 1))}
+        </span>
+      </div>
+    `;
+
+    item.onclick = ()=>{
+      window.open(`https://store.steampowered.com/app/${g.steamAppID}`, "_blank");
+    };
+
     belt.appendChild(item);
   });
 }
 
-document.getElementById("discount-filter").onchange=applyFilters;
-document.getElementById("sort-filter").onchange=applyFilters;
-document.getElementById("search").oninput=applyFilters;
+/* =========================
+   EVENTS
+========================= */
+document.getElementById("discount-filter").onchange = applyFilters;
+document.getElementById("sort-filter").onchange = applyFilters;
+document.getElementById("search").oninput = applyFilters;
 
-init();
+document.getElementById("currency").onchange = (e)=>{
+  currency = e.target.value;
+  refreshPrices();
+};
 
-// Back to top
+/* =========================
+   BACK TO TOP
+========================= */
 document.getElementById("back-top").onclick = (e)=>{
-  e.preventDefault(); // prevent jump
+  e.preventDefault();
   window.scrollTo({top:0, behavior:"smooth"});
 };
-document.getElementById("back-top").style.borderColor = savedColor;
-document.getElementById("back-top").style.color = savedColor;
-document.getElementById("back-top").onmouseover = ()=>{document.getElementById("back-top").style.background=savedColor; document.getElementById("back-top").style.color="#000";};
-document.getElementById("back-top").onmouseout = ()=>{document.getElementById("back-top").style.background="#000"; document.getElementById("back-top").style.color=savedColor;};
 
+/* START */
+init();
 </script>
 <!-- DISCLAIMER -->
 <div class="affiliate-disclaimer">
