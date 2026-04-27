@@ -441,10 +441,22 @@ document.getElementById("back-top").onclick = (e)=>{
   e.preventDefault(); // prevent jump
   window.scrollTo({top:0, behavior:"smooth"});
 };
-document.getElementById("back-top").style.borderColor = savedColor;
-document.getElementById("back-top").style.color = savedColor;
-document.getElementById("back-top").onmouseover = ()=>{document.getElementById("back-top").style.background=savedColor; document.getElementById("back-top").style.color="#000";};
-document.getElementById("back-top").onmouseout = ()=>{document.getElementById("back-top").style.background="#000"; document.getElementById("back-top").style.color=savedColor;};
+if (storedColor) {
+  const btn = document.getElementById("back-top");
+
+  btn.style.borderColor = storedColor;
+  btn.style.color = storedColor;
+
+  btn.onmouseover = () => {
+    btn.style.background = storedColor;
+    btn.style.color = "#000";
+  };
+
+  btn.onmouseout = () => {
+    btn.style.background = "#000";
+    btn.style.color = storedColor;
+  };
+}
 
 </script>
 
