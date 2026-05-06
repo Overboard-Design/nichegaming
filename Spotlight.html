@@ -295,6 +295,85 @@ a:hover,
     0 0 10px var(--main-color),
     0 0 20px var(--main-color);
 }
+/* ========================= */
+/* AFFILIATE GLOBAL */
+/* ========================= */
+
+.inactive{
+  display:none; /* 🔴 keeps ads hidden until ready */
+}
+/* ========================= */
+/* SIDE BANNERS */
+/* ========================= */
+
+.affiliate-sidebar{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+  width:180px;
+  z-index:999;
+}
+
+.affiliate-sidebar.left{ left:10px; }
+.affiliate-sidebar.right{ right:10px; }
+
+.affiliate-stack{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* each square */
+.affiliate-item{
+  background:#000;
+  border:2px solid var(--main-color);
+  box-shadow:0 0 10px var(--main-color);
+  padding:5px;
+}
+.affiliate-item{
+  transition:0.3s;
+}
+
+.affiliate-item:hover{
+  transform:scale(1.20);
+  z-index:1000;
+
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color);
+}
+/* square images */
+.affiliate-item img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+}
+
+body{
+  padding-bottom:110px; /* adjust if needed */
+}
+
+.affiliate-disclaimer{
+  max-width:1000px;
+  margin:80px auto 20px;
+  font-size:0.85rem;
+  opacity:0.7;
+  line-height:1.5;
+  text-align:center;
+}
+@media(max-width:1200px){
+  .affiliate-sidebar{
+    display:none;
+  }
+}
+.affiliate-item:hover{
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color);
+}
 </style>
 </head>
 
@@ -572,6 +651,48 @@ Affiliate Disclaimer: Some links on this page may be affiliate links. We may ear
 
 <a href="#" id="back-top">Back to Top</a>
 
+<aside></aside>
+</div>
+<!-- ========================= -->
+<!-- AFFILIATE SIDE LEFT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar left">
+
+  <div class="affiliate-stack">
+
+    <!-- 3 square slots -->
+   <a href="https://www.g2a.com/n/atomfull" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="atomfall AL (1).jpg" alt="Affiliate Ad">
+</a>
+
+   <a href="https://www.g2a.com/n/hold-fast" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Holdfast AL.jpg" alt="Affiliate Ad">
+  </a>
+
+
+   <a href="https://www.g2a.com/n/ottww1" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Over the top AL.jpg" alt="Affiliate Ad">
+</a>
+
+  </div> 
+</div>
+
+
+<!-- ========================= -->
+<!-- AFFILIATE SIDE RIGHT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar right inactive">
+  <div class="affiliate-stack">
+
+    <a href="https://freecash.com/r/2MWHZH" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="FREECASH AL.jpg" alt="Affiliate Ad">
+</a>
+    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Turtle Beach Recon 50 AL.png" alt="Affiliate Ad">
+  
+  <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="R36SL AL.png" alt="Affiliate Ad">
+</a>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
