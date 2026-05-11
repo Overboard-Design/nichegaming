@@ -1,240 +1,808 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
+
 <title>NicheGaming</title>
+
 <link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
+
 <meta name="description" content="Discover playtests, demos, gaming communities and deals at NicheGaming.">
+
 <meta name="keywords" content="gaming, clan, guild, community, pvp, pve, pc, gamer, demo, xbox, playstation, playtests, sales, steam">
+
 <meta name="author" content="Overboard Design">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap">
 
-<!-- Unified CSS -->
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+
+<link rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap">
+
+<style>
+
+/* ======================
+   GLOBAL
+====================== */
+
+html,
+body{
+  margin:0;
+  padding:0;
+
+  overflow-x:hidden;
+
+  background:black;
+
+  font-family:'Orbitron',sans-serif;
+}
+
+/* ======================
+   CRT EFFECT
+====================== */
+
+.crt-screen::before{
+
+  content:"";
+
+  position:fixed;
+  inset:0;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+
+  pointer-events:none;
+
+  z-index:999;
+}
+
+/* ======================
+   FIXED NAV
+====================== */
+
+.menu-container{
+
+  position:fixed;
+
+  top:0;
+  left:0;
+
+  width:100%;
+
+  z-index:9999;
+
+  background:rgba(0,0,0,0.92);
+
+  backdrop-filter:blur(4px);
+
+  padding:12px 0;
+
+  transition:box-shadow 0.3s ease;
+}
+.top-bar{
+
+  width:95%;
+
+  margin:auto;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:18px;
+}
+.menu{
+
+  flex:1;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  gap:12px;
+
+  flex-wrap:wrap;
+}
+
+.menu-item{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:10px 14px;
+
+  text-decoration:none;
+
+  border:2px solid #39ff14;
+
+  border-radius:4px;
+
+  font-size:0.8rem;
+
+  transition:0.25s ease;
+}
+
+.menu-item:hover{
+
+  transform:translateY(-2px) scale(1.03);
+}
+
+/* ======================
+   PAGE SPACING
+====================== */
+
+body{
+  padding-top:120px;
+}
+
+/* ======================
+   COLOR PICKER
+====================== */
+.picker-wrap{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+}
+
+#color-picker{
+
+  width:48px;
+
+  height:48px;
+
+  padding:0;
+
+  background:black;
+
+  border-radius:4px;
+
+  cursor:pointer;
+
+  appearance:none;
+
+  overflow:hidden;
+}
+
+#color-picker::-webkit-color-swatch{
+
+  border:none;
+}
+
+#color-picker::-webkit-color-swatch-wrapper{
+
+  padding:0;
+}
+
+/* ======================
+   MAIN WINDOW
+====================== */
+.typewriter-box::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+
+  background:linear-gradient(
+    to bottom,
+    black,
+    transparent
+  );
+
+  pointer-events:none;
+  z-index:5;
+}
+
+.typewriter-box{
+  position:relative;
+
+  width:min(88vw,1050px);
+  height:480px;
+
+  margin:30px auto;
+  padding:40px;
+
+  overflow:hidden; /* keep this */
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:flex-start;
+
+  background:rgba(0,0,0,0.84);
+
+  border:3px solid #39ff14;
+
+  border-radius:6px;
+
+  box-shadow:
+    0 0 10px #39ff14,
+    0 0 25px #39ff14,
+    inset 0 0 20px rgba(57,255,20,0.2);
+}
+
+/* ======================
+   TYPEWRITER TEXT
+====================== */
+
+.typewriter-line{
+
+  width:100%;
+
+  line-height:1.7;
+
+  margin-bottom:22px;
+
+  font-size:clamp(0.7rem,1.2vw,1.2rem);
+
+  font-weight:400;
+
+  letter-spacing:0.5px;
+
+  text-align:left;
+
+  -webkit-font-smoothing:antialiased;
+
+  text-rendering:optimizeLegibility;
+}
+
+/* ======================
+   CANVAS
+====================== */
+
+#arcadeCanvas{
+
+  width:100%;
+
+  height:100%;
+
+  display:block;
+}
+
+/* ======================
+   FOOTER
+====================== */
+
+footer{
+
+  text-align:center;
+
+  padding:30px 10px;
+
+  font-size:0.9rem;
+}
+
+/* ======================
+   TABLET
+====================== */
+
+@media (max-width:1024px){
+
+  .typewriter-box{
+
+    width:92vw;
+
+    min-height:420px;
+
+    padding:28px;
+  }
+
+  .menu-item{
+
+    font-size:0.72rem;
+
+    padding:8px 12px;
+  }
+}
+
+/* ======================
+   MOBILE
+====================== */
+
+@media (max-width:768px){
+
+  body{
+    padding-top:145px;
+  }
+
+  .menu{
+    gap:8px;
+  }
+
+  .menu-item{
+
+    flex:1 1 auto;
+
+    font-size:0.62rem;
+
+    padding:7px 10px;
+  }
+
+  .typewriter-box{
+
+    width:94vw;
+
+    min-height:320px;
+
+    padding:18px;
+  }
+
+  .typewriter-line{
+
+    font-size:1rem;
+
+    line-height:1.5;
+  }
+
+  footer{
+    font-size:0.75rem;
+  }
+}
+
+/* ======================
+   SMALL MOBILE
+====================== */
+
+@media (max-width:480px){
+
+  body{
+    padding-top:165px;
+  }
+
+  .menu-item{
+
+    font-size:0.55rem;
+
+    padding:6px 8px;
+  }
+
+  .typewriter-box{
+    min-height:280px;
+  }
+
+  .typewriter-line{
+    font-size:0.9rem;
+  }
+}
+
+</style>
+
 </head>
 
 <body class="crt-screen">
 
-</script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-<!-- Navigation -->
+
+
+<!-- NAVIGATION -->
+
 <header class="menu-container">
-  <nav class="menu">
-    <a href="Spotlight.html" class="menu-item">Spotlights</a>
-    <a href="playtests.html" class="menu-item">Playtests</a>
-    <a href="demos.html" class="menu-item" >Demos</a>
-    <a href="steam sales.html" class="menu-item">Steam Sales</a>
-    <a href="retro gaming.html" class="menu-item">Retro Gaming</a>
-    <a href="gamingcommunities.html" class="menu-item">Gaming Communities</a>
-    <a href="tools.html" class="menu-item">Creators Corner</a>
-  </nav>
+
+  <div class="top-bar">
+
+    <div class="picker-wrap">
+
+      <input type="color"
+             id="color-picker"
+             value="#39ff14">
+
+    </div>
+
+    <nav class="menu">
+
+      <a href="Spotlight.html" class="menu-item">Spotlights</a>
+
+      <a href="playtests.html" class="menu-item">Playtests</a>
+
+      <a href="demos.html" class="menu-item">Demos</a>
+
+      <a href="steam sales.html" class="menu-item">Steam Sales</a>
+
+      <a href="retro gaming.html" class="menu-item">Retro Gaming</a>
+
+      <a href="gamingcommunities.html" class="menu-item">Gaming Communities</a>
+
+      <a href="tools.html" class="menu-item">Creators Corner</a>
+
+    </nav>
+
+  </div>
+
 </header>
 
-<!-- Title -->
-<section class="title">
-  <h1 style="font-family:'Orbitron',sans-serif;">NicheGaming</h1>
-</section>
 
-<!-- Color Picker -->
-<div style="text-align:left;margin:10px auto;max-width:1200px;">
-  <input type="color" id="color-picker" value="#39ff14" style="cursor:pointer;">
-</div>
 
-<!-- Typewriter Box -->
+<!-- MAIN WINDOW -->
+
 <section class="typewriter-box" id="typewriter-box">
+
   <div class="typewriter-line">
     Discover a one-stop destination built by a gamer, for gamers. At NicheGaming, you’ll find everything you need to fuel your passion.
   </div>
+
   <div class="typewriter-line">
-   Curated Playtests & Demos – Be the first to try the best upcoming titles, explore new worlds before anyone else.
+    Curated Playtests & Demos – Be the first to try the best upcoming titles, explore new worlds before anyone else.
   </div>
+
   <div class="typewriter-line">
     Thriving Gaming Communities – Connect with like-minded players and squad up for your next adventure.
   </div>
+
   <div class="typewriter-line">
     Best Game Deals – Stay ahead with real-time discounts on Steam, key marketplaces and more.
   </div>
+
   <div class="typewriter-line">
-    Handpicked Tools – Discover helpful resources tailored to Content Creators and Gaming Communitys.
+    Handpicked Tools – Discover helpful resources tailored to Content Creators and Gaming Communities.
   </div>
+
   <div class="typewriter-line">
     Whether you're casual or hardcore, NicheGaming is your launchpad to a richer gaming experience.
   </div>
-  <div class="typewriter-line" id="loading-line">Loading...</div>
+
+  <div class="typewriter-line" id="loading-line">
+    Loading...
+  </div>
+
 </section>
 
-<footer>By Overboard Design.</footer>
+<footer>
+  By Overboard Design.
+</footer>
 
 <script>
+
 // ======================
-// GLOBAL ELEMENTS
+// GLOBALS
 // ======================
+
 const box = document.getElementById("typewriter-box");
+
 const colorPicker = document.getElementById("color-picker");
-const originalLines = Array.from(box.querySelectorAll(".typewriter-line"));
-const typingSpeed = 30;
+
+const originalLines = Array.from(
+  box.querySelectorAll(".typewriter-line")
+);
+
+const typingSpeed = 52;
 const linePause = 800;
 const cursorChar = "|";
+
 const storedLines = originalLines.map(line => line.textContent);
 
 // ======================
 // LOAD SAVED COLOR
 // ======================
+
 const savedColor = localStorage.getItem("nicheColor");
-if(savedColor){
+
+if (savedColor) {
   colorPicker.value = savedColor;
-  updateColors(savedColor); // apply saved color immediately
+  updateColors(savedColor);
 } else {
-  updateColors(colorPicker.value); // fallback to default
+  updateColors(colorPicker.value);
 }
 
 // ======================
-// HIDE ALL LINES INITIALLY
+// HIDE INITIAL TEXT
 // ======================
-originalLines.forEach(line => line.style.visibility = "hidden");
+
+originalLines.forEach(line => {
+  line.style.visibility = "hidden";
+});
 
 // ======================
-// TYPEWRITER EFFECT
+// TYPEWRITER
 // ======================
-async function typeLine(line, isLast = false){
+
+async function typeLine(line, isLast = false) {
+
   const fullText = line.textContent;
+
   line.textContent = "";
   line.style.visibility = "visible";
-  line.style.color = colorPicker.value;
-  line.style.textShadow = `0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value},0 0 20px ${colorPicker.value}`;
-  
-  for(let i = 0; i <= fullText.length; i++){
+
+  const color = colorPicker.value;
+
+  line.style.color = color;
+  line.style.textShadow = `
+    0 0 3px ${color},
+    0 0 8px ${color}
+  `;
+
+  for (let i = 0; i <= fullText.length; i++) {
+
     const visibleText = fullText.substring(0, i);
-    line.innerHTML = visibleText + (isLast ? `<span class="cursor">${cursorChar}</span>` : '');
+
+    line.innerHTML =
+      visibleText +
+      (isLast ? `<span class="cursor">${cursorChar}</span>` : "");
+
     await new Promise(r => setTimeout(r, typingSpeed));
   }
-  
-  if(!isLast) line.textContent = fullText;
+
+  if (!isLast) {
+    line.textContent = fullText;
+  }
 }
 
-async function typeAllLines(lines){
-  for(let i = 0; i < lines.length; i++){
+async function typeAllLines(lines) {
+
+  for (let i = 0; i < lines.length; i++) {
+
     const isLast = i === lines.length - 1;
+
     await typeLine(lines[i], isLast);
+
     await new Promise(r => setTimeout(r, linePause));
   }
 }
 
 // ======================
-// VIDEO INTRO THEN RESTORE TEXT
+// ARCADE INTRO (UNCHANGED LOGIC)
 // ======================
-async function showVideoThenRestoreText(){
-  box.innerHTML = `
-    <div style="position:relative;">
-      <video id="intro-video" autoplay muted playsinline style="width:100%;border-radius:4px;">
-        <source src="Welcome to niche gaming (1).mp4" type="video/mp4">
-      </video>
-      <button id="unmute-btn" style="
-        position:absolute;
-        bottom:20px;
-        right:20px;
-        padding:10px 14px;
-        font-family:'Orbitron',monospace;
-        font-size:0.7rem;
-        background-color:rgba(0,0,0,0.8);
-        color:${colorPicker.value};
-        border:2px solid ${colorPicker.value};
-        border-radius:4px;
-        cursor:pointer;
-        z-index:2;
-        text-shadow:0 0 5px ${colorPicker.value},0 0 10px ${colorPicker.value};
-      ">Unmute</button>
-    </div>
-  `;
-  
-  const video = document.getElementById("intro-video");
-  const btn = document.getElementById("unmute-btn");
-  
-  btn.addEventListener("click", ()=> {
-    video.muted = false;
-    video.volume = 1;
-    btn.style.display = "none";
-  });
-  
-  video.addEventListener("ended", ()=> {
-    box.innerHTML = "";
-    storedLines.forEach(text => {
-      const newLine = document.createElement("div");
-      newLine.className = "typewriter-line";
-      newLine.textContent = text;
-      newLine.style.visibility = "hidden";
-      box.appendChild(newLine);
+
+async function showArcadeIntro() {
+
+  box.innerHTML = `<canvas id="arcadeCanvas"></canvas>`;
+
+  const canvas = document.getElementById("arcadeCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let W, H;
+
+  function resizeCanvas() {
+    canvas.width = box.clientWidth;
+    canvas.height = box.clientHeight;
+    W = canvas.width;
+    H = canvas.height;
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const stars = [];
+  const neon = colorPicker.value;
+
+  for (let i = 0; i < 120; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 2,
+      speed: Math.random() * 1.5 + 0.2
     });
-    const newLines = Array.from(box.querySelectorAll(".typewriter-line"));
-    typeAllLines(newLines);
-  });
+  }
+
+  const invaders = [];
+
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 10; c++) {
+      invaders.push({
+        x: W * 0.12 + c * W * 0.07,
+        y: H * 0.18 + r * H * 0.09
+      });
+    }
+  }
+
+  let direction = 1;
+  let frame = 0;
+  let collapse = false;
+  let titleAlpha = 0;
+
+  function drawInvader(x, y) {
+    ctx.fillStyle = neon;
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = neon;
+
+    ctx.fillRect(x, y, 30, 30);
+    ctx.fillRect(x - 10, y + 10, 10, 10);
+    ctx.fillRect(x + 30, y + 10, 10, 10);
+    ctx.fillRect(x + 5, y + 30, 8, 10);
+    ctx.fillRect(x + 17, y + 30, 8, 10);
+  }
+
+  function animate() {
+
+    frame++;
+
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, W, H);
+
+    // stars
+    stars.forEach(s => {
+      ctx.fillStyle = neon;
+      ctx.fillRect(s.x, s.y, s.size, s.size);
+
+      s.y += s.speed;
+
+      if (s.y > H) {
+        s.y = 0;
+        s.x = Math.random() * W;
+      }
+    });
+
+    // invaders
+    if (!collapse) {
+
+      invaders.forEach(i => {
+        drawInvader(i.x, i.y);
+        i.x += direction * 0.8;
+      });
+
+      if (frame % 120 === 0) {
+        direction *= -1;
+        invaders.forEach(i => i.y += 20);
+      }
+    }
+
+    // collapse
+    if (frame > 600) {
+
+      collapse = true;
+
+      invaders.forEach(i => {
+        i.y += 8;
+        i.x += (Math.random() - 0.5) * 8;
+      });
+
+      titleAlpha += 0.01;
+    }
+
+    // title
+    if (collapse) {
+
+      ctx.save();
+
+      ctx.globalAlpha = titleAlpha;
+
+      const fontSize = Math.min(W * 0.11, 110);
+
+      ctx.font = `600 ${fontSize}px Orbitron`;
+      ctx.textAlign = "center";
+
+      ctx.fillStyle = neon;
+      ctx.shadowBlur = 25;
+      ctx.shadowColor = neon;
+
+      ctx.fillText("█ NICHEGAMING █", W / 2, H * 0.52);
+
+      ctx.restore();
+    }
+
+    // scanlines
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    for (let y = 0; y < H; y += 4) {
+      ctx.fillRect(0, y, W, 2);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
 
 // ======================
-// INITIALIZE TYPEWRITER
+// STARTUP
 // ======================
-typeAllLines(originalLines).then(()=> setTimeout(showVideoThenRestoreText, 1000));
+
+typeAllLines(originalLines)
+  .then(() => setTimeout(showArcadeIntro, 1000));
 
 // ======================
-// UPDATE COLORS FUNCTION
+// COLOR SYSTEM
 // ======================
-function updateColors(color){
-  // Save to localStorage for cross-page persistence
+
+function updateColors(color) {
+
   localStorage.setItem("nicheColor", color);
 
   document.body.style.color = color;
 
-  // Update color picker border
-colorPicker.style.border = `2px solid ${color}`;
+  colorPicker.style.border = `2px solid ${color}`;
 
-  document.querySelectorAll("h1").forEach(h => {
-    h.style.color = color;
-    h.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color},0 0 40px ${color}`;
-  });
+  // NAV GLOW
+  const menuContainer = document.querySelector(".menu-container");
 
-  document.querySelectorAll(".typewriter-box").forEach(box => {
-    box.style.borderColor = color;
-    box.style.boxShadow = `0 0 10px ${color},0 0 20px ${color},0 0 30px ${color}`;
-    box.style.color = color;
-    box.querySelectorAll(".typewriter-line").forEach(line => {
-      line.style.color = color;
-      line.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
+  if (menuContainer) {
+    menuContainer.style.boxShadow =
+      `0 0 10px ${color}, 0 0 20px ${color}`;
+  }
+
+  // MENU BUTTONS
+  document.querySelectorAll(".menu-item").forEach(link => {
+
+    link.style.color = color;
+    link.style.borderColor = color;
+    link.style.textShadow = `
+      0 0 3px ${color},
+      0 0 8px ${color}
+    `;
+
+    // hover glow fix
+    link.addEventListener("mouseenter", () => {
+      link.style.boxShadow =
+        `0 0 8px ${color},
+         0 0 18px ${color},
+         0 0 28px ${color}`;
+    });
+
+    link.addEventListener("mouseleave", () => {
+      link.style.boxShadow = "none";
     });
   });
 
-  document.querySelectorAll(".menu-item").forEach(link => {
-    link.style.color = color;
-    link.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
-    link.style.borderColor = color;
-  });
+  // TYPEWRITER BOX
+  document.querySelectorAll(".typewriter-box")
+    .forEach(b => {
 
-  const returnBtn = document.getElementById("return-home");
-  if(returnBtn){
-    returnBtn.style.color = color;
-    returnBtn.style.borderColor = color;
-    returnBtn.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
-  }
+      b.style.borderColor = color;
+      b.style.boxShadow =
+        `0 0 10px ${color},
+         0 0 20px ${color},
+         0 0 30px ${color}`;
 
-  document.querySelectorAll(".cursor").forEach(cursor => {
-    cursor.style.color = color;
-    cursor.style.textShadow = `0 0 5px ${color},0 0 10px ${color},0 0 20px ${color}`;
-  });
+      b.querySelectorAll(".typewriter-line")
+        .forEach(line => {
 
-  document.querySelectorAll("footer").forEach(f => f.style.color = color);
+          line.style.color = color;
+          line.style.textShadow = `
+            0 0 3px ${color},
+            0 0 8px ${color}
+          `;
+        });
+    });
+
+  // CURSOR
+  document.querySelectorAll(".cursor")
+    .forEach(c => {
+      c.style.color = color;
+      c.style.textShadow = `
+        0 0 3px ${color},
+        0 0 8px ${color}
+      `;
+    });
+
+  // FOOTER
+  document.querySelectorAll("footer")
+    .forEach(f => {
+      f.style.color = color;
+    });
 }
 
+// ======================
+// COLOR PICKER
+// ======================
 
-// ======================
-// COLOR PICKER EVENT
-// ======================
-colorPicker.addEventListener("input", e => updateColors(e.target.value));
+colorPicker.addEventListener(
+  "input",
+  e => updateColors(e.target.value)
+);
 
 </script>
+
 </body>
 </html>
