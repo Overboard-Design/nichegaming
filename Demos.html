@@ -251,10 +251,116 @@ a:hover,
   opacity:0.7;
   line-height:1.5;
 }
+/* =========================
+   DISABLE SYSTEM CURSOR
+========================= */
+
+html, body {
+  cursor: none !important;
+}
+
+*, *::before, *::after {
+  cursor: none !important;
+}
+
+/* =========================
+   CRT CURSOR CORE
+========================= */
+
+#crt-cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+
+  background: var(--main-color);
+
+  box-shadow:
+    0 0 6px var(--main-color),
+    0 0 12px var(--main-color),
+    0 0 24px var(--main-color);
+}
+
+
+/* outer pulse ring */
+#crt-cursor::after{
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--main-color);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: ringPulse 1.2s ease-in-out infinite;
+}
+
+/* =========================
+   CURSOR PULSE (core glow breathing)
+========================= */
+
+@keyframes cursorPulse {
+  0% {
+    box-shadow:
+      0 0 4px var(--main-color),
+      0 0 10px var(--main-color),
+      0 0 20px var(--main-color);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 8px var(--main-color),
+      0 0 18px var(--main-color),
+      0 0 40px var(--main-color);
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+  100% {
+    box-shadow:
+      0 0 4px var(--main-color),
+      0 0 10px var(--main-color),
+      0 0 20px var(--main-color);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* =========================
+   OUTER SCAN RING
+========================= */
+
+@keyframes ringPulse {
+  0% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.8);
+  }
+}
+#crt-ripple{
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--main-color);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999998;
+  transform: translate(-50%, -50%);
+}
 </style>
 </head>
 <body>
-
+<div id="crt-cursor"></div>
+<div id="crt-ripple"></div>
 <section class="spotlight">
   <div class="video-wrapper">
     <div id="spotlight-video"></div>
@@ -489,6 +595,34 @@ if (storedColor) {
     btn.style.color = storedColor;
   };
 }
+window.addEventListener("DOMContentLoaded", () => {
+
+  const cursor = document.getElementById("crt-cursor");
+  if (!cursor) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+
+  let x = 0;
+  let y = 0;
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function animate() {
+    x += (mouseX - x) * 0.18;
+    y += (mouseY - y) * 0.18;
+
+    cursor.style.left = x + "px";
+    cursor.style.top = y + "px";
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+});
 
 </script>
 
