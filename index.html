@@ -93,21 +93,25 @@ body{
 }
 .top-bar{
 
-  width:min(95vw,1200px);
-
-  margin:auto;
+  width:100%;
 
   display:flex;
 
   align-items:center;
 
-  justify-content:center;
+  justify-content:flex-start;
 
-  gap:20px;
+  position:relative;
+
+  padding:0 20px;
 }
 .menu{
 
-  flex:1;
+  position:absolute;
+
+  left:50%;
+
+  transform:translateX(-50%);
 
   display:flex;
 
@@ -176,7 +180,7 @@ body{
 
   align-items:center;
 
-  justify-content:center;
+  justify-content:flex-start;
 }
 
 #color-picker{
@@ -539,6 +543,49 @@ html, body {
   z-index: 999998;
   transform: translate(-50%, -50%);
 }
+.controls-hud{
+
+  position:absolute;
+
+  bottom:16px;
+
+  right:18px;
+
+  z-index:50;
+
+  opacity:0;
+
+  transition:opacity 0.4s ease;
+
+  padding:6px 10px;
+
+  border:1px solid var(--main-color);
+
+  border-radius:4px;
+
+  background:rgba(0,0,0,0.72);
+
+  color:var(--main-color);
+
+  font-size:0.5rem;
+
+  line-height:1.5;
+
+  letter-spacing:1px;
+
+  text-align:right;
+
+  text-shadow:
+    0 0 3px var(--main-color),
+    0 0 6px var(--main-color);
+
+  box-shadow:
+    0 0 8px var(--main-color);
+
+  backdrop-filter:blur(2px);
+
+  pointer-events:none;
+}
 </style>
 
 </head>
@@ -592,6 +639,8 @@ html, body {
 
 <section class="typewriter-box" id="typewriter-box">
 
+
+
   <div class="typewriter-line">
     Discover a one-stop destination built by a gamer, for gamers. At NicheGaming, you’ll find everything you need to fuel your passion.
   </div>
@@ -619,8 +668,17 @@ html, body {
   <div class="typewriter-line" id="loading-line">
     Loading...
   </div>
+<!-- CONTROLS HUD -->
 
+<div class="controls-hud">
+
+  <div>← → MOVE</div>
+
+  <div>SPACE = SHOOT</div>
+
+</div>
 </section>
+
 
 <footer>
   By Overboard Design.
@@ -640,8 +698,8 @@ const originalLines = Array.from(
   box.querySelectorAll(".typewriter-line")
 );
 
-const typingSpeed = 52;
-const linePause = 800;
+const typingSpeed = 42;
+const linePause = 500;
 const cursorChar = "|";
 
 const storedLines = originalLines.map(line => line.textContent);
@@ -715,63 +773,108 @@ async function typeAllLines(lines) {
 }
 
 // ======================
-// ARCADE INTRO (UNCHANGED LOGIC)
+// ARCADE INTRO
 // ======================
 
 async function showArcadeIntro() {
 
-  box.innerHTML = `<canvas id="arcadeCanvas"></canvas>`;
 
-  const canvas = document.getElementById("arcadeCanvas");
-  const ctx = canvas.getContext("2d");
+  // clear typewriter text
+  box.innerHTML = "";
+
+
+  // add canvas
+ box.innerHTML = `
+  <canvas id="arcadeCanvas"></canvas>
+
+  <div class="controls-hud">
+
+    <div>← → MOVE</div>
+
+    <div>SPACE = SHOOT</div>
+
+  </div>
+`;
+
+const hud =
+  document.querySelector(".controls-hud");
+
+if (hud) {
+  hud.style.opacity = "1";
+}
+
+  const canvas =
+    document.getElementById("arcadeCanvas");
+
+  const ctx =
+    canvas.getContext("2d");
 
   let W, H;
 
   function resizeCanvas() {
+
     canvas.width = box.clientWidth;
+
     canvas.height = box.clientHeight;
+
     W = canvas.width;
+
     H = canvas.height;
   }
 
   resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
+
+  window.addEventListener(
+    "resize",
+    resizeCanvas
+  );
 
   const stars = [];
-  
 
   for (let i = 0; i < 120; i++) {
+
     stars.push({
+
       x: Math.random() * W,
       y: Math.random() * H,
+
       size: Math.random() * 2,
-      speed: Math.random() * 1.5 + 0.2
+
+      speed:
+        Math.random() * 1.5 + 0.2
     });
   }
 
   const invaders = [];
 
   for (let r = 0; r < 4; r++) {
+
     for (let c = 0; c < 10; c++) {
+
       invaders.push({
+
         x: W * 0.12 + c * W * 0.07,
+
         y: H * 0.18 + r * H * 0.09
       });
     }
   }
 
   let direction = 1;
+
   let frame = 0;
+
   let collapse = false;
+
   let titleAlpha = 0;
-  
-let gameOver = false;
 
-let playerLives = 3;
+  let gameOver = false;
 
-let playerHit = false;
+  let playerLives = 1;
 
-let playerHitTimer = 0;
+  let playerHit = false;
+
+  let playerHitTimer = 0;
 // ======================
 // PLAYER
 // ======================
