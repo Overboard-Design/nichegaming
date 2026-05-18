@@ -24,21 +24,29 @@ h1{
 }
 #demo-list{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
-  max-width:1200px;
+  max-width:1100px;
   margin:20px auto 40px auto;
-  padding:0 10px;
+  padding:0 20px;
 }
 .game-card{
   background:#000;
   border:2px solid var(--main-color);
   padding:15px;
   border-radius:6px;
-  box-shadow:0 0 10px var(--main-color),0 0 20px var(--main-color);
+
+  /* narrower cards */
+  max-width:320px;
+  margin:0 auto;
+
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color);
+
   transition:.3s, box-shadow 0.5s;
   cursor:pointer;
-  position: relative;
+  position:relative;
 }
 .game-card:hover{
   transform:scale(1.05);
@@ -356,8 +364,133 @@ html, body {
   z-index: 999998;
   transform: translate(-50%, -50%);
 }
+.release-badge{
+
+  margin-top:12px;
+  display:inline-block;
+
+  padding:4px 10px;
+
+  background:#000;
+
+  border:2px solid #ff3131;
+  color:#ff3131;
+
+  font-size:0.7rem;
+  font-weight:800;
+
+  border-radius:4px;
+
+  text-shadow:
+    0 0 5px #ff3131,
+    0 0 10px #ff3131;
+
+  box-shadow:
+    0 0 8px #ff3131;
+}
+/* ========================= */
+/* AFFILIATE GLOBAL */
+/* ========================= */
+
+.inactive{
+  display:none; /* 🔴 keeps ads hidden until ready */
+}
+/* ========================= */
+/* SIDE BANNERS */
+/* ========================= */
+
+.affiliate-sidebar {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%) translateY(10px);
+
+  width: 180px;
+  z-index: 999;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* left/right positioning stays unchanged */
+.affiliate-sidebar.left { left: 10px; }
+.affiliate-sidebar.right { right: 10px; }
+
+/* visible state */
+.affiliate-sidebar.active {
+  opacity: 1;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+.affiliate-stack{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* each square */
+.affiliate-item{
+  background:#000;
+  border:2px solid var(--main-color);
+  box-shadow:0 0 10px var(--main-color);
+  padding:5px;
+}
+.affiliate-item{
+  transition:0.3s;
+}
+
+.affiliate-item:hover{
+  transform:scale(1.20);
+  z-index:1000;
+
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color),
+    0 0 80px var(--main-color);
+}
+/* square images */
+.affiliate-item img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+}
+
+body{
+  padding-bottom:110px; /* adjust if needed */
+}
+
+.affiliate-disclaimer{
+  max-width:1000px;
+  margin:80px auto 20px;
+  font-size:0.85rem;
+  opacity:0.7;
+  line-height:1.5;
+  text-align:center;
+}
+@media(max-width:1200px){
+  .affiliate-sidebar{
+    display:none;
+  }
+}
+.affiliate-item:hover{
+  box-shadow:
+    0 0 10px var(--main-color),
+    0 0 20px var(--main-color),
+    0 0 40px var(--main-color);
+}
+html.loading-sidebar .affiliate-sidebar {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  pointer-events: none !important;
+}
 </style>
 </head>
+<script>
+  document.documentElement.classList.add("loading-sidebar");
+</script>
 <body>
 <div id="crt-cursor"></div>
 <div id="crt-ripple"></div>
@@ -387,7 +520,46 @@ Affiliate Disclaimer: Some links on this page may be affiliate links. We may ear
 </div>
 <!-- Back to Top Button -->
 <a href="#" id="back-top">Back to Top</a>
+<!-- ========================= -->
+<!-- AFFILIATE SIDE LEFT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar left inactive ">
 
+  <div class="affiliate-stack">
+
+    <!-- 3 square slots -->
+   <a href="https://www.g2a.com/n/atomfull" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="atomfall AL (1).jpg" alt="Affiliate Ad">
+</a>
+
+   <a href="https://www.g2a.com/n/hold-fast" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Holdfast AL.jpg" alt="Affiliate Ad">
+  </a>
+
+
+   <a href="https://www.g2a.com/n/ottww1" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Over the top AL.jpg" alt="Affiliate Ad">
+</a>
+
+  </div> 
+</div>
+
+
+<!-- ========================= -->
+<!-- AFFILIATE SIDE RIGHT -->
+<!-- ========================= -->
+<div class="affiliate-sidebar right inactive">
+  <div class="affiliate-stack">
+
+    <a href="https://freecash.com/r/2MWHZH" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="FREECASH AL.jpg" alt="Affiliate Ad">
+</a>
+    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="Turtle Beach Recon 50 AL.png" alt="Affiliate Ad">
+  
+  <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
+  <img src="R36SL AL.png" alt="Affiliate Ad">
+</a>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 // Persisted color from index
@@ -403,30 +575,30 @@ if(storedColor){
 
 // Demo data
 const demos = [
-{ name:"Friendly Steps", appid:"4279630", youtubeId:"6GnBj_jSu1c" },
-  { name:"Trainfort", appid:"2593980", youtubeId:"IFbgzp9coVc" },
-  { name:"ORMOD: Directive", appid:"3424730", youtubeId:"RxqX6yzkkGE" },
-  { name:"ENTRY_13", appid:"3930910", youtubeId:"wfjvI8Lm80g" },
-  { name:"Cleaner Company", appid:"3644020", youtubeId:"iONvT6V-JCM" },
-  { name:"Cyber Rail", appid:"2468230", youtubeId:"yMu6myReNNA" },
-  { name:"Static Dread: The Submarine", appid:"4042160", youtubeId:"6UnDeL9UrHA" },
-  { name:"Nomad: Steppeborn Saga", appid:"2564480", youtubeId:"hQk0BCq71tI" },
-  { name:"Rescue Ops: Wildfire", appid:"2915770", youtubeId:"8E4LHkHcjgs" },
-  { name:"CactusBandido", appid:"3330290", youtubeId:"BHJEMZdDJDo" },
-  { name:"Rockhounds", appid:"3563060", youtubeId:"LTZPm-2ceNE" },
-  { name:"Evade The Light", appid:"1601870", youtubeId:"hBh_zaGMM2Y" },
-  { name:"Venison County", appid:"3868900", youtubeId:"mbhnXCKGuBg" },
-  { name:"Gang of Frogs", appid:"3081510", youtubeId:"ve9qzH7jn_A" },
-  { name:"Triarchy", appid:"2708040", youtubeId:"jktHoTDguW8" },
-  { name:"Outward 2", appid:"2849490", youtubeId:"PKSH4d-iN-k" },
-  { name:"Blackroot: Medieval Survival", appid:"2241550", youtubeId:"wmDChiLjqYs" },
-  { name:"Shadow Of The Union", appid:"3574810", youtubeId:"8bVs_L6FPBM" },
-  { name:"Myth of Valderit", appid:"3976610", youtubeId:"hQdp7DHbe4I" },
-  { name:"Cranked", appid:"3989790", youtubeId:"2LsZoRIHYXY" },
-  { name:"Ardem", appid:"2179480", youtubeId:"cDzAqcROkpI" },
-  { name:"Enfant", appid:"4025390", youtubeId:"vN7bpdIHl6s" },
-  { name:"WILDERLOCKE", appid:"3512280", youtubeId:"1mCLdXWlK2g" },
-  { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k" },
+{ name:"Friendly Steps", appid:"4279630", youtubeId:"6GnBj_jSu1c" ,released:false },
+  { name:"Trainfort", appid:"2593980", youtubeId:"IFbgzp9coVc" ,released:false },
+  { name:"ORMOD: Directive", appid:"3424730", youtubeId:"RxqX6yzkkGE",released:false },
+  { name:"ENTRY_13", appid:"3930910", youtubeId:"wfjvI8Lm80g",released:false },
+  { name:"Cleaner Company", appid:"3644020", youtubeId:"iONvT6V-JCM",released:false },
+  { name:"Cyber Rail", appid:"2468230", youtubeId:"yMu6myReNNA",released:false },
+  { name:"Static Dread: The Submarine", appid:"4042160", youtubeId:"6UnDeL9UrHA",released:false },
+  { name:"Nomad: Steppeborn Saga", appid:"2564480", youtubeId:"hQk0BCq71tI",released:false },
+  { name:"Rescue Ops: Wildfire", appid:"2915770", youtubeId:"8E4LHkHcjgs",released:false },
+  { name:"CactusBandido", appid:"3330290", youtubeId:"BHJEMZdDJDo",released:false },
+  { name:"Rockhounds", appid:"3563060", youtubeId:"LTZPm-2ceNE",released:false },
+  { name:"Evade The Light", appid:"1601870", youtubeId:"hBh_zaGMM2Y",released:false },
+  { name:"Venison County", appid:"3868900", youtubeId:"mbhnXCKGuBg",released:false },
+  { name:"Gang of Frogs", appid:"3081510", youtubeId:"ve9qzH7jn_A",released:false },
+  { name:"Triarchy", appid:"2708040", youtubeId:"jktHoTDguW8",released:false },
+  { name:"Outward 2", appid:"2849490", youtubeId:"PKSH4d-iN-k",released:false },
+  { name:"Blackroot: Medieval Survival", appid:"2241550", youtubeId:"wmDChiLjqYs",released:false },
+  { name:"Shadow Of The Union", appid:"3574810", youtubeId:"8bVs_L6FPBM",released:false },
+  { name:"Myth of Valderit", appid:"3976610", youtubeId:"hQdp7DHbe4I",released:false },
+  { name:"Cranked", appid:"3989790", youtubeId:"2LsZoRIHYXY",released:false },
+  { name:"Ardem", appid:"2179480", youtubeId:"cDzAqcROkpI",released:false },
+  { name:"Enfant", appid:"4025390", youtubeId:"vN7bpdIHl6s",released:false },
+  { name:"WILDERLOCKE", appid:"3512280", youtubeId:"1mCLdXWlK2g",released:false },
+  { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k",released:false },
 ];
 
 // Spotlight - YouTube API
@@ -440,7 +612,13 @@ const spotlightUnmute = document.getElementById("spotlight-unmute");
 
 // Pick a random demo
 function getRandomDemo() {
-  return demos[Math.floor(Math.random() * demos.length)];
+
+  // only unreleased demos appear in hero
+  const activeDemos = demos.filter(d => !d.released);
+
+  return activeDemos[
+    Math.floor(Math.random() * activeDemos.length)
+  ];
 }
 
 // Load a demo into the spotlight
@@ -507,14 +685,29 @@ function displayDemos(list){
     const card=document.createElement("div");
     card.className="game-card";
     const thumb=`https://img.youtube.com/vi/${game.youtubeId}/hqdefault.jpg`;
-    card.innerHTML=`
-      <h3>${game.name}</h3>
-      <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">Request Access</a>
-      <div class="video-container">
-        <img src="${thumb}" alt="${game.name} Thumbnail" data-video="${game.youtubeId}">
-        <div class="play-button"></div>
-      </div>
-    `;
+   card.innerHTML=`
+
+  <h3>${game.name}</h3>
+
+  <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">
+    ${game.released ? 'View Game' : 'Request Access'}
+  </a>
+
+  <div class="video-container">
+
+    <img 
+      src="${thumb}" 
+      alt="${game.name} Thumbnail"
+      data-video="${game.youtubeId}"
+    >
+
+    <div class="play-button"></div>
+
+  </div>
+
+  ${game.released ? '<div class="release-badge">RELEASED</div>' : ''}
+
+`;
     container.appendChild(card);
   });
   document.querySelectorAll(".video-container img, .video-container .play-button").forEach(el=>{
@@ -591,7 +784,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
   animate();
 });
+window.addEventListener("DOMContentLoaded", () => {
+  const sidebars = document.querySelectorAll(".affiliate-sidebar");
+  const hero = document.querySelector(".spotlight");
 
+  function update() {
+    if (!hero) return;
+
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const show = heroBottom <= 0;
+
+    sidebars.forEach(sb => sb.classList.toggle("active", show));
+  }
+
+  // wait 2 frames = prevents flash on first paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      update();
+      document.documentElement.classList.remove("loading-sidebar");
+    });
+  });
+
+  window.addEventListener("scroll", update, { passive: true });
+});
 </script>
 
 </body>
