@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>NicheGaming - Steam Deals</title>
+<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--main-color:#39ff14;}
@@ -422,6 +423,12 @@ html, body {
 <!-- Back to Top Button -->
 <a href="#" id="back-top">Back to Top</a>
 
+<!-- DISCLAIMER -->
+<div class="affiliate-disclaimer">
+Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
+This site is independently operated and is not affiliated with, endorsed by, or sponsored by Steam, Valve Corporation, 
+YouTube, or any game developers or publishers mentioned.
+</div>
 
 
 <aside></aside>
@@ -528,7 +535,7 @@ function render() {
       <img src="${g.thumb}">
       <div class="row">
         <span>${g.title}</span>
-        <a href="https://store.steampowered.com/app/${g.steamAppID}" target="_blank">Steam</a>
+        <a href="https://store.steampowered.com/app/${g.steamAppID}" rel="noopener noreferrer" target="_blank">Steam</a>
         <span>${Math.round(g.savings)}%</span>
         <span>$${g.salePrice}</span>
       </div>
@@ -658,10 +665,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </script>
 
-<!-- DISCLAIMER -->
-<div class="affiliate-disclaimer">
-  Affiliate Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
-</div>
+
 
 </body>
 </html>

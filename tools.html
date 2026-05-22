@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Tools Hub</title>
+<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -86,19 +87,28 @@ button{
   max-width:1100px;
   margin:40px auto;
 }
+.tool-list{
+  position: relative;
+  
+}
+/* CONTENT */
+.tool-content{
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
 
-/* CARDS */
-.tool-card{
-  border:2px solid var(--main-color);
-  padding:15px;
-  background:#000;
+    z-index: 100000;
 
-  /* base glow */
+  background: #000;  /* solid */
+  border: 2px solid var(--main-color);
+
   box-shadow:
-    0 0 8px color-mix(in srgb, var(--main-color) 20%, transparent),
-    0 0 16px color-mix(in srgb, var(--main-color) 12%, transparent);
+    0 0 10px color-mix(in srgb, var(--main-color) 40%, transparent),
+    0 0 25px color-mix(in srgb, var(--main-color) 25%, transparent);
 
-  transition:0.3s ease;
+  padding: 15px;
 }
 
 /* IMAGES */
@@ -121,13 +131,6 @@ button{
   font-weight:800;
 }
 
-/* CONTENT */
-.tool-content{
-  display:none;
-  margin-top:10px;
-  background:#000;
-  padding-top:10px;
-}
 
 .tool-card.active .tool-content{
   display:block;
@@ -136,8 +139,8 @@ button{
 /* BUTTONS */
 .tool-btn{
   display:inline-block;
-  margin-top:10px;
-  padding:10px;
+  margin-top:8px;
+  padding: 8px;
   border:2px solid var(--main-color);
   color:var(--main-color);
   text-decoration:none;
@@ -156,6 +159,25 @@ button{
     0 0 12px color-mix(in srgb, var(--main-color) 70%, transparent),
     0 0 30px color-mix(in srgb, var(--main-color) 55%, transparent),
     0 0 60px color-mix(in srgb, var(--main-color) 35%, transparent);
+}
+.tool-card.active{
+  z-index: 1000;
+}
+.tool-card{
+  position: relative;
+  z-index: 1;
+
+  /* ✅ SOLID CARD (no transparency) */
+  background: #000;
+
+  border: 2px solid var(--main-color);
+
+  box-shadow:
+    0 0 8px color-mix(in srgb, var(--main-color) 20%, transparent),
+    0 0 16px color-mix(in srgb, var(--main-color) 12%, transparent);
+
+  transition: 0.3s ease;
+  overflow: visible;
 }
 
 /* HOVER EFFECT */
@@ -182,6 +204,8 @@ a:hover,
   font-size:0.85rem;
   opacity:0.7;
   line-height:1.5;
+
+  position: static;  /* or just remove position entirely */
 }
 /* =========================
    DISABLE SYSTEM CURSOR
@@ -318,7 +342,7 @@ html, body {
         <p>Jockie Music is a powerful Discord music bot that lets you play high-quality audio from sources like YouTube and Spotify 
           directly in your server. It supports multiple instances, allowing several music bots to run at once, along with features
           like playlists, queues, and easy command controls—making it ideal for keeping your community entertained.</p>
-        <a href="https://www.jockiemusic.com/" target="_blank" class="tool-btn">Link</a>
+        <a href="https://www.jockiemusic.com/" target="_blank" rel="noopener noreferrer" class="tool-btn">Link</a>
       </div>
     </div>
 
@@ -329,7 +353,7 @@ html, body {
       </div>
       <div class="tool-content">
         <p>Level up your Discord with Arcane.</p>
-        <a href="https://arcane.bot/" target="_blank" class="tool-btn">Link</a>
+        <a href="https://arcane.bot/" target="_blank" rel="noopener noreferrer" class="tool-btn">Link</a>
       </div>
     </div>
 
@@ -348,7 +372,7 @@ html, body {
       <div class="tool-content">
         <p>OBS Studio is a free program for recording and live streaming video. It lets you capture your screen, 
           camera, and audio, and is widely used for streaming and content creation.</p>
-        <a href="https://obsproject.com/download" target="_blank" class="tool-btn">Link</a>
+        <a href="https://obsproject.com/download" target="_blank" rel="noopener noreferrer" class="tool-btn">Link</a>
      
       </div>
     </div>
@@ -359,7 +383,7 @@ html, body {
       </div>
       <div class="tool-content">
         <p>A networking tool designed to connect game developers with content creators.</p>
-        <a href="https://keymailer.co/creators/" target="_blank" class="tool-btn">Link</a>
+        <a href="https://keymailer.co/creators/" target="_blank" rel="noopener noreferrer" class="tool-btn">Link</a>
       </div>
     </div>
      
@@ -372,7 +396,7 @@ html, body {
         <p>The Tag Extractor tool is a handy way of extracting and revealing these meta tags associated with any public video. 
           Extracting YouTube Tags can be very insightful to understand how competitor videos and other high-performing videos 
           are using these tags to boost their performance.</p>
-        <a href="https://tuberanker.com/youtube-tag-extractor" target="_blank" class="tool-btn">Link</a>
+        <a href="https://tuberanker.com/youtube-tag-extractor" target="_blank" rel="noopener noreferrer" class="tool-btn">Link</a>
     </div>
     </div>
 
@@ -383,7 +407,7 @@ html, body {
       </div>
       <div class="tool-content">
         <p>Upload and distribute your music to platforms like Spotify, Apple Music, and more. Keep 100% of your royalties and get your music live fast.</p>
-        <a href="https://distrokid.com/vip/seven/10305827" target="_blank" class="tool-btn"> Official Affiliate Link</a>
+        <a href="https://distrokid.com/vip/seven/10305827" target="_blank" rel="noopener sponsored" class="tool-btn"> Official Affiliate Link</a>
       </div>
     </div>
 
@@ -396,7 +420,8 @@ html, body {
         <p>Canva is an online design platform that allows users to easily create visual content such as social media graphics, presentations, posters, and videos. 
           It offers a drag-and-drop interface, customizable templates, and a large library of fonts, images, and design elements, making it accessible for both 
           beginners and professionals.  </p>
-         <a href="https://www.g2a.com/n/cnva" target="_blank" class="tool-btn">Third-Party Marketplace (Affiliate)</a>
+         <a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer" class="tool-btn">Canva</a>
+         <a href="https://www.g2a.com/n/cnva" target="_blank" rel="noopener sponsored" class="tool-btn">Third-Party Canva Premium Reseller (Affiliate)</a>
       </div>
     </div>
 
@@ -409,7 +434,8 @@ html, body {
         <p>CapCut is a video editing app that lets users create and edit videos quickly using an intuitive, 
           user-friendly interface. It offers features like trimming, transitions, effects, text overlays, and music integration, 
           making it popular for creating content for platforms like TikTok and Instagram.</p>
-        <a href="https://www.g2a.com/n/cacut" target="_blank" class="tool-btn">Third-Party Marketplace (Affiliate)</a>
+          <a href="https://www.capcut.com/" target="_blank" rel="noopener noreferrer" class="tool-btn">Capcut</a>
+        <a href="https://www.g2a.com/n/cacut" target="_blank" rel="noopener sponsored" class="tool-btn">Third-Party Capcut Pro Reseller (Affiliate)</a>
       </div>
     </div>
 
@@ -417,7 +443,12 @@ html, body {
 </div>
 <!-- DISCLAIMER -->
 <div class="affiliate-disclaimer">
-Affiliate Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
+Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
+
+<!-- Branding DISCLAIMER -->
+
+ All product names, logos, brands, and trademarks are property of their respective owners.
+This web page is an independent directory and is not affiliated with, endorsed by, or sponsored by any listed company unless explicitly stated.
 </div>
 
 <script>
