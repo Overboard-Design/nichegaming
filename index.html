@@ -832,7 +832,7 @@ html, body {
 
   <div class="radio-text">
     <span id="radio-text">
-      NICHEGAMING RADIO • READY
+      NICHEGAMING RADIO • OFFLINE
     </span>
   </div>
 
@@ -1583,9 +1583,18 @@ const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
 
 const playlist = [
+  { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
   { id: "fjH35k9elM0", artist: "Raid Station", title: "Bullet Hell" },
-  { id: "JJaX9XiTCdc", artist: "Raid Station", title: "Future-Now" },
-  { id: "VlqL_eyfLR0&list", artist: "Raid Station", title: "X" }
+  { id: "McPfXLjAiYU", artist: "Audio-Escape", title: "Droid Decay" },
+  { id: "Megv2WdIc9k", artist: "Raid Station", title: "Acid Organism Mix" },
+  { id: "MlFHI3g0JUE", artist: "Audio-Escape", title: "Dystopian Heartbeat" },
+  { id: "NWHUz-pp4NU", artist: "Audio-Escape", title: "Moonlit Anomaly" },
+  { id: "tGJAWuQ-8-Q", artist: "Audio-Escape", title: "Abyssal" },
+  { id: "EViUxanPK7c", artist: "Raid Station", title: "Rise" },
+  { id: "auFwDWAt9dk", artist: "Raid Station", title: "Neurotic Drive" },
+  { id: "uMgRxkthwEw", artist: "Raid Station", title: "Awaken" },
+  
+  
 ];
 
 
@@ -1634,6 +1643,7 @@ window.onYouTubeIframeAPIReady = function () {
 
 function loadTrack(i) {
 
+  // infinite wraparound
   index = (i + playlist.length) % playlist.length;
 
   const track = playlist[index];
@@ -1653,26 +1663,35 @@ playBtn.onclick = () => {
 
   if (!playing) {
 
+    const track = playlist[index];
+
+    // update instantly on play
+    text.textContent =
+      `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
+
     player.playVideo();
+
     playing = true;
 
     playBtn.textContent = "❚❚";
+
     status.textContent = "LIVE";
 
-    animateGlow(); // start glow loop
+    animateGlow();
 
   } else {
 
     player.pauseVideo();
+
     playing = false;
 
     playBtn.textContent = "▶";
+
     status.textContent = "OFF";
 
     stopGlow();
   }
 };
-
 
 // ======================
 // NEXT / PREV
@@ -1695,9 +1714,22 @@ prevBtn.onclick = () => {
 
 function onStateChange(e) {
 
+  // video finished
   if (e.data === YT.PlayerState.ENDED) {
-    loadTrack(index + 1);
-    if (playing) player.playVideo();
+
+    // advance track
+    index++;
+
+    // loop back to start
+    if (index >= playlist.length) {
+      index = 0;
+    }
+
+    loadTrack(index);
+
+    if (playing) {
+      player.playVideo();
+    }
   }
 }
 
@@ -1716,7 +1748,7 @@ function animateGlow() {
     // MASSIVE arcade neon glow
     const intensity = 1 + Math.random() * 2;
 
-    const glow = 80 + intensity * 160;
+    const glow = 80 + intensity * 320;
 
     widget.style.boxShadow = `
       0 0 ${glow}px var(--main-color),
