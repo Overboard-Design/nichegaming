@@ -761,14 +761,7 @@ html, body {
 
   pointer-events:none;
 }
-#yt-player {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
+
 </style>
 
 </head>
@@ -1636,7 +1629,31 @@ window.onYouTubeIframeAPIReady = function () {
     }
   });
 
-  loadTrack(0);
+  const savedTrack =
+  parseInt(localStorage.getItem("ng_radio_track")) || 0;
+
+const savedTime =
+  parseFloat(localStorage.getItem("ng_radio_time")) || 0;
+
+const wasPlaying =
+  localStorage.getItem("ng_radio_playing") === "true";
+
+loadTrack(savedTrack);
+
+player.seekTo(savedTime, true);
+
+if (wasPlaying) {
+
+  player.playVideo();
+
+  playing = true;
+
+  document.getElementById("play").textContent = "❚❚";
+
+  status.textContent = "LIVE";
+
+  animateGlow();
+}
 };
 
 
@@ -1656,7 +1673,25 @@ function loadTrack(i) {
   text.textContent =
     `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
 }
+function saveRadioState() {
 
+  if (!player || !player.getCurrentTime) return;
+
+  localStorage.setItem(
+    "ng_radio_track",
+    index
+  );
+
+  localStorage.setItem(
+    "ng_radio_time",
+    player.getCurrentTime()
+  );
+
+  localStorage.setItem(
+    "ng_radio_playing",
+    playing
+  );
+}
 
 // ======================
 // PLAY / PAUSE
@@ -1708,19 +1743,34 @@ document.getElementById("play").onclick = () => {
 };
 
 // ======================
-// NEXT / PREV
+// NEXT
 // ======================
 
-nextBtn.onclick = () => {
+document.getElementById("next").onclick = () => {
+
   loadTrack(index + 1);
-  if (playing) player.playVideo();
+
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
 };
 
-prevBtn.onclick = () => {
+// ======================
+// PREVIOUS
+// ======================
+
+document.getElementById("prev").onclick = () => {
+
   loadTrack(index - 1);
-  if (playing) player.playVideo();
-};
 
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
+};
 
 // ======================
 // AUTO ADVANCE
@@ -1748,7 +1798,17 @@ function onStateChange(e) {
     status.textContent = "OFFLINE";
   }
 }
+// ======================
+// AUTO SAVE RADIO STATE
+// ======================
 
+setInterval(() => {
+
+  if (playing) {
+    saveRadioState();
+  }
+
+}, 1000);
 
 // ======================
 // GLOW SYSTEM
@@ -1762,7 +1822,7 @@ function animateGlow() {
   if (widget) {
 
     // MASSIVE arcade neon glow
-    const intensity = 1 + Math.random() * 2;
+    const intensity = 2 + Math.random() * 4;
 
     const glow = 160 + intensity * 320;
 
