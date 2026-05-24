@@ -1591,7 +1591,6 @@ const playlist = [
   { id: "NWHUz-pp4NU", artist: "Audio-Escape", title: "Moonlit Anomaly" },
   { id: "tGJAWuQ-8-Q", artist: "Audio-Escape", title: "Abyssal" },
   { id: "EViUxanPK7c", artist: "Raid Station", title: "Rise" },
-  { id: "auFwDWAt9dk", artist: "Raid Station", title: "Neurotic Drive" },
   { id: "uMgRxkthwEw", artist: "Raid Station", title: "Awaken" },
   
   
@@ -1659,22 +1658,22 @@ function loadTrack(i) {
 // PLAY / PAUSE
 // ======================
 
-playBtn.onclick = () => {
+document.getElementById("play").onclick = () => {
 
   if (!playing) {
 
+    player.playVideo();
+    playing = true;
+
+    document.getElementById("play").textContent = "❚❚";
+
+    // update song text immediately
     const track = playlist[index];
 
-    // update instantly on play
     text.textContent =
       `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
 
-    player.playVideo();
-
-    playing = true;
-
-    playBtn.textContent = "❚❚";
-
+    // LIVE status
     status.textContent = "LIVE";
 
     animateGlow();
@@ -1682,14 +1681,25 @@ playBtn.onclick = () => {
   } else {
 
     player.pauseVideo();
-
     playing = false;
 
-    playBtn.textContent = "▶";
+    document.getElementById("play").textContent = "▶";
 
-    status.textContent = "OFF";
+    // OFFLINE status
+    status.textContent = "OFFLINE";
 
-    stopGlow();
+    cancelAnimationFrame(glowRAF);
+
+    const widget =
+      document.querySelector(".radio-widget");
+
+    if (widget) {
+
+      widget.style.boxShadow = `
+        0 0 8px var(--main-color),
+        0 0 16px var(--main-color)
+      `;
+    }
   }
 };
 
@@ -1714,22 +1724,24 @@ prevBtn.onclick = () => {
 
 function onStateChange(e) {
 
-  // video finished
+  // video ended
   if (e.data === YT.PlayerState.ENDED) {
 
-    // advance track
-    index++;
+    loadTrack(index + 1);
 
-    // loop back to start
-    if (index >= playlist.length) {
-      index = 0;
-    }
+    player.playVideo();
+  }
 
-    loadTrack(index);
+  // playing
+  if (e.data === YT.PlayerState.PLAYING) {
 
-    if (playing) {
-      player.playVideo();
-    }
+    status.textContent = "LIVE";
+  }
+
+  // paused
+  if (e.data === YT.PlayerState.PAUSED) {
+
+    status.textContent = "OFFLINE";
   }
 }
 
@@ -1748,13 +1760,13 @@ function animateGlow() {
     // MASSIVE arcade neon glow
     const intensity = 1 + Math.random() * 2;
 
-    const glow = 80 + intensity * 320;
+    const glow = 160 + intensity * 320;
 
     widget.style.boxShadow = `
       0 0 ${glow}px var(--main-color),
-      0 0 ${glow * 2}px var(--main-color),
-      0 0 ${glow * 4}px var(--main-color),
-      0 0 ${glow * 6}px rgba(57,255,20,0.9)
+      0 0 ${glow * 3}px var(--main-color),
+      0 0 ${glow * 5}px var(--main-color),
+      0 0 ${glow * 7}px rgba(57,255,20,0.9)
     `;
 
     // subtle live pulse
