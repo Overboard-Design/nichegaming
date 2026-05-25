@@ -3,12 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <title>NicheGaming - Spotlight</title>
-<link rel="icon" type="image/x-icon" href="nichegaming favicon.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
 :root { --main-color:#39ff14; }
+/* ======================
+RADIO
+====================== */
+.radio-widget {
 
+  position: absolute;
+
+  top: 8px;
+  right: 8px;
+
+  height: 22px;
+  max-width: 260px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 6px;
+
+  background: rgba(0,0,0,0.72);
+
+  border: 1px solid var(--main-color);
+
+  box-shadow:
+    0 0 6px var(--main-color),
+    0 0 12px var(--main-color);
+
+  z-index: 99999;
+
+  overflow: hidden;
+
+  transition:
+    box-shadow 0.08s linear,
+    transform 0.08s linear,
+    filter 0.08s linear;
+}
+
+/* controls inline */
+.radio-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.radio-controls button {
+
+  background: transparent;
+  border: 1px solid var(--main-color);
+
+  color: var(--main-color);
+
+  font-size: 0.45rem;
+
+  padding: 1px 3px;
+
+  cursor: pointer;
+
+  box-shadow: 0 0 4px var(--main-color);
+}
+
+/* scrolling / now playing text */
+
+  .radio-text {
+  font-size: 0.45rem;
+  color: var(--main-color);
+
+  text-shadow: 0 0 4px var(--main-color);
+
+  max-width: 320px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#yt-player {
+  position: absolute;
+  width: 0;
+  height: 0;
+
+  opacity: 0;
+  pointer-events: none;
+
+  overflow: hidden;
+}
 body{
   margin:0;
   background:#030303;
@@ -36,7 +115,7 @@ h1{
   z-index:1000;
 }
 
-#return-home{top:20px; right:20px;}
+#return-home{top:50px; right:20px;}
 
 #back-top{
   bottom:20px;
@@ -375,117 +454,27 @@ body{
     0 0 20px var(--main-color),
     0 0 40px var(--main-color);
 }
-/* =========================
-   DISABLE SYSTEM CURSOR
-========================= */
-
-html, body {
-  cursor: none !important;
-}
-
-*, *::before, *::after {
-  cursor: none !important;
-}
-
-/* =========================
-   CRT CURSOR CORE
-========================= */
-
-#crt-cursor {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999999;
-
-  background: var(--main-color);
-
-  box-shadow:
-    0 0 6px var(--main-color),
-    0 0 12px var(--main-color),
-    0 0 24px var(--main-color);
-}
-
-
-/* outer pulse ring */
-#crt-cursor::after{
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 30px;
-  height: 30px;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--main-color);
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: ringPulse 1.2s ease-in-out infinite;
-}
-
-/* =========================
-   CURSOR PULSE (core glow breathing)
-========================= */
-
-@keyframes cursorPulse {
-  0% {
-    box-shadow:
-      0 0 4px var(--main-color),
-      0 0 10px var(--main-color),
-      0 0 20px var(--main-color);
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    box-shadow:
-      0 0 8px var(--main-color),
-      0 0 18px var(--main-color),
-      0 0 40px var(--main-color);
-    transform: translate(-50%, -50%) scale(1.25);
-  }
-  100% {
-    box-shadow:
-      0 0 4px var(--main-color),
-      0 0 10px var(--main-color),
-      0 0 20px var(--main-color);
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-/* =========================
-   OUTER SCAN RING
-========================= */
-
-@keyframes ringPulse {
-  0% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) scale(0.8);
-  }
-  50% {
-    opacity: 0.2;
-    transform: translate(-50%, -50%) scale(1.4);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.8);
-  }
-}
-#crt-ripple{
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--main-color);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 999998;
-  transform: translate(-50%, -50%);
-}
 </style>
 </head>
 
 <body>
-<div id="crt-cursor"></div>
-<div id="crt-ripple"></div>
+<div class="radio-widget">
+<span id="status" style="display:none;">OFFLINE</span>
+  <div class="radio-controls">
+    <button id="prev">⏮</button>
+    <button id="play">▶</button>
+    <button id="next">⏭</button>
+  </div>
+
+  <div class="radio-text">
+    <span id="radio-text">
+      NICHEGAMING RADIO • OFFLINE
+    </span>
+  </div>
+
+  <div id="yt-player"></div>
+
+</div>
 <h1>Spotlights</h1>
 <a href="index.html" id="return-home">Return Home</a>
 
@@ -521,7 +510,7 @@ html, body {
     <div class="rating">Rating: TBD</div>
 
     <div class="spotlight-actions">
-      <a class="steam-btn" href="https://store.steampowered.com/app/2437390/Enginefall/" rel="noopener noreferrer" target="_blank">View on Steam</a>
+      <a class="steam-btn" href="https://store.steampowered.com/app/2437390/Enginefall/" target="_blank">View on Steam</a>
     </div>
   </div>
 </div>
@@ -552,12 +541,12 @@ html, body {
     <div class="rating">Rating: ★★★★★</div>
 
      <div class="spotlight-actions">
-  <a href=https://store.steampowered.com/app/2272250/Forgive_Me_Father_2/ target="_blank" rel="noopener noreferrer" class="steam-btn">
+  <a href=https://store.steampowered.com/app/2272250/Forgive_Me_Father_2/ target="_blank" class="steam-btn">
     View on Steam £20.99
   </a>
 </div>
 <div class="spotlight-actions">
-  <a href=https://www.g2a.com/n/forgive2 rel="noopener sponsored" target="_blank" class="steam-btn">
+  <a href=https://www.g2a.com/n/forgive2 target="_blank" class="steam-btn">
     View on G2A £8.36
   </a>
 </div>
@@ -592,7 +581,7 @@ html, body {
     <div class="rating">Rating: TBD</div>
 
     <div class="spotlight-actions">
-      <a class="steam-btn" href="https://store.steampowered.com/app/2231020/Chronicles_Medieval/" rel="noopener noreferrer" target="_blank">Steam</a>
+      <a class="steam-btn" href="https://store.steampowered.com/app/2231020/Chronicles_Medieval/" target="_blank">Steam</a>
     </div>
   </div>
 </div>
@@ -626,7 +615,7 @@ html, body {
     <div class="rating">Rating: TBD</div>
 
     <div class="spotlight-actions">
-      <a class="steam-btn" href="https://store.steampowered.com/app/1752080/HUNGER/" rel="noopener noreferrer" target="_blank">Steam</a>
+      <a class="steam-btn" href="https://store.steampowered.com/app/1752080/HUNGER/" target="_blank">Steam</a>
     </div>
   </div>
 </div>
@@ -663,7 +652,7 @@ AI can see, hear, feel, and smell you, and react intelligently to those senses. 
     <div class="rating">Rating: ★★★★☆</div>
 
     <div class="spotlight-actions">
-  <a href="https://store.steampowered.com/app/1857950/VEIN/" rel="noopener noreferrer" target="_blank" class="steam-btn">
+  <a href="https://store.steampowered.com/app/1857950/VEIN/" target="_blank" class="steam-btn">
     View on Steam £17.75
   </a>
 </div>
@@ -706,7 +695,7 @@ AI can see, hear, feel, and smell you, and react intelligently to those senses. 
     <div class="rating">Rating: ★★★★★</div>
 
     <div class="spotlight-actions">
-      <a class="steam-btn" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3081800026" rel="noopener noreferrer" target="_blank">Steam</a>
+      <a class="steam-btn" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3081800026" target="_blank">Steam</a>
     </div>
   </div>
 </div>
@@ -744,7 +733,7 @@ Followers are your most important resource, but also your most volatile. If you 
     <div class="rating">Rating: TBD</div>
 
     <div class="spotlight-actions">
-      <a class="steam-btn" href="https://store.steampowered.com/app/3401960/JOIN_US/" rel="noopener noreferrer" target="_blank">Steam</a>
+      <a class="steam-btn" href="https://store.steampowered.com/app/3401960/JOIN_US/" target="_blank">Steam</a>
     </div>
   </div>
 </div>
@@ -753,9 +742,7 @@ Followers are your most important resource, but also your most volatile. If you 
 
 <!-- DISCLAIMER -->
 <div class="affiliate-disclaimer">
-Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
-This site is independently operated and is not affiliated with, endorsed by, or sponsored by Steam, Valve Corporation, 
-YouTube, or any game developers or publishers mentioned.
+Affiliate Disclaimer: Some links on this page may be affiliate links. We may earn a small commission at no extra cost to you.
 </div>
 
 <a href="#" id="back-top">Back to Top</a>
@@ -770,16 +757,16 @@ YouTube, or any game developers or publishers mentioned.
   <div class="affiliate-stack">
 
     <!-- 3 square slots -->
-   <a href="https://www.g2a.com/n/atomfull" target="_blank" rel="noopener sponsored" class="affiliate-item">
+   <a href="https://www.g2a.com/n/atomfull" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="atomfall AL (1).jpg" alt="Affiliate Ad">
 </a>
 
-   <a href="https://www.g2a.com/n/hold-fast" target="_blank" rel="noopener sponsored" class="affiliate-item">
+   <a href="https://www.g2a.com/n/hold-fast" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="Holdfast AL.jpg" alt="Affiliate Ad">
   </a>
 
 
-   <a href="https://www.g2a.com/n/ottww1" target="_blank" rel="noopener sponsored" class="affiliate-item">
+   <a href="https://www.g2a.com/n/ottww1" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="Over the top AL.jpg" alt="Affiliate Ad">
 </a>
 
@@ -793,13 +780,13 @@ YouTube, or any game developers or publishers mentioned.
 <div class="affiliate-sidebar right inactive">
   <div class="affiliate-stack">
 
-    <a href="https://freecash.com/r/2MWHZH" target="_blank" rel="noopener sponsored" class="affiliate-item">
+    <a href="https://freecash.com/r/2MWHZH" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="FREECASH AL.jpg" alt="Affiliate Ad">
 </a>
-    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener sponsored" class="affiliate-item">
+    <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="Turtle Beach Recon 50 AL.png" alt="Affiliate Ad">
   
-  <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener sponsored" class="affiliate-item">
+  <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener noreferrer" class="affiliate-item">
   <img src="R36SL AL.png" alt="Affiliate Ad">
 </a>
 <script>
@@ -862,35 +849,312 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
-window.addEventListener("DOMContentLoaded", () => {
+// ======================
+// RADIO SYSTEM
+// ======================
 
-  const cursor = document.getElementById("crt-cursor");
-  if (!cursor) return;
+let player;
+let index = 0;
+let playing = false;
 
-  let mouseX = 0;
-  let mouseY = 0;
+let glowRAF = null;
 
-  let x = 0;
-  let y = 0;
+const status = document.getElementById("status");
+const text = document.getElementById("radio-text");
+const playBtn = document.getElementById("play");
+const nextBtn = document.getElementById("next");
+const prevBtn = document.getElementById("prev");
 
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+const playlist = [
+  { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
+  { id: "fjH35k9elM0", artist: "Raid Station", title: "Bullet Hell" },
+  { id: "McPfXLjAiYU", artist: "Audio-Escape", title: "Droid Decay" },
+  { id: "Megv2WdIc9k", artist: "Raid Station", title: "Acid Organism Mix" },
+  { id: "MlFHI3g0JUE", artist: "Audio-Escape", title: "Dystopian Heartbeat" },
+  { id: "NWHUz-pp4NU", artist: "Audio-Escape", title: "Moonlit Anomaly" },
+  { id: "tGJAWuQ-8-Q", artist: "Audio-Escape", title: "Abyssal" },
+  { id: "EViUxanPK7c", artist: "Raid Station", title: "Rise" },
+  { id: "uMgRxkthwEw", artist: "Raid Station", title: "Awaken" },
+  { id: "8oYQ4BtHJfI", artist: "Raid Station", title: "Storm" },
+  { id: "hSjeqUZD6Hc", artist: "Raid Station", title: "Subproofing" },
+  { id: "-9kbUfwoYTg", artist: "Raid Station", title: "Smiles per Minute" },
+  { id: "lQtUUNjy4wA", artist: "Raid Station", title: "Henry" },
+  
+  
+];
+
+
+// ======================
+// LOAD YOUTUBE API
+// ======================
+
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+
+// ======================
+// INIT PLAYER
+// ======================
+
+window.onYouTubeIframeAPIReady = function () {
+
+  player = new YT.Player("yt-player", {
+
+    height: "0",
+    width: "0",
+    videoId: playlist[0].id,
+
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      modestbranding: 1,
+      rel: 0
+    },
+
+    events: {
+      onStateChange: onStateChange
+    }
   });
 
-  function animate() {
-    x += (mouseX - x) * 0.18;
-    y += (mouseY - y) * 0.18;
+  const savedTrack =
+  parseInt(localStorage.getItem("ng_radio_track")) || 0;
 
-    cursor.style.left = x + "px";
-    cursor.style.top = y + "px";
+const savedTime =
+  parseFloat(localStorage.getItem("ng_radio_time")) || 0;
 
-    requestAnimationFrame(animate);
+const wasPlaying =
+  localStorage.getItem("ng_radio_playing") === "true";
+
+loadTrack(savedTrack);
+
+player.seekTo(savedTime, true);
+
+if (wasPlaying) {
+
+  player.playVideo();
+
+  playing = true;
+
+  document.getElementById("play").textContent = "❚❚";
+
+  status.textContent = "LIVE";
+
+  animateGlow();
+}
+};
+
+
+// ======================
+// LOAD TRACK
+// ======================
+
+function loadTrack(i) {
+
+  // infinite wraparound
+  index = (i + playlist.length) % playlist.length;
+
+  const track = playlist[index];
+
+  player.loadVideoById(track.id);
+
+  text.textContent =
+    `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
+}
+function saveRadioState() {
+
+  if (!player || !player.getCurrentTime) return;
+
+  localStorage.setItem(
+    "ng_radio_track",
+    index
+  );
+
+  localStorage.setItem(
+    "ng_radio_time",
+    player.getCurrentTime()
+  );
+
+  localStorage.setItem(
+    "ng_radio_playing",
+    playing
+  );
+}
+
+// ======================
+// PLAY / PAUSE
+// ======================
+
+document.getElementById("play").onclick = () => {
+
+  if (!playing) {
+
+    player.playVideo();
+    playing = true;
+
+    document.getElementById("play").textContent = "❚❚";
+
+    // update song text immediately
+    const track = playlist[index];
+
+    text.textContent =
+      `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
+
+    // LIVE status
+    status.textContent = "LIVE";
+
+    animateGlow();
+
+  } else {
+
+    player.pauseVideo();
+    playing = false;
+
+    document.getElementById("play").textContent = "▶";
+
+    // OFFLINE status
+    status.textContent = "OFFLINE";
+
+    cancelAnimationFrame(glowRAF);
+
+    const widget =
+      document.querySelector(".radio-widget");
+
+    if (widget) {
+
+      widget.style.boxShadow = `
+        0 0 8px var(--main-color),
+        0 0 16px var(--main-color)
+      `;
+    }
+  }
+};
+
+// ======================
+// NEXT
+// ======================
+
+document.getElementById("next").onclick = () => {
+
+  loadTrack(index + 1);
+
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
+};
+
+// ======================
+// PREVIOUS
+// ======================
+
+document.getElementById("prev").onclick = () => {
+
+  loadTrack(index - 1);
+
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
+};
+
+// ======================
+// AUTO ADVANCE
+// ======================
+
+function onStateChange(e) {
+
+  // video ended
+  if (e.data === YT.PlayerState.ENDED) {
+
+    loadTrack(index + 1);
+
+    player.playVideo();
   }
 
-  animate();
-});
+  // playing
+  if (e.data === YT.PlayerState.PLAYING) {
 
+    status.textContent = "LIVE";
+  }
+
+  // paused
+  if (e.data === YT.PlayerState.PAUSED) {
+
+    status.textContent = "OFFLINE";
+  }
+}
+// ======================
+// AUTO SAVE RADIO STATE
+// ======================
+
+setInterval(() => {
+
+  if (playing) {
+    saveRadioState();
+  }
+
+}, 1000);
+
+// ======================
+// GLOW SYSTEM
+// ======================
+function animateGlow() {
+
+  if (!playing) return;
+
+  const widget = document.querySelector(".radio-widget");
+
+  if (widget) {
+
+    // MASSIVE arcade neon glow
+    const intensity = 2 + Math.random() * 4;
+
+    const glow = 30 + intensity * 60;
+
+    widget.style.boxShadow = `
+      0 0 ${glow}px var(--main-color),
+      0 0 ${glow * 3}px var(--main-color),
+      0 0 ${glow * 5}px var(--main-color),
+      0 0 ${glow * 7}px rgba(57,255,20,0.9)
+    `;
+
+    // subtle live pulse
+    widget.style.transform =
+      `scale(${1 + Math.random() * 0.025})`;
+
+    // CRT energy flicker
+    widget.style.filter =
+      `brightness(${1.2 + Math.random() * 0.8})`;
+  }
+
+  glowRAF = requestAnimationFrame(animateGlow);
+}
+
+
+// ======================
+// STOP GLOW CLEANLY
+// ======================
+
+function stopGlow() {
+
+  if (glowRAF) {
+    cancelAnimationFrame(glowRAF);
+    glowRAF = null;
+  }
+
+  const widget = document.querySelector(".radio-widget");
+
+  if (widget) {
+    widget.style.boxShadow =
+      "0 0 6px var(--main-color)";
+    widget.style.transform = "scale(1)";
+  }
+}
 </script>
 
 </body>

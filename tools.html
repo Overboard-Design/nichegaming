@@ -9,6 +9,87 @@
 
 <style>
 :root { --main-color:#39ff14; }
+/* ======================
+RADIO
+====================== */
+.radio-widget {
+
+  position: absolute;
+
+  top: 8px;
+  right: 8px;
+
+  height: 22px;
+  max-width: 260px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 6px;
+
+  background: rgba(0,0,0,0.72);
+
+  border: 1px solid var(--main-color);
+
+  box-shadow:
+    0 0 6px var(--main-color),
+    0 0 12px var(--main-color);
+
+  z-index: 99999;
+
+  overflow: hidden;
+
+  transition:
+    box-shadow 0.08s linear,
+    transform 0.08s linear,
+    filter 0.08s linear;
+}
+
+/* controls inline */
+.radio-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.radio-controls button {
+
+  background: transparent;
+  border: 1px solid var(--main-color);
+
+  color: var(--main-color);
+
+  font-size: 0.45rem;
+
+  padding: 1px 3px;
+
+  cursor: pointer;
+
+  box-shadow: 0 0 4px var(--main-color);
+}
+
+/* scrolling / now playing text */
+
+  .radio-text {
+  font-size: 0.45rem;
+  color: var(--main-color);
+
+  text-shadow: 0 0 4px var(--main-color);
+
+  max-width: 320px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#yt-player {
+  position: absolute;
+  width: 0;
+  height: 0;
+
+  opacity: 0;
+  pointer-events: none;
+
+  overflow: hidden;
+}
 
 *{ box-sizing:border-box; }
 
@@ -316,6 +397,23 @@ html, body {
 </head>
 
 <body>
+  <div class="radio-widget">
+<span id="status" style="display:none;">OFFLINE</span>
+  <div class="radio-controls">
+    <button id="prev">⏮</button>
+    <button id="play">▶</button>
+    <button id="next">⏭</button>
+  </div>
+
+  <div class="radio-text">
+    <span id="radio-text">
+      NICHEGAMING RADIO • OFFLINE
+    </span>
+  </div>
+
+  <div id="yt-player"></div>
+
+</div>
 <div id="crt-cursor"></div>
 <div id="crt-ripple"></div>
 <h1>Tools Hub</h1>
@@ -510,6 +608,312 @@ window.addEventListener("DOMContentLoaded", () => {
 
   animate();
 });
+// ======================
+// RADIO SYSTEM
+// ======================
+
+let player;
+let index = 0;
+let playing = false;
+
+let glowRAF = null;
+
+const status = document.getElementById("status");
+const text = document.getElementById("radio-text");
+const playBtn = document.getElementById("play");
+const nextBtn = document.getElementById("next");
+const prevBtn = document.getElementById("prev");
+
+const playlist = [
+  { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
+  { id: "fjH35k9elM0", artist: "Raid Station", title: "Bullet Hell" },
+  { id: "McPfXLjAiYU", artist: "Audio-Escape", title: "Droid Decay" },
+  { id: "Megv2WdIc9k", artist: "Raid Station", title: "Acid Organism Mix" },
+  { id: "MlFHI3g0JUE", artist: "Audio-Escape", title: "Dystopian Heartbeat" },
+  { id: "NWHUz-pp4NU", artist: "Audio-Escape", title: "Moonlit Anomaly" },
+  { id: "tGJAWuQ-8-Q", artist: "Audio-Escape", title: "Abyssal" },
+  { id: "EViUxanPK7c", artist: "Raid Station", title: "Rise" },
+  { id: "uMgRxkthwEw", artist: "Raid Station", title: "Awaken" },
+  { id: "8oYQ4BtHJfI", artist: "Raid Station", title: "Storm" },
+  { id: "hSjeqUZD6Hc", artist: "Raid Station", title: "Subproofing" },
+  { id: "-9kbUfwoYTg", artist: "Raid Station", title: "Smiles per Minute" },
+  { id: "lQtUUNjy4wA", artist: "Raid Station", title: "Henry" },
+  
+  
+];
+
+
+// ======================
+// LOAD YOUTUBE API
+// ======================
+
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+
+// ======================
+// INIT PLAYER
+// ======================
+
+window.onYouTubeIframeAPIReady = function () {
+
+  player = new YT.Player("yt-player", {
+
+    height: "0",
+    width: "0",
+    videoId: playlist[0].id,
+
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      modestbranding: 1,
+      rel: 0
+    },
+
+    events: {
+      onStateChange: onStateChange
+    }
+  });
+
+  const savedTrack =
+  parseInt(localStorage.getItem("ng_radio_track")) || 0;
+
+const savedTime =
+  parseFloat(localStorage.getItem("ng_radio_time")) || 0;
+
+const wasPlaying =
+  localStorage.getItem("ng_radio_playing") === "true";
+
+loadTrack(savedTrack);
+
+player.seekTo(savedTime, true);
+
+if (wasPlaying) {
+
+  player.playVideo();
+
+  playing = true;
+
+  document.getElementById("play").textContent = "❚❚";
+
+  status.textContent = "LIVE";
+
+  animateGlow();
+}
+};
+
+
+// ======================
+// LOAD TRACK
+// ======================
+
+function loadTrack(i) {
+
+  // infinite wraparound
+  index = (i + playlist.length) % playlist.length;
+
+  const track = playlist[index];
+
+  player.loadVideoById(track.id);
+
+  text.textContent =
+    `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
+}
+function saveRadioState() {
+
+  if (!player || !player.getCurrentTime) return;
+
+  localStorage.setItem(
+    "ng_radio_track",
+    index
+  );
+
+  localStorage.setItem(
+    "ng_radio_time",
+    player.getCurrentTime()
+  );
+
+  localStorage.setItem(
+    "ng_radio_playing",
+    playing
+  );
+}
+
+// ======================
+// PLAY / PAUSE
+// ======================
+
+document.getElementById("play").onclick = () => {
+
+  if (!playing) {
+
+    player.playVideo();
+    playing = true;
+
+    document.getElementById("play").textContent = "❚❚";
+
+    // update song text immediately
+    const track = playlist[index];
+
+    text.textContent =
+      `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
+
+    // LIVE status
+    status.textContent = "LIVE";
+
+    animateGlow();
+
+  } else {
+
+    player.pauseVideo();
+    playing = false;
+
+    document.getElementById("play").textContent = "▶";
+
+    // OFFLINE status
+    status.textContent = "OFFLINE";
+
+    cancelAnimationFrame(glowRAF);
+
+    const widget =
+      document.querySelector(".radio-widget");
+
+    if (widget) {
+
+      widget.style.boxShadow = `
+        0 0 8px var(--main-color),
+        0 0 16px var(--main-color)
+      `;
+    }
+  }
+};
+
+// ======================
+// NEXT
+// ======================
+
+document.getElementById("next").onclick = () => {
+
+  loadTrack(index + 1);
+
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
+};
+
+// ======================
+// PREVIOUS
+// ======================
+
+document.getElementById("prev").onclick = () => {
+
+  loadTrack(index - 1);
+
+  saveRadioState();
+
+  if (playing) {
+    player.playVideo();
+  }
+};
+
+// ======================
+// AUTO ADVANCE
+// ======================
+
+function onStateChange(e) {
+
+  // video ended
+  if (e.data === YT.PlayerState.ENDED) {
+
+    loadTrack(index + 1);
+
+    player.playVideo();
+  }
+
+  // playing
+  if (e.data === YT.PlayerState.PLAYING) {
+
+    status.textContent = "LIVE";
+  }
+
+  // paused
+  if (e.data === YT.PlayerState.PAUSED) {
+
+    status.textContent = "OFFLINE";
+  }
+}
+// ======================
+// AUTO SAVE RADIO STATE
+// ======================
+
+setInterval(() => {
+
+  if (playing) {
+    saveRadioState();
+  }
+
+}, 1000);
+
+// ======================
+// GLOW SYSTEM
+// ======================
+function animateGlow() {
+
+  if (!playing) return;
+
+  const widget = document.querySelector(".radio-widget");
+
+  if (widget) {
+
+    // MASSIVE arcade neon glow
+    const intensity = 2 + Math.random() * 4;
+
+    const glow = 30 + intensity * 60;
+
+    widget.style.boxShadow = `
+      0 0 ${glow}px var(--main-color),
+      0 0 ${glow * 3}px var(--main-color),
+      0 0 ${glow * 5}px var(--main-color),
+      0 0 ${glow * 7}px rgba(57,255,20,0.9)
+    `;
+
+    // subtle live pulse
+    widget.style.transform =
+      `scale(${1 + Math.random() * 0.025})`;
+
+    // CRT energy flicker
+    widget.style.filter =
+      `brightness(${1.2 + Math.random() * 0.8})`;
+  }
+
+  glowRAF = requestAnimationFrame(animateGlow);
+}
+
+
+// ======================
+// STOP GLOW CLEANLY
+// ======================
+
+function stopGlow() {
+
+  if (glowRAF) {
+    cancelAnimationFrame(glowRAF);
+    glowRAF = null;
+  }
+
+  const widget = document.querySelector(".radio-widget");
+
+  if (widget) {
+    widget.style.boxShadow =
+      "0 0 6px var(--main-color)";
+    widget.style.transform = "scale(1)";
+  }
+}
 </script>
 
 </body>

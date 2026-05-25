@@ -816,7 +816,7 @@ html, body {
 </header>
 
 <div class="radio-widget">
-
+<span id="status" style="display:none;">OFFLINE</span>
   <div class="radio-controls">
     <button id="prev">⏮</button>
     <button id="play">▶</button>
@@ -1824,7 +1824,7 @@ function animateGlow() {
     // MASSIVE arcade neon glow
     const intensity = 2 + Math.random() * 4;
 
-    const glow = 160 + intensity * 320;
+    const glow = 30 + intensity * 60;
 
     widget.style.boxShadow = `
       0 0 ${glow}px var(--main-color),
