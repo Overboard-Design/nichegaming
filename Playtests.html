@@ -1055,21 +1055,24 @@ function initRadioState() {
   const wasPlaying =
     localStorage.getItem("ng_radio_playing") === "true";
 
-  loadTrack(savedTrack);
+loadTrack(savedTrack);
 
-if (player && player.stopVideo) {
-  player.stopVideo();
-}
-
+// restore position safely
 if (player && player.seekTo) {
   player.seekTo(savedTime, true);
 }
 
+// DO NOT stopVideo here
+if (player && player.pauseVideo) {
+  player.pauseVideo();
+}
+
+// ensure no accidental playback
 if (player && player.mute) {
   player.mute();
 }
 
- // Always start in OFF state visually
+// UI state only
 playing = false;
 document.getElementById("play").textContent = "▶";
 status.textContent = "OFFLINE";
