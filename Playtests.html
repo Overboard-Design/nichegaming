@@ -1057,17 +1057,23 @@ function initRadioState() {
 
   loadTrack(savedTrack);
 
-  if (player && player.seekTo) {
-    player.seekTo(savedTime, true);
-  }
+if (player && player.seekTo) {
+  player.seekTo(savedTime, true);
+}
+
+if (player && player.pauseVideo) {
+  player.pauseVideo();
+}
 
  // Always start in OFF state visually
 playing = false;
 document.getElementById("play").textContent = "▶";
 status.textContent = "OFFLINE";
-stopGlow?.();
-}
 
+cancelAnimationFrame(glowRAF);
+
+stopGlow();
+}
 // ======================
 // LOAD TRACK
 // ======================
@@ -1079,7 +1085,7 @@ function loadTrack(i) {
 
   const track = playlist[index];
 
-  player.loadVideoById(track.id);
+ player.cueVideoById(track.id);
 
   text.textContent =
     `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
