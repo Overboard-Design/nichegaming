@@ -723,7 +723,7 @@ YouTube, or any game developers or publishers mentioned.
   <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener sponsored" class="affiliate-item">
   <img src="R36SL AL.png" alt="Affiliate Ad">
 </a>
-<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 // Persisted color from index
 const storedColor = localStorage.getItem("nicheColor");
@@ -1020,12 +1020,11 @@ document.body.appendChild(tag);
 
 window.onYouTubeIframeAPIReady = function () {
 
+  // ---- RADIO (safe first) ----
   player = new YT.Player("yt-player", {
-
     height: "0",
     width: "0",
     videoId: playlist[0].id,
-
     playerVars: {
       autoplay: 0,
       controls: 0,
@@ -1034,39 +1033,40 @@ window.onYouTubeIframeAPIReady = function () {
       modestbranding: 1,
       rel: 0
     },
-
     events: {
-      onStateChange: onStateChange
+      onStateChange: onStateChange,
+      onReady: initRadioState
     }
   });
 
-  const savedTrack =
-  parseInt(localStorage.getItem("ng_radio_track")) || 0;
-
-const savedTime =
-  parseFloat(localStorage.getItem("ng_radio_time")) || 0;
-
-const wasPlaying =
-  localStorage.getItem("ng_radio_playing") === "true";
-
-loadTrack(savedTrack);
-
-player.seekTo(savedTime, true);
-
-if (wasPlaying) {
-
-  player.playVideo();
-
-  playing = true;
-
-  document.getElementById("play").textContent = "❚❚";
-
-  status.textContent = "LIVE";
-
-  animateGlow();
-}
+  // ---- SPOTLIGHT (delayed so it doesn't block radio) ----
+  setTimeout(() => {
+    loadSpotlight(getRandomDemo());
+  }, 300);
 };
+function initRadioState() {
 
+  const savedTrack =
+    parseInt(localStorage.getItem("ng_radio_track")) || 0;
+
+  const savedTime =
+    parseFloat(localStorage.getItem("ng_radio_time")) || 0;
+
+  const wasPlaying =
+    localStorage.getItem("ng_radio_playing") === "true";
+
+  loadTrack(savedTrack);
+
+  if (player && player.seekTo) {
+    player.seekTo(savedTime, true);
+  }
+
+ // Always start in OFF state visually
+playing = false;
+document.getElementById("play").textContent = "▶";
+status.textContent = "OFFLINE";
+stopGlow?.();
+}
 
 // ======================
 // LOAD TRACK
