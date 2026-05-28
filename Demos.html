@@ -1082,30 +1082,30 @@ window.onYouTubeIframeAPIReady = function () {
 };
 
 
+function initRadioState() {
+
   const savedTrack =
-  parseInt(localStorage.getItem("ng_radio_track")) || 0;
+    parseInt(localStorage.getItem("ng_radio_track")) || 0;
 
-const savedTime =
-  parseFloat(localStorage.getItem("ng_radio_time")) || 0;
+  const savedTime =
+    parseFloat(localStorage.getItem("ng_radio_time")) || 0;
 
-const wasPlaying =
-  localStorage.getItem("ng_radio_playing") === "true";
+  const wasPlaying =
+    localStorage.getItem("ng_radio_playing") === "true";
 
-loadTrack(savedTrack);
+  loadTrack(savedTrack);
 
-player.seekTo(savedTime, true);
+  if (player && player.seekTo) {
+    player.seekTo(savedTime, true);
+  }
 
-if (wasPlaying) {
-
-  player.playVideo();
-
-  playing = true;
-
-  document.getElementById("play").textContent = "❚❚";
-
-  status.textContent = "LIVE";
-
-  animateGlow();
+  if (wasPlaying) {
+    player.playVideo();
+    playing = true;
+    document.getElementById("play").textContent = "❚❚";
+    status.textContent = "LIVE";
+    animateGlow();
+  }
 }
 
 
