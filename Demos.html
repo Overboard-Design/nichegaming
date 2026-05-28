@@ -642,7 +642,7 @@ html.loading-sidebar .affiliate-sidebar {
     <div id="spotlight-video"></div>
   </div>
   <div class="spotlight-overlay">
-    <h2 id="spotlight-title">Featured Playtest</h2> 
+    <h2 id="spotlight-title">Featured Demo</h2> 
     <div>
       <a id="spotlight-link" class="spotlight-btn">Request Access</a>
       <a id="spotlight-skip" class="spotlight-btn">Skip</a>
@@ -721,7 +721,7 @@ YouTube, or any game developers or publishers mentioned.
   <a href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener sponsored" class="affiliate-item">
   <img src="R36SL AL.png" alt="Affiliate Ad">
 </a>
-<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 // Persisted color from index
 const storedColor = localStorage.getItem("nicheColor");
@@ -736,7 +736,18 @@ if(storedColor){
 
 // Demo data
 const demos = [
-{ name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0", released:false },
+  { name:"Warhammer 40,000: Boltgun 2", appid:"3115160", youtubeId:"ydDcJzaNwJI", released:false },
+  { name:"Warhammer Survivors", appid:"3669620", youtubeId:"rEWShktdAnA", released:false },
+  { name:"BrokenLore: ASCEND", appid:"4051470", youtubeId:"iMfxz9ZD4FI", released:false },
+  { name:"ShatterRush", appid:"3668330", youtubeId:"uhooh6oIK6o", released:false },
+  { name:"Deeper", appid:"2958550", youtubeId:"0Z07sVnefUg", released:false },
+  { name:"Wilderdark", appid:"2735850", youtubeId:"87V_uOzAM18", released:false },
+  { name:"Snack Invaders", appid:"1192170", youtubeId:"ZtprzGP4-hs", released:false },
+  { name:"On The Train", appid:"3177710", youtubeId:"UKV5rFzQkT0", released:false },
+  { name:"Medieval Frontiers", appid:"1207360", youtubeId:"fYLqwv_LN78", released:false },
+  { name:"Lysward", appid:"2994600", youtubeId:"6H_qyeoreJg", released:false },
+  { name:"Out Fishing", appid:"3660260", youtubeId:"UiPnHLWz_iA", released:false },
+  { name:"Wanderburg", appid:"3624140", youtubeId:"pUsprNYfxw0", released:false },
   { name:"STUNTBOOST", appid:"2999500", youtubeId:"8lMrlFMCCpM", released:false },
   { name:"ATMOSFAR", appid:"1798230", youtubeId:"ua2rB4GbGQs", released:false },
   { name:"Tabletop Tavern", appid:"3337380", youtubeId:"u0oKuRzizXU", released:false },
@@ -759,7 +770,6 @@ const demos = [
   { name:"How Many Dudes?", appid:"3934270", youtubeId:"GvCrbow9Yy4", released:false },
   { name:"Demiurgos", appid:"2229910", youtubeId:"ScWtwYSgU94", released:false },
   { name:"Tears of Metal", appid:"1913120", youtubeId:"kdt4o55qMG0", released:false },
-  { name:"A.A.U. Black Site", appid:"3607440", youtubeId:"HfjBY9vUAKY", released:false },
   { name:"The Path Into The Abyss", appid:"3725100", youtubeId:"9s-5tR0fGfM", released:false },
   { name:"Devora", appid:"4156160", youtubeId:"954Z5P3Mbqc", released:false },
   { name:"Edge Of Evil", appid:"3928510", youtubeId:"dMEbtDV796Y", released:false },
@@ -786,6 +796,7 @@ const demos = [
   { name:"This Is Fine: Maximum Cope", appid:"3229980", youtubeId:"W8Ra_n_XtjE", released:true },
   { name:"It Reaches", appid:"4119360", youtubeId:"t5JByyPugWA", released:true },
   { name:"We Gotta Go", appid:"3967470", youtubeId:"R8ndCjY431o", released:true },
+  { name:"A.A.U. Black Site", appid:"3607440", youtubeId:"HfjBY9vUAKY", released:true },
 ];
 
 // Spotlight - YouTube API
@@ -846,11 +857,6 @@ function onSpotlightStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     loadSpotlight(getRandomDemo());
   }
-}
-
-// Called by YouTube API once ready
-function onYouTubeIframeAPIReady() {
-  loadSpotlight(getRandomDemo());
 }
 
 // Skip button
@@ -1050,8 +1056,11 @@ document.body.appendChild(tag);
 
 window.onYouTubeIframeAPIReady = function () {
 
-  player = new YT.Player("yt-player", {
+  // ---- Spotlight ----
+  loadSpotlight(getRandomDemo());
 
+  // ---- Radio ----
+  player = new YT.Player("yt-player", {
     height: "0",
     width: "0",
     videoId: playlist[0].id,
@@ -1069,6 +1078,7 @@ window.onYouTubeIframeAPIReady = function () {
       onStateChange: onStateChange
     }
   });
+};
 
   const savedTrack =
   parseInt(localStorage.getItem("ng_radio_track")) || 0;
@@ -1095,7 +1105,7 @@ if (wasPlaying) {
 
   animateGlow();
 }
-};
+
 
 
 // ======================
