@@ -1093,19 +1093,22 @@ function initRadioState() {
   const wasPlaying =
     localStorage.getItem("ng_radio_playing") === "true";
 
+  // load audio state silently
   loadTrack(savedTrack);
 
   if (player && player.seekTo) {
     player.seekTo(savedTime, true);
   }
 
-  if (wasPlaying) {
-    player.playVideo();
-    playing = true;
-    document.getElementById("play").textContent = "❚❚";
-    status.textContent = "LIVE";
-    animateGlow();
-  }
+  // ❌ FORCE UI OFFLINE no matter what
+  playing = false;
+  document.getElementById("play").textContent = "▶";
+  status.textContent = "OFFLINE";
+  stopGlow();
+
+  // 🔵 IMPORTANT:
+  // DO NOT autoplay or show LIVE state
+  // user must press play again
 }
 
 
