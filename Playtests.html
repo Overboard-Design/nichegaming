@@ -1057,12 +1057,16 @@ function initRadioState() {
 
   loadTrack(savedTrack);
 
+if (player && player.stopVideo) {
+  player.stopVideo();
+}
+
 if (player && player.seekTo) {
   player.seekTo(savedTime, true);
 }
 
-if (player && player.pauseVideo) {
-  player.pauseVideo();
+if (player && player.mute) {
+  player.mute();
 }
 
  // Always start in OFF state visually
