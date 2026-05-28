@@ -1056,15 +1056,11 @@ document.body.appendChild(tag);
 
 window.onYouTubeIframeAPIReady = function () {
 
-  // ---- Spotlight ----
-  loadSpotlight(getRandomDemo());
-
-  // ---- Radio ----
+  // ---- RADIO (safe first) ----
   player = new YT.Player("yt-player", {
     height: "0",
     width: "0",
     videoId: playlist[0].id,
-
     playerVars: {
       autoplay: 0,
       controls: 0,
@@ -1073,12 +1069,18 @@ window.onYouTubeIframeAPIReady = function () {
       modestbranding: 1,
       rel: 0
     },
-
     events: {
-      onStateChange: onStateChange
+      onStateChange: onStateChange,
+      onReady: initRadioState
     }
   });
+
+  // ---- SPOTLIGHT (delayed so it doesn't block radio) ----
+  setTimeout(() => {
+    loadSpotlight(getRandomDemo());
+  }, 300);
 };
+
 
   const savedTrack =
   parseInt(localStorage.getItem("ng_radio_track")) || 0;
