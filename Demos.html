@@ -89,6 +89,11 @@ RADIO
 
   overflow: hidden;
 }
+.radio-controls button {
+  position: relative;
+  z-index: 5;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:"Orbitron",system-ui,sans-serif;
@@ -618,8 +623,7 @@ html.loading-sidebar .affiliate-sidebar {
   document.documentElement.classList.add("loading-sidebar");
 </script>
 <body>
-  <div class="radio-widget">
-<span id="status" style="display:none;">OFFLINE</span>
+ <div class="radio-widget">
   <div class="radio-controls">
     <button id="prev">⏮</button>
     <button id="play">▶</button>
@@ -627,10 +631,9 @@ html.loading-sidebar .affiliate-sidebar {
   </div>
 
   <div class="radio-text">
-    <span id="radio-text">
-      NICHEGAMING RADIO • OFFLINE
-    </span>
+    <span id="radio-text">NICHEGAMING RADIO • OFFLINE</span>
   </div>
+</div>
 
   <div id="yt-player"></div>
 
@@ -1020,29 +1023,27 @@ const RADIO_STATE = {
 let radioState = RADIO_STATE.IDLE;
 let player;
 let index = 0;
+let glowRAF = null;
 
 // ---------- STATE HANDLER ----------
 function setState(state) {
+
   radioState = state;
 
-  const status = document.getElementById("status");
   const playBtn = document.getElementById("play");
 
-  switch (state) {
-    case RADIO_STATE.IDLE:
-      playBtn.textContent = "▶";
-      status.textContent = "OFFLINE";
-      break;
+  if (state === RADIO_STATE.PLAYING) {
 
-    case RADIO_STATE.READY:
-      playBtn.textContent = "▶";
-      status.textContent = "READY";
-      break;
+    playBtn.textContent = "❚❚";
 
-    case RADIO_STATE.PLAYING:
-      playBtn.textContent = "❚❚";
-      status.textContent = "LIVE";
-      break;
+    if (!glowRAF) {
+      animateGlow();
+    }
+
+  } else {
+
+    playBtn.textContent = "▶";
+    stopGlow();
   }
 }
 
@@ -1171,42 +1172,28 @@ function onStateChange(e) {
 // ======================
 // GLOW SYSTEM
 // ======================
+
 function animateGlow() {
 
-  if (!playing) return;
+  if (radioState !== RADIO_STATE.PLAYING) return;
 
   const widget = document.querySelector(".radio-widget");
+  if (!widget) return;
 
-  if (widget) {
+  const intensity = 2 + Math.random() * 4;
+  const glow = 30 + intensity * 60;
 
-    // MASSIVE arcade neon glow
-    const intensity = 2 + Math.random() * 4;
+  widget.style.boxShadow = `
+    0 0 ${glow}px var(--main-color),
+    0 0 ${glow * 2}px var(--main-color),
+    0 0 ${glow * 4}px var(--main-color)
+  `;
 
-    const glow = 30 + intensity * 60;
-
-    widget.style.boxShadow = `
-      0 0 ${glow}px var(--main-color),
-      0 0 ${glow * 3}px var(--main-color),
-      0 0 ${glow * 5}px var(--main-color),
-      0 0 ${glow * 7}px rgba(57,255,20,0.9)
-    `;
-
-    // subtle live pulse
-    widget.style.transform =
-      `scale(${1 + Math.random() * 0.025})`;
-
-    // CRT energy flicker
-    widget.style.filter =
-      `brightness(${1.2 + Math.random() * 0.8})`;
-  }
+  widget.style.transform =
+    `scale(${1 + Math.random() * 0.02})`;
 
   glowRAF = requestAnimationFrame(animateGlow);
 }
-
-
-// ======================
-// STOP GLOW CLEANLY
-// ======================
 
 function stopGlow() {
 
@@ -1217,11 +1204,14 @@ function stopGlow() {
 
   const widget = document.querySelector(".radio-widget");
 
-  if (widget) {
-    widget.style.boxShadow =
-      "0 0 6px var(--main-color)";
-    widget.style.transform = "scale(1)";
-  }
+  if (!widget) return;
+
+  widget.style.boxShadow = `
+    0 0 6px var(--main-color),
+    0 0 12px var(--main-color)
+  `;
+
+  widget.style.transform = "scale(1)";
 }
 </script>
 
