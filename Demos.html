@@ -1124,7 +1124,7 @@ function loadTrack(i) {
 
   const track = playlist[index];
 
-  player.loadVideoById(track.id);
+  player.cueVideoById(track.id);
 
   text.textContent =
     `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
