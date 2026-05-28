@@ -1006,21 +1006,45 @@ window.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("scroll", update, { passive: true });
 });
+
 // ======================
-// RADIO SYSTEM
+// RADIO SYSTEM (3-STATE)
 // ======================
 
+const RADIO_STATE = {
+  IDLE: "idle",
+  READY: "ready",
+  PLAYING: "playing"
+};
+
+let radioState = RADIO_STATE.IDLE;
 let player;
 let index = 0;
-let playing = false;
 
-let glowRAF = null;
+// ---------- STATE HANDLER ----------
+function setState(state) {
+  radioState = state;
 
-const status = document.getElementById("status");
-const text = document.getElementById("radio-text");
-const playBtn = document.getElementById("play");
-const nextBtn = document.getElementById("next");
-const prevBtn = document.getElementById("prev");
+  const status = document.getElementById("status");
+  const playBtn = document.getElementById("play");
+
+  switch (state) {
+    case RADIO_STATE.IDLE:
+      playBtn.textContent = "▶";
+      status.textContent = "OFFLINE";
+      break;
+
+    case RADIO_STATE.READY:
+      playBtn.textContent = "▶";
+      status.textContent = "READY";
+      break;
+
+    case RADIO_STATE.PLAYING:
+      playBtn.textContent = "❚❚";
+      status.textContent = "LIVE";
+      break;
+  }
+}
 
 const playlist = [
   { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
@@ -1041,22 +1065,14 @@ const playlist = [
 ];
 
 
-// ======================
-// LOAD YOUTUBE API
-// ======================
-
+// ---------- LOAD YOUTUBE API ----------
 const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
 document.body.appendChild(tag);
 
-
-// ======================
-// INIT PLAYER
-// ======================
-
+// ---------- INIT PLAYER ----------
 window.onYouTubeIframeAPIReady = function () {
 
-  // ---- RADIO (safe first) ----
   player = new YT.Player("yt-player", {
     height: "0",
     width: "0",
@@ -1070,209 +1086,88 @@ window.onYouTubeIframeAPIReady = function () {
       rel: 0
     },
     events: {
-      onStateChange: onStateChange,
-      onReady: initRadioState
+      onReady: onPlayerReady,
+      onStateChange: onStateChange
     }
   });
-
-  // ---- SPOTLIGHT (delayed so it doesn't block radio) ----
-  setTimeout(() => {
-    loadSpotlight(getRandomDemo());
-  }, 300);
 };
-function initRadioState() {
 
-  const savedTrack =
-    parseInt(localStorage.getItem("ng_radio_track")) || 0;
+// ---------- READY ----------
+function onPlayerReady() {
 
-  const savedTime =
-    parseFloat(localStorage.getItem("ng_radio_time")) || 0;
+  const savedTrack = parseInt(localStorage.getItem("ng_radio_track")) || 0;
+  const savedTime = parseFloat(localStorage.getItem("ng_radio_time")) || 0;
 
-  const wasPlaying =
-    localStorage.getItem("ng_radio_playing") === "true";
+  loadTrack(savedTrack);
 
-loadTrack(savedTrack);
+  setTimeout(() => {
+    player.seekTo(savedTime, true);
+    player.pauseVideo();
+  }, 200);
 
-// restore position safely
-if (player && player.seekTo) {
-  player.seekTo(savedTime, true);
+  setState(RADIO_STATE.READY);
 }
 
-// DO NOT stopVideo here
-if (player && player.pauseVideo) {
-  player.pauseVideo();
-}
-
-// ensure no accidental playback
-if (player && player.mute) {
-  player.mute();
-}
-
-// UI state only
-playing = false;
-document.getElementById("play").textContent = "▶";
-status.textContent = "OFFLINE";
-
-cancelAnimationFrame(glowRAF);
-
-stopGlow();
-}
-
-
-
-// ======================
-// LOAD TRACK
-// ======================
-
+// ---------- LOAD TRACK ----------
 function loadTrack(i) {
 
-  // infinite wraparound
   index = (i + playlist.length) % playlist.length;
-
   const track = playlist[index];
 
   player.cueVideoById(track.id);
 
-  text.textContent =
+  document.getElementById("radio-text").textContent =
     `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
-}
-function saveRadioState() {
 
-  if (!player || !player.getCurrentTime) return;
-
-  localStorage.setItem(
-    "ng_radio_track",
-    index
-  );
-
-  localStorage.setItem(
-    "ng_radio_time",
-    player.getCurrentTime()
-  );
-
-  localStorage.setItem(
-    "ng_radio_playing",
-    playing
-  );
+  setState(RADIO_STATE.READY);
 }
 
-// ======================
-// PLAY / PAUSE
-// ======================
-
+// ---------- PLAY / PAUSE ----------
 document.getElementById("play").onclick = () => {
 
-  if (!playing) {
-
-    player.playVideo();
-    playing = true;
-
-    document.getElementById("play").textContent = "❚❚";
-
-    // update song text immediately
-    const track = playlist[index];
-
-    text.textContent =
-      `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
-
-    // LIVE status
-    status.textContent = "LIVE";
-
-    animateGlow();
-
-  } else {
-
+  if (radioState === RADIO_STATE.PLAYING) {
     player.pauseVideo();
-    playing = false;
-
-    document.getElementById("play").textContent = "▶";
-
-    // OFFLINE status
-    status.textContent = "OFFLINE";
-
-    cancelAnimationFrame(glowRAF);
-
-    const widget =
-      document.querySelector(".radio-widget");
-
-    if (widget) {
-
-      widget.style.boxShadow = `
-        0 0 8px var(--main-color),
-        0 0 16px var(--main-color)
-      `;
-    }
+    setState(RADIO_STATE.READY);
+    return;
   }
-};
 
-// ======================
-// NEXT
-// ======================
-
-document.getElementById("next").onclick = () => {
-
-  loadTrack(index + 1);
-
-  saveRadioState();
-
-  if (playing) {
+  if (radioState === RADIO_STATE.READY) {
     player.playVideo();
+    setState(RADIO_STATE.PLAYING);
   }
 };
 
-// ======================
-// PREVIOUS
-// ======================
+// ---------- NEXT / PREV ----------
+document.getElementById("next").onclick = () => {
+  loadTrack(index + 1);
+  if (radioState === RADIO_STATE.PLAYING) {
+    setTimeout(() => player.playVideo(), 150);
+  }
+};
 
 document.getElementById("prev").onclick = () => {
-
   loadTrack(index - 1);
-
-  saveRadioState();
-
-  if (playing) {
-    player.playVideo();
+  if (radioState === RADIO_STATE.PLAYING) {
+    setTimeout(() => player.playVideo(), 150);
   }
 };
 
-// ======================
-// AUTO ADVANCE
-// ======================
-
+// ---------- YT STATE ----------
 function onStateChange(e) {
 
-  // video ended
-  if (e.data === YT.PlayerState.ENDED) {
-
-    loadTrack(index + 1);
-
-    player.playVideo();
-  }
-
-  // playing
   if (e.data === YT.PlayerState.PLAYING) {
-
-    status.textContent = "LIVE";
+    setState(RADIO_STATE.PLAYING);
   }
 
-  // paused
   if (e.data === YT.PlayerState.PAUSED) {
+    setState(RADIO_STATE.READY);
+  }
 
-    status.textContent = "OFFLINE";
+  if (e.data === YT.PlayerState.ENDED) {
+    loadTrack(index + 1);
+    setTimeout(() => player.playVideo(), 150);
   }
 }
-// ======================
-// AUTO SAVE RADIO STATE
-// ======================
-
-setInterval(() => {
-
-  if (playing) {
-    saveRadioState();
-  }
-
-}, 1000);
-
 // ======================
 // GLOW SYSTEM
 // ======================
