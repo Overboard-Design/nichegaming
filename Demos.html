@@ -1080,8 +1080,6 @@ window.onYouTubeIframeAPIReady = function () {
     loadSpotlight(getRandomDemo());
   }, 300);
 };
-
-
 function initRadioState() {
 
   const savedTrack =
@@ -1093,22 +1091,24 @@ function initRadioState() {
   const wasPlaying =
     localStorage.getItem("ng_radio_playing") === "true";
 
-  // load audio state silently
   loadTrack(savedTrack);
 
-  if (player && player.seekTo) {
-    player.seekTo(savedTime, true);
-  }
+if (player && player.seekTo) {
+  player.seekTo(savedTime, true);
+}
 
-  // ❌ FORCE UI OFFLINE no matter what
-  playing = false;
-  document.getElementById("play").textContent = "▶";
-  status.textContent = "OFFLINE";
-  stopGlow();
+if (player && player.pauseVideo) {
+  player.pauseVideo();
+}
 
-  // 🔵 IMPORTANT:
-  // DO NOT autoplay or show LIVE state
-  // user must press play again
+ // Always start in OFF state visually
+playing = false;
+document.getElementById("play").textContent = "▶";
+status.textContent = "OFFLINE";
+
+cancelAnimationFrame(glowRAF);
+
+stopGlow();
 }
 
 
