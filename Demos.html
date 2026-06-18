@@ -804,6 +804,7 @@ const demos = [
 
 // Spotlight - YouTube API
 let spotlightPlayer;
+let spotlightReady = false;
 
 // Get DOM references
 const spotlightTitle = document.getElementById("spotlight-title");
@@ -842,11 +843,23 @@ function loadSpotlight(demo) {
         playlist: demo.youtubeId
       },
       events: {
+
+
   'onReady': (event) => {
-    event.target.mute();   // 🔥 force mute
-    event.target.playVideo(); // ensure autoplay works
+
+    event.target.mute();
+    event.target.playVideo();
+
+    // mark hero video ready
+    spotlightReady = true;
+
+    // start radio after video
+    initRadio();
+
   },
+
   'onStateChange': onSpotlightStateChange
+
 }
     });
   }
@@ -1067,31 +1080,49 @@ const playlist = [
 
 
 // ---------- LOAD YOUTUBE API ----------
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-document.body.appendChild(tag);
+let radioStarted = false;
 
-// ---------- INIT PLAYER ----------
-window.onYouTubeIframeAPIReady = function () {
+function initRadio(){
 
-  player = new YT.Player("yt-player", {
-    height: "0",
-    width: "0",
-    videoId: playlist[0].id,
-    playerVars: {
-      autoplay: 0,
-      controls: 0,
-      disablekb: 1,
-      fs: 0,
-      modestbranding: 1,
-      rel: 0
-    },
-    events: {
-      onReady: onPlayerReady,
-      onStateChange: onStateChange
-    }
-  });
-};
+  if(radioStarted) return;
+
+  radioStarted = true;
+
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+
+
+  window.onYouTubeIframeAPIReady = function () {
+
+    player = new YT.Player("yt-player", {
+
+      height:"0",
+      width:"0",
+
+      videoId: playlist[0].id,
+
+      playerVars:{
+        autoplay:0,
+        controls:0,
+        disablekb:1,
+        fs:0,
+        modestbranding:1,
+        rel:0
+      },
+
+      events:{
+        onReady:onPlayerReady,
+        onStateChange:onStateChange
+      }
+
+    });
+
+  };
+
+}
+
 
 // ---------- READY ----------
 function onPlayerReady() {
