@@ -764,82 +764,288 @@ const demos = [
   { name:"Steel Effigy", appid:"2903980", youtubeId:"C0rIJn2xZ8k",released:false },
 ];
 
-// Spotlight - YouTube API
+// ==============================
+// YOUTUBE API + SPOTLIGHT
+// ==============================
+
+let youtubeReady = false;
+let youtubeQueue = [];
+
+function loadYouTubeAPI(){
+
+  if(document.querySelector("#youtube-api"))
+  return;
+
+
+  const tag=document.createElement("script");
+
+  tag.id="youtube-api";
+
+  tag.src="https://www.youtube.com/iframe_api";
+
+  document.body.appendChild(tag);
+
+}
+
+
+window.onYouTubeIframeAPIReady=function(){
+
+  youtubeReady=true;
+
+
+  youtubeQueue.forEach(fn=>{
+    fn();
+  });
+
+
+  youtubeQueue=[];
+
+};
+
+
+
+function whenYouTubeReady(callback){
+
+
+  if(youtubeReady && window.YT){
+
+    callback();
+
+  }else{
+
+    youtubeQueue.push(callback);
+
+    loadYouTubeAPI();
+
+  }
+
+
+}
+
+
+
+
 let spotlightPlayer;
+let spotlightReady=false;
 
-// Get DOM references
-const spotlightTitle = document.getElementById("spotlight-title");
-const spotlightLink = document.getElementById("spotlight-link");
-const spotlightSkip = document.getElementById("spotlight-skip");
-const spotlightUnmute = document.getElementById("spotlight-unmute");
 
-// Pick a random demo
-function getRandomDemo() {
 
-  // only unreleased demos appear in hero
-  const activeDemos = demos.filter(d => !d.released);
+const spotlightTitle =
+document.getElementById("spotlight-title");
 
-  return activeDemos[
-    Math.floor(Math.random() * activeDemos.length)
-  ];
+
+const spotlightLink =
+document.getElementById("spotlight-link");
+
+
+const spotlightSkip =
+document.getElementById("spotlight-skip");
+
+
+const spotlightUnmute =
+document.getElementById("spotlight-unmute");
+
+
+
+
+
+function getRandomDemo(){
+
+
+const activeDemos =
+demos.filter(d=>!d.released);
+
+
+
+if(!activeDemos.length){
+
+ return demos[0];
+
 }
 
-// Load a demo into the spotlight
-function loadSpotlight(demo) {
-  // Update title and link
-  spotlightTitle.textContent = demo.name;
-  spotlightLink.href = `https://store.steampowered.com/app/${demo.appid}`;
 
-  // Load video
-  if (spotlightPlayer) {
-    spotlightPlayer.loadVideoById(demo.youtubeId);
-  } else {
-    spotlightPlayer = new YT.Player('spotlight-video', {
-      videoId: demo.youtubeId,
-      playerVars: {
-        autoplay: 1,
-        controls: 0,
-        mute: 1,
-        loop: 1,
-        playlist: demo.youtubeId
-      },
-      events: { 'onStateChange': onSpotlightStateChange }
-    });
-  }
 
-  // Reset unmute button text
-  spotlightUnmute.textContent = "Unmute";
+return activeDemos[
+Math.floor(Math.random()*activeDemos.length)
+];
+
+
 }
 
-// Auto-play next demo when current ends
-function onSpotlightStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) {
-    loadSpotlight(getRandomDemo());
-  }
+
+
+
+
+function loadSpotlight(demo){
+
+
+if(!demo)
+return;
+
+
+
+spotlightTitle.textContent =
+demo.name;
+
+
+spotlightLink.href =
+`https://store.steampowered.com/app/${demo.appid}`;
+
+
+
+
+whenYouTubeReady(()=>{
+
+
+if(spotlightPlayer){
+
+
+spotlightPlayer.loadVideoById(
+demo.youtubeId
+);
+
+
+
+}else{
+
+
+spotlightPlayer =
+new YT.Player(
+"spotlight-video",
+{
+
+
+videoId:demo.youtubeId,
+
+
+playerVars:{
+
+autoplay:1,
+controls:0,
+mute:1,
+loop:1,
+playlist:demo.youtubeId
+
+},
+
+
+
+events:{
+
+
+onReady:(event)=>{
+
+
+event.target.mute();
+
+event.target.playVideo();
+
+
+spotlightReady=true;
+
+
+// starts radio safely
+
+setTimeout(initRadio,500);
+
+
+
+},
+
+
+onStateChange:onSpotlightStateChange
+
+
+
 }
 
-// Called by YouTube API once ready
-function onYouTubeIframeAPIReady() {
-  loadSpotlight(getRandomDemo());
-}
 
-// Skip button
-spotlightSkip.addEventListener("click", () => {
-  loadSpotlight(getRandomDemo());
+
 });
 
-// Toggle mute/unmute
-spotlightUnmute.addEventListener("click", () => {
-  if (!spotlightPlayer) return;
-  if (spotlightPlayer.isMuted()) {
-    spotlightPlayer.unMute();
-    spotlightUnmute.textContent = "Mute";
-  } else {
-    spotlightPlayer.mute();
-    spotlightUnmute.textContent = "Unmute";
-  }
+
+}
+
+
 });
 
+
+
+spotlightUnmute.textContent="Unmute";
+
+
+}
+
+
+
+
+function onSpotlightStateChange(event){
+
+
+if(
+event.data===YT.PlayerState.ENDED
+){
+
+loadSpotlight(
+getRandomDemo()
+);
+
+
+}
+
+
+
+}
+
+
+
+
+
+spotlightSkip.onclick=()=>{
+
+
+loadSpotlight(
+getRandomDemo()
+);
+
+
+};
+
+
+
+
+
+spotlightUnmute.onclick=()=>{
+
+
+if(!spotlightPlayer)
+return;
+
+
+
+if(spotlightPlayer.isMuted()){
+
+
+spotlightPlayer.unMute();
+
+
+spotlightUnmute.textContent="Mute";
+
+
+}else{
+
+
+spotlightPlayer.mute();
+
+
+spotlightUnmute.textContent="Unmute";
+
+
+}
+
+
+
+};
 // Demo list
 const container=document.getElementById("demo-list");
 function displayDemos(list){
@@ -848,12 +1054,14 @@ function displayDemos(list){
     const card=document.createElement("div");
     card.className="game-card";
     const thumb=`https://img.youtube.com/vi/${game.youtubeId}/hqdefault.jpg`;
-   card.innerHTML=`
+  card.innerHTML=`
+
+ 
 
   <h3>${game.name}</h3>
 
-  <a href="https://store.steampowered.com/app/${game.appid}" target="_blank" rel="noopener noreferrer"> 
-    ${game.released ? 'View Game' : 'Request Access'}
+  <a href="https://store.steampowered.com/app/${game.appid}" rel="noopener noreferrer" target="_blank">
+    ${game.released ? 'View Game' : 'Demo'}
   </a>
 
   <div class="video-container">
@@ -867,9 +1075,7 @@ function displayDemos(list){
     <div class="play-button"></div>
 
   </div>
-
-  ${game.released ? '<div class="release-badge">RELEASED</div>' : ''}
-
+${game.released ? '<div class="release-badge">RELEASED</div>' : ''}
 `;
     container.appendChild(card);
   });
@@ -970,24 +1176,28 @@ window.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("scroll", update, { passive: true });
 });
-// ======================
+
+// ==============================
 // RADIO SYSTEM
-// ======================
+// ==============================
 
-let player;
-let index = 0;
-let playing = false;
+const RADIO_STATE = {
+  IDLE:"idle",
+  READY:"ready",
+  PLAYING:"playing"
+};
 
-let glowRAF = null;
 
-const status = document.getElementById("status");
-const text = document.getElementById("radio-text");
-const playBtn = document.getElementById("play");
-const nextBtn = document.getElementById("next");
-const prevBtn = document.getElementById("prev");
+let radioState = RADIO_STATE.IDLE;
+let radioPlayer = null;
+let radioIndex = 0;
+let radioStarted = false;
+
+
 
 const playlist = [
-  { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
+
+ { id: "v8FyDqc8lDs", artist: "Raid Station", title: "GrimDank Mix" },
   { id: "fjH35k9elM0", artist: "Raid Station", title: "Bullet Hell" },
   { id: "McPfXLjAiYU", artist: "Audio-Escape", title: "Droid Decay" },
   { id: "Megv2WdIc9k", artist: "Raid Station", title: "Acid Organism Mix" },
@@ -1000,240 +1210,287 @@ const playlist = [
   { id: "hSjeqUZD6Hc", artist: "Raid Station", title: "Subproofing" },
   { id: "-9kbUfwoYTg", artist: "Raid Station", title: "Smiles per Minute" },
   { id: "lQtUUNjy4wA", artist: "Raid Station", title: "Henry" },
-  
-  
+
 ];
 
 
-// ======================
-// LOAD YOUTUBE API
-// ======================
 
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
+// START RADIO AFTER HERO VIDEO
+function initRadio(){
+
+if(radioStarted) return;
+
+radioStarted=true;
+
+
+
+function createRadioPlayer(){
+
+
+radioPlayer = new YT.Player(
+"yt-player",
+{
+
+height:"0",
+width:"0",
+
+videoId:playlist[0].id,
+
+
+playerVars:{
+controls:0,
+autoplay:0,
+rel:0
+},
+
+
+events:{
+
+onReady:onRadioReady,
+
+onStateChange:onRadioState
+
+}
+
+
+});
+
+
+}
+
+
+
+// YouTube API already loaded by spotlight
+if(window.YT && YT.Player){
+
+createRadioPlayer();
+
+}
+
+
+// API not loaded yet
+else{
+
+
+window.onYouTubeIframeAPIReady=function(){
+
+createRadioPlayer();
+
+};
+
+
+
+const tag=document.createElement("script");
+
+tag.src="https://www.youtube.com/iframe_api";
+
 document.body.appendChild(tag);
 
 
-// ======================
-// INIT PLAYER
-// ======================
-
-window.onYouTubeIframeAPIReady = function () {
-
-  // ---- RADIO (safe first) ----
-  player = new YT.Player("yt-player", {
-    height: "0",
-    width: "0",
-    videoId: playlist[0].id,
-    playerVars: {
-      autoplay: 0,
-      controls: 0,
-      disablekb: 1,
-      fs: 0,
-      modestbranding: 1,
-      rel: 0
-    },
-    events: {
-      onStateChange: onStateChange,
-      onReady: initRadioState
-    }
-  });
-
-  // ---- SPOTLIGHT (delayed so it doesn't block radio) ----
-  setTimeout(() => {
-    loadSpotlight(getRandomDemo());
-  }, 300);
-};
-function initRadioState() {
-
-  const savedTrack =
-    parseInt(localStorage.getItem("ng_radio_track")) || 0;
-
-  const savedTime =
-    parseFloat(localStorage.getItem("ng_radio_time")) || 0;
-
-  const wasPlaying =
-    localStorage.getItem("ng_radio_playing") === "true";
-
-loadTrack(savedTrack);
-
-// restore position safely
-if (player && player.seekTo) {
-  player.seekTo(savedTime, true);
 }
 
-// DO NOT stopVideo here
-if (player && player.pauseVideo) {
-  player.pauseVideo();
+
 }
 
-// ensure no accidental playback
-if (player && player.mute) {
-  player.mute();
+
+
+
+function onRadioReady(){
+
+loadRadioTrack(0);
+
+setRadioState(
+RADIO_STATE.READY
+);
+
 }
 
-// UI state only
-playing = false;
-document.getElementById("play").textContent = "▶";
-status.textContent = "OFFLINE";
 
-cancelAnimationFrame(glowRAF);
 
-stopGlow();
-}
-// ======================
-// LOAD TRACK
-// ======================
 
-function loadTrack(i) {
+function loadRadioTrack(i){
 
-  // infinite wraparound
-  index = (i + playlist.length) % playlist.length;
 
-  const track = playlist[index];
+radioIndex =
+(i + playlist.length)
+% playlist.length;
 
- player.cueVideoById(track.id);
 
-  text.textContent =
-    `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
-}
-function saveRadioState() {
 
-  if (!player || !player.getCurrentTime) return;
+const track=playlist[radioIndex];
 
-  localStorage.setItem(
-    "ng_radio_track",
-    index
-  );
 
-  localStorage.setItem(
-    "ng_radio_time",
-    player.getCurrentTime()
-  );
+radioPlayer.cueVideoById(track.id);
 
-  localStorage.setItem(
-    "ng_radio_playing",
-    playing
-  );
+
+
+document.getElementById("radio-text").textContent =
+
+`NICHEGAMING RADIO • ${track.artist} - ${track.title}`;
+
+
 }
 
-// ======================
-// PLAY / PAUSE
-// ======================
 
-document.getElementById("play").onclick = () => {
 
-  if (!playing) {
 
-    player.playVideo();
-    playing = true;
+function setRadioState(state){
 
-    document.getElementById("play").textContent = "❚❚";
 
-    // update song text immediately
-    const track = playlist[index];
+radioState=state;
 
-    text.textContent =
-      `NICHEGAMING RADIO • ${track.artist} – ${track.title}`;
 
-    // LIVE status
-    status.textContent = "LIVE";
+const btn=document.getElementById("play");
 
-    animateGlow();
+if(!btn)return;
 
-  } else {
 
-    player.pauseVideo();
-    playing = false;
+btn.textContent =
+state===RADIO_STATE.PLAYING
+?
+"❚❚"
+:
+"▶";
 
-    document.getElementById("play").textContent = "▶";
 
-    // OFFLINE status
-    status.textContent = "OFFLINE";
+}
 
-    cancelAnimationFrame(glowRAF);
 
-    const widget =
-      document.querySelector(".radio-widget");
 
-    if (widget) {
 
-      widget.style.boxShadow = `
-        0 0 8px var(--main-color),
-        0 0 16px var(--main-color)
-      `;
-    }
-  }
+document.getElementById("play").onclick=()=>{
+
+
+if(!radioPlayer)return;
+
+
+
+if(radioState===RADIO_STATE.PLAYING){
+
+
+radioPlayer.pauseVideo();
+
+setRadioState(
+RADIO_STATE.READY
+);
+
+return;
+
+}
+
+
+
+radioPlayer.playVideo();
+
+setRadioState(
+RADIO_STATE.PLAYING
+);
+
+
 };
 
-// ======================
-// NEXT
-// ======================
 
-document.getElementById("next").onclick = () => {
 
-  loadTrack(index + 1);
 
-  saveRadioState();
 
-  if (playing) {
-    player.playVideo();
-  }
-};
 
-// ======================
-// PREVIOUS
-// ======================
+document.getElementById("next").onclick=()=>{
 
-document.getElementById("prev").onclick = () => {
 
-  loadTrack(index - 1);
+loadRadioTrack(
+radioIndex+1
+);
 
-  saveRadioState();
 
-  if (playing) {
-    player.playVideo();
-  }
-};
+if(
+radioState===RADIO_STATE.PLAYING
+){
 
-// ======================
-// AUTO ADVANCE
-// ======================
+setTimeout(()=>{
 
-function onStateChange(e) {
+radioPlayer.playVideo();
 
-  // video ended
-  if (e.data === YT.PlayerState.ENDED) {
+},200);
 
-    loadTrack(index + 1);
 
-    player.playVideo();
-  }
-
-  // playing
-  if (e.data === YT.PlayerState.PLAYING) {
-
-    status.textContent = "LIVE";
-  }
-
-  // paused
-  if (e.data === YT.PlayerState.PAUSED) {
-
-    status.textContent = "OFFLINE";
-  }
 }
-// ======================
-// AUTO SAVE RADIO STATE
-// ======================
 
-setInterval(() => {
 
-  if (playing) {
-    saveRadioState();
-  }
+};
 
-}, 1000);
 
+
+
+
+document.getElementById("prev").onclick=()=>{
+
+
+loadRadioTrack(
+radioIndex-1
+);
+
+
+
+if(
+radioState===RADIO_STATE.PLAYING
+){
+
+setTimeout(()=>{
+
+radioPlayer.playVideo();
+
+},200);
+
+
+}
+
+
+};
+
+
+
+
+
+
+function onRadioState(e){
+
+
+
+if(e.data===YT.PlayerState.PLAYING){
+
+setRadioState(
+RADIO_STATE.PLAYING
+);
+
+}
+
+
+
+if(e.data===YT.PlayerState.PAUSED){
+
+setRadioState(
+RADIO_STATE.READY
+);
+
+}
+
+
+
+if(e.data===YT.PlayerState.ENDED){
+
+
+loadRadioTrack(
+radioIndex+1
+);
+
+
+radioPlayer.playVideo();
+
+
+}
+
+
+}
 // ======================
 // GLOW SYSTEM
 // ======================
@@ -1269,7 +1526,6 @@ function animateGlow() {
   glowRAF = requestAnimationFrame(animateGlow);
 }
 
-
 // ======================
 // STOP GLOW CLEANLY
 // ======================
@@ -1289,6 +1545,15 @@ function stopGlow() {
     widget.style.transform = "scale(1)";
   }
 }
+window.addEventListener("DOMContentLoaded",()=>{
+
+loadYouTubeAPI();
+
+loadSpotlight(
+getRandomDemo()
+);
+
+});
 </script>
 
 </body>
